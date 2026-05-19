@@ -10,11 +10,10 @@
             --accent-purple: #731982;
             --bg-light: #F2F4F7;
             --border-gray: #D2D5DA;
-            --text-main: #1D2024; /* Максимально контрастный черный */
+            --text-main: #1D2024;
             --gradient: linear-gradient(135deg, #00B956, #00D2FF);
             --font-family: 'MegaFon Graphik LC', 'MegaFon Graphik LC Regular', sans-serif;
         }
-
         body {
             background-color: #ffffff;
             font-family: var(--font-family);
@@ -25,89 +24,80 @@
             min-height: 100vh;
             color: var(--text-main);
         }
-
         .container {
             text-align: center;
             padding: 20px;
             max-width: 400px;
             width: 100%;
         }
-
-        /* Эмодзи вместо логотипа */
         .icon {
             font-size: 64px;
             margin-bottom: 20px;
             display: block;
         }
-
         h1 {
-            font-weight: 600; /* Semibold */
+            font-weight: 600;
             color: var(--text-main);
             margin-bottom: 32px;
             font-size: 28px;
             letter-spacing: -0.5px;
         }
-
         .links-container {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
         .project-link {
             text-decoration: none;
             color: white;
             background-color: var(--primary-green);
             padding: 22px;
             border-radius: 16px;
-            font-weight: 500; /* Medium */
+            font-weight: 500;
             font-size: 18px;
             transition: all 0.3s ease;
             display: block;
             box-shadow: 0 4px 10px rgba(0, 185, 86, 0.15);
         }
-
         .project-link:hover {
             background: var(--gradient);
             transform: translateY(-3px);
             box-shadow: 0 8px 24px rgba(0, 185, 86, 0.3);
         }
-
         .project-title {
             display: block;
             margin-bottom: 4px;
         }
-
         .description {
-            color: rgba(255, 255, 255, 0.95); /* Почти белый для четкости */
+            color: rgba(255, 255, 255, 0.95);
             font-size: 14px;
-            font-weight: 300; /* Light */
+            font-weight: 300;
         }
     </style>
 </head>
 <body>
-
 <div class="container">
     <span class="icon">📂</span>
     <h1>Мои проекты</h1>
-    
+
     <div class="links-container">
         <a href="./scoring_matrix/" class="project-link">
             <span class="project-title">Scoring Matrix</span>
             <div class="description">Инструмент для оценки продуктовых запусков</div>
         </a>
-
         <a href="./XVM/" class="project-link">
             <span class="project-title">Experience Value Model</span>
             <div class="description">Аналитическая модель ценности (XVM)</div>
         </a>
-
         <a href="./Product CX Scoring/" class="project-link">
             <span class="project-title">Product CX Scoring</span>
             <div class="description">Гайдлайны и требования</div>
         </a>
+        <a href="./weekly-report.html" class="project-link">
+            <span class="project-title">Еженедельный отчёт</span>
+            <div class="description">Форма для составления и отправки отчётов по направлениям</div>
+        </a>
     </div>
 </div>
-
 </body>
 </html>
