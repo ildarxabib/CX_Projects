@@ -1,1063 +1,863 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Матрица оценки продуктового запуска — МегаФон B2B</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --green:          #00B956;
-      --green-hover:    #00A94F;
-      --green-pressed:  #009447;
-      --purple:         #731982;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Матрица оценки продуктового запуска — МегаФон B2B</title>
+<style>
+:root {
+  --green: #00B956; --green-hover: #00A94F; --green-pressed: #009447;
+  --purple: #731982;
+  --bg-page: #F2F4F7; --bg-card: #FFFFFF; --bg-secondary: #F7F8FA; --bg-input: #F2F4F7;
+  --border-primary: #D2D5DA; --border-secondary: #E6E9EE;
+  --text-primary: #2B2D33; --text-secondary: #8F96A4; --text-disabled: #A8AFB9; --text-inverse: #FFFFFF;
+  --success-bg: #EAFBF1; --warning-bg: #FFF6E5; --error-bg: #FFF0F0; --info-bg: #DDF5FF;
+  --warning-accent: #FF9F0A; --error-accent: #FF4D4F; --info-accent: #00B5FF;
+  --radius-card: 24px; --radius-tile: 20px; --radius-btn: 14px; --radius-input: 16px;
+  --shadow-card: 0 1px 4px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-tip: 0 8px 32px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.07);
+  --font: 'MegaFon Graphik LC', 'Inter', Arial, sans-serif;
+  --ease: .2s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary);min-height:100vh;padding:40px 24px 80px;-webkit-font-smoothing:antialiased}
 
-      --bg-page:        #F2F4F7;
-      --bg-card:        #FFFFFF;
-      --bg-secondary:   #F7F8FA;
-      --bg-input:       #F2F4F7;
+/* ── Page header ── */
+.page-header{max-width:1280px;margin:0 auto 28px;display:flex;align-items:center;gap:14px}
+.logo-badge{width:44px;height:44px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,185,86,.25)}
+.logo-badge svg{width:24px;height:24px;stroke:#fff}
+.page-title{font-size:22px;font-weight:600;color:var(--text-primary);letter-spacing:-.3px}
+.page-subtitle{font-size:13px;color:var(--text-secondary);margin-top:2px}
 
-      --border-primary:   #D2D5DA;
-      --border-secondary: #E6E9EE;
+/* ── Main card ── */
+.card{max-width:1280px;margin:0 auto;background:var(--bg-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);border:1px solid var(--border-secondary);overflow:hidden}
 
-      --text-primary:   #2B2D33;
-      --text-secondary: #8F96A4;
-      --text-disabled:  #A8AFB9;
-      --text-inverse:   #FFFFFF;
+/* ── Card header ── */
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--border-secondary);background:var(--bg-secondary);border-radius:var(--radius-card) var(--radius-card) 0 0}
+.card-header-title{font-size:15px;font-weight:600;color:var(--text-primary)}
+.card-header-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.progress-indicator{display:flex;align-items:center;gap:10px}
+.progress-dots{display:flex;gap:5px}
+.progress-dot{width:8px;height:8px;border-radius:50%;background:var(--border-primary);transition:background var(--ease)}
+.progress-dot.filled{background:var(--green)}
+.progress-label{font-size:12px;color:var(--text-secondary);white-space:nowrap}
+.progress-label span{color:var(--green);font-weight:600}
 
-      --success-bg:  #EAFBF1;
-      --warning-bg:  #FFF6E5;
-      --error-bg:    #FFF0F0;
-      --info-bg:     #DDF5FF;
-      --warning-accent: #FF9F0A;
-      --error-accent:   #FF4D4F;
-      --info-accent:    #00B5FF;
+/* ── Meta section ── */
+.meta-section{display:flex;align-items:flex-end;gap:16px;padding:18px 28px;border-bottom:1px solid var(--border-secondary);background:var(--bg-card)}
+.meta-field{display:flex;flex-direction:column;gap:5px}
+.meta-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.meta-input{border:1.5px solid var(--border-primary);border-radius:var(--radius-input);padding:9px 14px;font-family:var(--font);font-size:14px;color:var(--text-primary);background:var(--bg-input);outline:none;min-width:300px;transition:border-color var(--ease),background var(--ease),box-shadow var(--ease)}
+.meta-input::placeholder{color:var(--text-secondary)}
+.meta-input:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
+.meta-date-val{font-size:14px;color:var(--text-secondary);padding:9px 14px;background:var(--bg-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-input)}
 
-      --radius-card:   24px;
-      --radius-tile:   20px;
-      --radius-btn:    14px;
-      --radius-input:  16px;
+/* ── Table header ── */
+.table-head{display:grid;grid-template-columns:210px 1fr 1fr 1fr 200px;background:var(--bg-secondary);border-bottom:1.5px solid var(--border-secondary);padding:0 28px}
+.th{padding:10px 12px;font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px}
+.th:first-child{padding-left:0}
+.th:last-child{padding-right:0}
+.score-badge{display:inline-flex;align-items:center;gap:5px}
+.score-badge-dot{width:7px;height:7px;border-radius:50%}
 
-      --shadow-card: 0 1px 4px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
-      --shadow-hover: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
+/* ── Matrix rows ── */
+.matrix-row{display:grid;grid-template-columns:210px 1fr 1fr 1fr 200px;border-bottom:1px solid var(--border-secondary);padding:0 28px;position:relative;transition:background var(--ease)}
+.matrix-row:last-child{border-bottom:none}
+.matrix-row.key-row{border-left:3px solid transparent;padding-left:25px}
+.matrix-row.row-impact{border-left-color:var(--info-accent)}
+.matrix-row.row-toxicity{border-left-color:var(--error-accent)}
 
-      --font: 'Inter', 'MegaFon Graphik LC', Arial, sans-serif;
-    }
+/* Criterion cell */
+.td-crit{padding:20px 12px 20px 0;display:flex;flex-direction:column;gap:8px}
+.crit-header{display:flex;align-items:flex-start;gap:8px}
+.crit-index{width:22px;height:22px;border-radius:999px;background:var(--bg-page);border:1px solid var(--border-primary);font-size:11px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.crit-name-wrap{flex:1}
+.crit-en{display:block;font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.3}
+.crit-ru{display:block;font-size:11px;color:var(--text-secondary);margin-top:1px}
+.tooltip-btn{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-primary);background:var(--bg-card);font-size:10px;font-weight:700;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color var(--ease),color var(--ease),background var(--ease);line-height:1;margin-top:3px;font-family:var(--font)}
+.tooltip-btn:hover,.tooltip-btn.active{border-color:var(--green);color:var(--green);background:var(--success-bg)}
+.key-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;background:var(--info-bg);color:var(--info-accent);margin-left:30px;width:fit-content}
+.key-badge-red{background:var(--error-bg);color:var(--error-accent)}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Score cells */
+.td-score{padding:16px 12px;cursor:pointer;transition:background var(--ease);border-left:1px solid var(--border-secondary)}
+.td-score:hover{background:rgba(0,185,86,.03)}
+.td-score.is-selected{background:var(--success-bg)}
+.td-score.is-selected .opt-title{color:var(--green)}
+.score-option{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.radio-wrap{flex-shrink:0;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-primary);background:var(--bg-card);transition:border-color var(--ease);position:relative;margin-top:2px}
+.radio-wrap::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--green);opacity:0;transition:opacity var(--ease)}
+input[type="radio"]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+input[type="radio"]:checked+.radio-wrap{border-color:var(--green)}
+input[type="radio"]:checked+.radio-wrap::after{opacity:1}
+.score-body{flex:1}
+.opt-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:5px;line-height:1.3;transition:color var(--ease)}
+.opt-list{margin:0;padding-left:14px;list-style:disc}
+.opt-list li{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:2px}
 
-    body {
-      font-family: var(--font);
-      background: var(--bg-page);
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 40px 24px 64px;
-      -webkit-font-smoothing: antialiased;
-    }
+/* Nested comm checkboxes */
+.comm-types{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .3s;margin-top:0}
+.comm-types.open{max-height:200px;opacity:1;margin-top:8px}
+.comm-type-item{display:flex;align-items:flex-start;gap:8px;padding:3px 0;cursor:pointer}
+.comm-check-input{width:14px;height:14px;margin-top:2px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.comm-type-label{font-size:11px;color:var(--text-secondary);line-height:1.45;cursor:pointer}
 
-    /* ── Page header ── */
-    .page-header {
-      max-width: 1280px;
-      margin: 0 auto 32px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .logo-badge {
-      width: 40px; height: 40px;
-      background: var(--green);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .logo-badge svg { width: 22px; height: 22px; color: #fff; }
-    .page-title { font-size: 22px; font-weight: 600; color: var(--text-primary); }
-    .page-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
+/* Toxicity nudge */
+.tox-nudge{display:none;margin-top:10px;padding:9px 11px;background:var(--warning-bg);border-radius:10px;border-left:3px solid var(--warning-accent)}
+.tox-nudge.show{display:block}
+.tox-nudge p{font-size:11px;color:#6b4000;line-height:1.55}
 
-    /* ── Main card ── */
-    .card {
-      max-width: 1280px;
-      margin: 0 auto;
-      background: var(--bg-card);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-card);
-      border: 1px solid var(--border-secondary);
-      overflow: hidden;
-    }
+/* Comment cell */
+.td-comment{padding:16px 0 16px 12px;border-left:1px solid var(--border-secondary)}
+.comment-area{width:100%;height:100%;min-height:88px;border:1.5px solid var(--border-primary);border-radius:var(--radius-input);padding:10px 12px;font-family:var(--font);font-size:12px;color:var(--text-primary);background:var(--bg-input);resize:none;outline:none;line-height:1.5;transition:border-color var(--ease),background var(--ease),box-shadow var(--ease)}
+.comment-area::placeholder{color:var(--text-secondary)}
+.comment-area:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
 
-    /* ── Table header ── */
-    .table-head {
-      display: grid;
-      grid-template-columns: 200px 1fr 1fr 1fr 220px;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border-secondary);
-      padding: 0 24px;
-    }
-    .th {
-      padding: 14px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-    }
-    .th:first-child { padding-left: 0; }
-    .th:last-child  { padding-right: 0; }
+/* ── Result section ── */
+.result-section{padding:28px;background:var(--bg-secondary);border-top:1px solid var(--border-secondary);border-radius:0 0 var(--radius-card) var(--radius-card)}
+.hint-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--info-bg);border-radius:12px;font-size:13px;color:var(--info-accent);font-weight:500}
+.hint-bar.hidden{display:none}
+.result-layout{display:none;gap:20px;align-items:flex-start}
+.result-layout.show{display:flex}
+.score-pill{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-card);border:1.5px solid var(--border-primary);border-radius:var(--radius-tile);padding:20px 28px;min-width:130px;flex-shrink:0;gap:2px;box-shadow:var(--shadow-card)}
+.score-pill-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.score-pill-value{font-size:48px;font-weight:700;line-height:1;color:var(--green);transition:color .3s}
+.score-pill-max{font-size:12px;color:var(--text-secondary)}
+.result-right{flex:1;display:flex;flex-direction:column;gap:14px}
 
-    /* ── Rows ── */
-    .matrix-row {
-      display: grid;
-      grid-template-columns: 200px 1fr 1fr 1fr 220px;
-      border-bottom: 1px solid var(--border-secondary);
-      padding: 0 24px;
-      transition: background .15s;
-    }
-    .matrix-row:last-child { border-bottom: none; }
-    .matrix-row:hover { background: var(--bg-secondary); }
+/* Tier-2 warning */
+.tier2-warn{display:none;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--error-bg);border:1px solid rgba(255,77,79,.2);border-radius:12px;font-size:13px;color:var(--error-accent);font-weight:500;line-height:1.5}
+.tier2-warn.show{display:flex}
+.tier2-warn svg{flex-shrink:0;margin-top:1px}
 
-    /* Criterion label */
-    .td-crit {
-      padding: 20px 12px 20px 0;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-start;
-    }
-    .crit-index {
-      width: 22px; height: 22px;
-      border-radius: 999px;
-      background: var(--bg-page);
-      border: 1px solid var(--border-primary);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
+/* Tier header */
+.tier-header-block{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:16px 20px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-card)}
+.tier-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.tier-name-text{font-size:15px;font-weight:700;color:var(--text-primary);flex:1}
+.tier-desc{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.tier-name-col{flex:1}
+.tier-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600}
+.tag-green{background:var(--success-bg);color:var(--green)}
+.tag-orange{background:var(--warning-bg);color:var(--warning-accent)}
+.tag-red{background:var(--error-bg);color:var(--error-accent)}
 
-    /* Score cells */
-    .td-score {
-      padding: 16px 12px;
-      cursor: pointer;
-      transition: background .15s;
-      position: relative;
-    }
-    .td-score:hover { background: rgba(0,185,86,.04); }
+/* Score progress */
+.score-progress{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:16px 20px;box-shadow:var(--shadow-card)}
+.prog-labels{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px}
+.prog-label-l{color:var(--text-secondary);font-weight:500}
+.prog-label-r{color:var(--text-secondary);font-weight:600}
+.prog-track{height:6px;background:var(--border-secondary);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;border-radius:999px;background:var(--green);width:0;transition:width .5s cubic-bezier(.4,0,.2,1),background .3s}
 
-    .score-option {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      height: 100%;
-    }
+/* Artifact block */
+.artifact-block{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:20px;box-shadow:var(--shadow-card)}
+.artifact-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.artifact-label::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green)}
+.artifact-text{font-size:13px;color:var(--text-primary);line-height:1.75;white-space:pre-wrap}
+.artifact-divider{height:1px;background:var(--border-secondary);margin:14px 0}
+.artifact-field-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
+.artifact-textarea{width:100%;border:1.5px solid var(--border-primary);border-radius:12px;padding:10px 14px;font-family:var(--font);font-size:13px;color:var(--text-primary);background:var(--bg-input);resize:vertical;min-height:80px;outline:none;transition:border-color var(--ease),background var(--ease),box-shadow var(--ease);line-height:1.6;margin-bottom:14px}
+.artifact-textarea:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
+.artifact-textarea::placeholder{color:var(--text-secondary)}
+.artifact-closing{font-size:12px;color:var(--text-secondary);line-height:1.6;padding-top:12px;border-top:1px solid var(--border-secondary)}
 
-    /* Custom radio */
-    .radio-wrap {
-      flex-shrink: 0;
-      margin-top: 2px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border-primary);
-      background: var(--bg-card);
-      transition: border-color .15s, background .15s;
-      position: relative;
-      cursor: pointer;
-    }
-    .radio-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: 50%;
-      background: var(--green);
-      opacity: 0;
-      transition: opacity .15s;
-    }
-    input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0; height: 0;
-      pointer-events: none;
-    }
-    input[type="radio"]:checked + .radio-wrap {
-      border-color: var(--green);
-    }
-    input[type="radio"]:checked + .radio-wrap::after { opacity: 1; }
+/* Tier colors */
+.tier-t0 .score-pill-value{color:var(--green)}
+.tier-t0 .prog-fill{background:var(--green)}
+.tier-t1 .score-pill-value{color:var(--warning-accent)}
+.tier-t1 .prog-fill{background:var(--warning-accent)}
+.tier-t2 .score-pill-value{color:var(--error-accent)}
+.tier-t2 .prog-fill{background:var(--error-accent)}
 
-    .score-body {}
-    .opt-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-    .opt-badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-    }
-    .score-0 .opt-badge-dot { background: var(--text-disabled); }
-    .score-1 .opt-badge-dot { background: var(--warning-accent); }
-    .score-2 .opt-badge-dot { background: var(--error-accent); }
+/* Buttons */
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;background:var(--green);color:var(--text-inverse);border:none;border-radius:var(--radius-btn);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background var(--ease),box-shadow var(--ease),transform .1s;white-space:nowrap}
+.btn-primary:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
+.btn-primary:active{background:var(--green-pressed);transform:scale(.98)}
+.btn-secondary{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;background:var(--bg-card);color:var(--text-primary);border:1.5px solid var(--border-primary);border-radius:var(--radius-btn);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease);white-space:nowrap}
+.btn-secondary:hover{border-color:var(--green);color:var(--green)}
+.btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:11px 16px;background:transparent;color:var(--text-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-btn);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease)}
+.btn-ghost:hover{border-color:var(--border-primary);color:var(--text-primary)}
 
-    .opt-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .opt-list {
-      margin: 0;
-      padding-left: 14px;
-      list-style: disc;
-    }
-    .opt-list li {
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 2px;
-    }
+/* ── Tooltip ── */
+.tooltip-popup{position:fixed;z-index:9999;width:320px;background:var(--bg-card);border-radius:18px;box-shadow:var(--shadow-tip);border:1px solid var(--border-secondary);padding:18px 18px 16px;display:none}
+.tooltip-popup.show{display:block;animation:tipIn .15s ease}
+@keyframes tipIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.tip-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px;padding-right:22px;line-height:1.3}
+.tip-section{margin-bottom:10px}
+.tip-section:last-child{margin-bottom:0}
+.tip-section-label{font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.tip-section-text{font-size:12px;color:var(--text-primary);line-height:1.6}
+.tip-divider{height:1px;background:var(--border-secondary);margin:10px 0}
+.tip-close-btn{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:none;background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:background var(--ease);font-family:var(--font)}
+.tip-close-btn:hover{background:var(--border-primary);color:var(--text-primary)}
 
-    /* Selected state highlight */
-    .td-score.is-selected {
-      background: var(--success-bg);
-    }
-    .td-score.is-selected .opt-title { color: var(--green); }
-
-    /* Comment cell */
-    .td-comment {
-      padding: 16px 0 16px 12px;
-      display: flex;
-      align-items: stretch;
-    }
-    .comment-area {
-      width: 100%;
-      border: 1.5px solid var(--border-primary);
-      border-radius: var(--radius-input);
-      padding: 10px 14px;
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text-primary);
-      background: var(--bg-input);
-      resize: none;
-      transition: border-color .15s, background .15s, box-shadow .15s;
-      line-height: 1.5;
-      min-height: 90px;
-    }
-    .comment-area::placeholder { color: var(--text-secondary); }
-    .comment-area:focus {
-      outline: none;
-      border-color: var(--green);
-      background: var(--bg-card);
-      box-shadow: 0 0 0 3px rgba(0,185,86,.12);
-    }
-
-    /* ── Footer ── */
-    .footer {
-      padding: 28px 24px;
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--border-secondary);
-      display: flex;
-      align-items: flex-start;
-      gap: 24px;
-    }
-
-    /* Score pill */
-    .score-pill {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-primary);
-      border-radius: var(--radius-tile);
-      padding: 20px 32px;
-      min-width: 130px;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .score-pill-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .5px; }
-    .score-pill-value { font-size: 44px; font-weight: 700; color: var(--green); line-height: 1; }
-    .score-pill-max   { font-size: 13px; color: var(--text-secondary); }
-
-    /* Tier result */
-    .tier-block {
-      flex: 1;
-      background: var(--bg-card);
-      border-radius: var(--radius-tile);
-      border: 1.5px solid var(--border-secondary);
-      padding: 24px;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity .3s, transform .3s;
-      pointer-events: none;
-    }
-    .tier-block.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .tier-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .tier-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .tier-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-
-    .tier-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .tier-row { display: flex; gap: 8px; align-items: flex-start; }
-    .tier-row-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      min-width: 80px;
-    }
-    .tier-row-val {
-      font-size: 13px;
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    /* Progress bar */
-    .progress-wrap {
-      margin-bottom: 20px;
-    }
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-    .progress-track {
-      height: 6px;
-      background: var(--border-secondary);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: var(--green);
-      width: 0;
-      transition: width .5s cubic-bezier(.4,0,.2,1), background .3s;
-    }
-
-    /* CTA row */
-    .cta-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 20px;
-      background: var(--green);
-      color: var(--text-inverse);
-      border: none;
-      border-radius: var(--radius-btn);
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s, box-shadow .15s, transform .1s;
-    }
-    .btn-primary:hover { background: var(--green-hover); box-shadow: 0 4px 12px rgba(0,185,86,.28); }
-    .btn-primary:active { background: var(--green-pressed); transform: scale(.98); }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 20px;
-      background: var(--bg-card);
-      color: var(--text-primary);
-      border: 1.5px solid var(--border-primary);
-      border-radius: var(--radius-btn);
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color .15s, color .15s;
-    }
-    .btn-secondary:hover { border-color: var(--green); color: var(--green); }
-
-    /* Tier colors */
-    .tier-t0 .tier-dot { background: var(--green); }
-    .tier-t0 .score-pill-value { color: var(--green); }
-    .tier-t0 .progress-fill { background: var(--green); }
-
-    .tier-t1 .tier-dot { background: var(--warning-accent); }
-    .tier-t1 .score-pill-value { color: var(--warning-accent); }
-    .tier-t1 .progress-fill { background: var(--warning-accent); }
-
-    .tier-t2 .tier-dot { background: var(--error-accent); }
-    .tier-t2 .score-pill-value { color: var(--error-accent); }
-    .tier-t2 .progress-fill { background: var(--error-accent); }
-
-    /* Tag badges */
-    .tier-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-top: 2px;
-    }
-    .tag-green  { background: var(--success-bg); color: var(--green); }
-    .tag-orange { background: var(--warning-bg); color: var(--warning-accent); }
-    .tag-red    { background: var(--error-bg); color: var(--error-accent); }
-
-    /* Separator */
-    .sep { width: 1px; background: var(--border-secondary); align-self: stretch; flex-shrink: 0; }
-
-    /* Empty hint */
-    .hint-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
-      background: var(--info-bg);
-      border-radius: 12px;
-      font-size: 13px;
-      color: var(--info-accent);
-      font-weight: 500;
-      transition: opacity .3s;
-    }
-    .hint-bar svg { flex-shrink: 0; }
-
-    @media (max-width: 900px) {
-      body { padding: 16px 8px 40px; }
-      .table-head,
-      .matrix-row { grid-template-columns: 1fr; }
-      .td-comment { padding-left: 0; padding-top: 8px; }
-      .footer { flex-direction: column; }
-    }
-  </style>
+/* ── Print ── */
+@media print{
+  body{background:#fff;padding:0}
+  .page-header,.tooltip-btn,.tooltip-popup,.cta-row,.hint-bar{display:none!important}
+  .card{box-shadow:none;border:1px solid #ddd}
+  .meta-input{border:none;background:transparent;padding:0}
+  .comment-area,.artifact-textarea{border:none;background:transparent;padding:0;min-height:auto}
+  .matrix-row{break-inside:avoid}
+  .result-section{border-radius:0 0 8px 8px}
+  .tier2-warn{border:1px solid #fcc}
+}
+</style>
 </head>
 <body>
 
-<!-- Page header -->
+<!-- Page Header -->
 <div class="page-header">
   <div class="logo-badge">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
     </svg>
   </div>
   <div>
     <div class="page-title">Матрица оценки продуктового запуска</div>
-    <div class="page-subtitle">CX-скоринг · МегаФон B2B</div>
+    <div class="page-subtitle">CX-скоринг · МегаФон B2B · Self-диагностика для продакта</div>
   </div>
 </div>
 
-<!-- Main card -->
-<div class="card">
+<!-- Main Card -->
+<div class="card" id="mainCard">
 
-  <!-- Table head -->
+  <!-- Card Header -->
+  <div class="card-header">
+    <div>
+      <div class="card-header-title">Матрица скоринга</div>
+      <div class="card-header-sub">Оцените каждый из 7 критериев от 0 до 2 баллов</div>
+    </div>
+    <div class="progress-indicator">
+      <div class="progress-dots" id="progressDots"></div>
+      <div class="progress-label">Заполнено <span id="progressCount">0</span> из 7</div>
+    </div>
+  </div>
+
+  <!-- Meta Section -->
+  <div class="meta-section">
+    <div class="meta-field">
+      <div class="meta-label">Название запуска / продукта</div>
+      <input type="text" class="meta-input" id="launchName" placeholder="Например: Новый тариф МегаБизнес Pro">
+    </div>
+    <div class="meta-field">
+      <div class="meta-label">Дата заполнения</div>
+      <div class="meta-date-val" id="autoDate"></div>
+    </div>
+  </div>
+
+  <!-- Table Header -->
   <div class="table-head">
     <div class="th">Критерий</div>
-    <div class="th">
-      <span class="opt-badge"><span class="opt-badge-dot" style="background:var(--text-disabled)"></span>0 баллов</span>
-    </div>
-    <div class="th">
-      <span class="opt-badge"><span class="opt-badge-dot" style="background:var(--warning-accent)"></span>1 балл</span>
-    </div>
-    <div class="th">
-      <span class="opt-badge"><span class="opt-badge-dot" style="background:var(--error-accent)"></span>2 балла</span>
-    </div>
+    <div class="th"><span class="score-badge"><span class="score-badge-dot" style="background:var(--text-disabled)"></span>0 баллов</span></div>
+    <div class="th"><span class="score-badge"><span class="score-badge-dot" style="background:var(--warning-accent)"></span>1 балл</span></div>
+    <div class="th"><span class="score-badge"><span class="score-badge-dot" style="background:var(--error-accent)"></span>2 балла</span></div>
     <div class="th">Комментарий</div>
   </div>
 
-  <!-- Rows -->
+  <!-- Matrix Body -->
   <div id="matrixBody">
-
-    <!-- Row template (repeated 7×) -->
 
     <!-- 1. Reach -->
     <div class="matrix-row" data-row="0">
       <div class="td-crit">
-        <span class="crit-index">1</span>
-        Reach<br><span style="font-size:11px;font-weight:400;color:var(--text-secondary)">Охват</span>
+        <div class="crit-header">
+          <span class="crit-index">1</span>
+          <div class="crit-name-wrap"><span class="crit-en">Reach</span><span class="crit-ru">Охват</span></div>
+          <button class="tooltip-btn" data-tip="0">?</button>
+        </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="0">
-        <label class="score-option">
-          <input type="radio" name="r1" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Узкая ниша / выделенный сегмент</div>
-            <ul class="opt-list">
-              <li>Клиенты с ограниченной потребностью</li>
-              <li>Данные об охвате отсутствуют</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r1" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Узкая ниша / выделенный сегмент</div>
+            <ul class="opt-list"><li>Клиенты с ограниченной потребностью</li><li>Данные об охвате отсутствуют</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="0">
-        <label class="score-option">
-          <input type="radio" name="r1" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Крупный сегмент</div>
-            <ul class="opt-list">
-              <li>Пользователи определённой услуги</li>
-              <li>Определённый регион</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r1" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Крупный сегмент</div>
+            <ul class="opt-list"><li>Пользователи определённой услуги</li><li>Определённый регион</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="0">
-        <label class="score-option">
-          <input type="radio" name="r1" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Большая часть базы</div>
-          </div>
+        <label class="score-option"><input type="radio" name="r1" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Большая часть базы</div></div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
-    <!-- 2. Impact -->
-    <div class="matrix-row" data-row="1">
+    <!-- 2. Impact (KEY) -->
+    <div class="matrix-row key-row row-impact" data-row="1">
       <div class="td-crit">
-        <span class="crit-index">2</span>
-        Impact<br><span style="font-size:11px;font-weight:400;color:var(--text-secondary)">Влияние</span>
+        <div class="crit-header">
+          <span class="crit-index">2</span>
+          <div class="crit-name-wrap"><span class="crit-en">Impact</span><span class="crit-ru">Влияние</span></div>
+          <button class="tooltip-btn" data-tip="1">?</button>
+        </div>
+        <span class="key-badge">Ключевой</span>
       </div>
       <div class="td-score score-0" data-score="0" data-row="1">
-        <label class="score-option">
-          <input type="radio" name="r2" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Косвенное влияние</div>
-            <ul class="opt-list">
-              <li>Низкий эффект</li>
-              <li>Эффект не поддаётся измерению</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r2" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Косвенное влияние</div>
+            <ul class="opt-list"><li>Низкий эффект</li><li>Эффект не поддаётся измерению</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="1">
-        <label class="score-option">
-          <input type="radio" name="r2" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Заметное влияние</div>
-            <ul class="opt-list">
-              <li>Явное улучшение usability</li>
-              <li>Упрощение процесса / Эффект измерим</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r2" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Заметное влияние</div>
+            <ul class="opt-list"><li>Явное улучшение usability</li><li>Упрощение процесса / Эффект измерим</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="1">
-        <label class="score-option">
-          <input type="radio" name="r2" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Ощутимый инкремент</div>
-            <ul class="opt-list">
-              <li>Влияние на выручку, АБПП, снижение оттока</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r2" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Ощутимый инкремент</div>
+            <ul class="opt-list"><li>Влияние на выручку, АБПП, снижение оттока</li><li>С посчитанным эффектом</li></ul>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
     <!-- 3. Validation -->
     <div class="matrix-row" data-row="2">
       <div class="td-crit">
-        <span class="crit-index">3</span>
-        Validation<br><span style="font-size:11px;font-weight:400;color:var(--text-secondary)">Обоснование</span>
+        <div class="crit-header">
+          <span class="crit-index">3</span>
+          <div class="crit-name-wrap"><span class="crit-en">Validation</span><span class="crit-ru">Обоснование</span></div>
+          <button class="tooltip-btn" data-tip="2">?</button>
+        </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="2">
-        <label class="score-option">
-          <input type="radio" name="r3" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Явные обоснования отсутствуют</div>
-            <ul class="opt-list">
-              <li>Тестируется бизнес-гипотеза</li>
-              <li>Провалидированные результаты отсутствуют</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r3" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Явные обоснования отсутствуют</div>
+            <ul class="opt-list"><li>Тестируется бизнес-гипотеза</li><li>Провалидированные результаты отсутствуют</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="2">
-        <label class="score-option">
-          <input type="radio" name="r3" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Есть значимые обоснования</div>
-            <ul class="opt-list">
-              <li>Бизнес-кейс / Опросы / Аналитика</li>
-              <li>Подтверждённая необходимость</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r3" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Есть значимые обоснования</div>
+            <ul class="opt-list"><li>Посчитан бизнес-кейс</li><li>Результаты исследований и опросов</li><li>Аналитика данных, подтверждающая необходимость запуска</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="2">
-        <label class="score-option">
-          <input type="radio" name="r3" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Подтверждена высокая важность</div>
-            <ul class="opt-list">
-              <li>Регулятор / Топ-менеджмент</li>
-              <li>Стратегическое направление</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r3" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Подтверждена высокая важность</div>
+            <ul class="opt-list"><li>Необходимость занять позицию на рынке</li><li>Есть требование регулятора</li><li>Приоритизировано топ-менеджментом / стратегическое направление</li></ul>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
-    <!-- 4. CX -->
+    <!-- 4. CX Complexity -->
     <div class="matrix-row" data-row="3">
       <div class="td-crit">
-        <span class="crit-index">4</span>
-        CX-сложность<br><span style="font-size:11px;font-weight:400;color:var(--text-secondary)">Степень изменений</span>
+        <div class="crit-header">
+          <span class="crit-index">4</span>
+          <div class="crit-name-wrap"><span class="crit-en">CX-сложность</span><span class="crit-ru">Степень изменений</span></div>
+          <button class="tooltip-btn" data-tip="3">?</button>
+        </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="3">
-        <label class="score-option">
-          <input type="radio" name="r4" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Линейный путь</div>
-            <ul class="opt-list">
-              <li>1–2 шага / Минорные правки</li>
-              <li>Изменений для клиента нет</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r4" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Линейный путь</div>
+            <ul class="opt-list"><li>Затрагивается 1–2 шага в сценарии</li><li>Небольшое количество действий клиента</li><li>Минорные правки / изменений для клиента нет</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="3">
-        <label class="score-option">
-          <input type="radio" name="r4" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Разветвлённые пути</div>
-            <ul class="opt-list">
-              <li>Новые шаги в сценарии</li>
-              <li>Развилки и вариативность</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r4" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Разветвлённые пути</div>
+            <ul class="opt-list"><li>Добавляются новые шаги в сценарии</li><li>Появляются развилки и вариативность действий</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="3">
-        <label class="score-option">
-          <input type="radio" name="r4" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Комплексные / новые пути</div>
-            <ul class="opt-list">
-              <li>Новые сценарии</li>
-              <li>Кардинальная смена логики</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r4" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Комплексные или новые пути</div>
+            <ul class="opt-list"><li>Формируются новые сценарии и процессы</li><li>Кардинально меняется логика взаимодействия</li></ul>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
-    <!-- 5. Toxicity -->
-    <div class="matrix-row" data-row="4">
+    <!-- 5. Toxicity (KEY) -->
+    <div class="matrix-row key-row row-toxicity" data-row="4">
       <div class="td-crit">
-        <span class="crit-index">5</span>
-        Токсичность
+        <div class="crit-header">
+          <span class="crit-index">5</span>
+          <div class="crit-name-wrap"><span class="crit-en">Токсичность</span></div>
+          <button class="tooltip-btn" data-tip="4">?</button>
+        </div>
+        <span class="key-badge key-badge-red">Внимание</span>
       </div>
       <div class="td-score score-0" data-score="0" data-row="4">
-        <label class="score-option">
-          <input type="radio" name="r5" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Не выявлена</div>
-          </div>
+        <label class="score-option"><input type="radio" name="r5" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Не выявлена</div></div>
         </label>
+        <div class="tox-nudge" id="toxNudge">
+          <p>Напомним: меняются ли условия для действующих клиентов? Появляются ли новые платные опции или ограничения? Если да — рассмотрите 1 или 2 балла.</p>
+        </div>
       </div>
       <div class="td-score score-1" data-score="1" data-row="4">
-        <label class="score-option">
-          <input type="radio" name="r5" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Умеренная</div>
-            <ul class="opt-list">
-              <li>Баннеры, уведомления, пуши</li>
-              <li>Активное продвижение новых условий</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r5" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Умеренная</div>
+            <ul class="opt-list"><li>Вводятся навязчивые баннеры, уведомления, пуши</li><li>Активное продвижение новых условий</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="4">
-        <label class="score-option">
-          <input type="radio" name="r5" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Высокая</div>
-            <ul class="opt-list">
-              <li>Dark-паттерны / Повышение цены</li>
-              <li>Монетизация ранее бесплатного</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r5" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Высокая</div>
+            <ul class="opt-list"><li>Dark-паттерны / скрытые условия</li><li>Монетизация ранее бесплатного</li><li>Любое повышение стоимости</li><li>Принудительное изменение условий и сценариев</li></ul>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
     <!-- 6. Realization -->
     <div class="matrix-row" data-row="5">
       <div class="td-crit">
-        <span class="crit-index">6</span>
-        Реализация
+        <div class="crit-header">
+          <span class="crit-index">6</span>
+          <div class="crit-name-wrap"><span class="crit-en">Реализация</span></div>
+          <button class="tooltip-btn" data-tip="5">?</button>
+        </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="5">
-        <label class="score-option">
-          <input type="radio" name="r6" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Стандартное решение</div>
-            <ul class="opt-list">
-              <li>Повтор существующих механик</li>
-              <li>По аналогии с другими продуктами</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r6" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Стандартное решение</div>
+            <ul class="opt-list"><li>Полностью повторяются существующие механики</li><li>Можно реализовать по аналогии с другими продуктами</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="5">
-        <label class="score-option">
-          <input type="radio" name="r6" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Требуются нововведения</div>
-            <ul class="opt-list">
-              <li>Адаптация существующих решений</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r6" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Требуются нововведения</div>
+            <ul class="opt-list"><li>Нужна адаптация существующих решений с локальными новшествами</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="5">
-        <label class="score-option">
-          <input type="radio" name="r6" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Нестандартное решение</div>
-            <ul class="opt-list">
-              <li>Создание уникального взаимодействия</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r6" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Нестандартное, уникальное решение</div>
+            <ul class="opt-list"><li>Создание принципиально нового взаимодействия</li></ul>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
-    <!-- 7. Appeals -->
-    <div class="matrix-row" data-row="6">
+    <!-- 7. Contact Rate -->
+    <div class="matrix-row" data-row="6" style="border-bottom:none">
       <div class="td-crit">
-        <span class="crit-index">7</span>
-        Обращаемость<br><span style="font-size:11px;font-weight:400;color:var(--text-secondary)">Влияние</span>
+        <div class="crit-header">
+          <span class="crit-index">7</span>
+          <div class="crit-name-wrap"><span class="crit-en">Обращаемость</span><span class="crit-ru">Влияние на КЦ</span></div>
+          <button class="tooltip-btn" data-tip="6">?</button>
+        </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="6">
-        <label class="score-option">
-          <input type="radio" name="r7" value="0">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Не прогнозируется</div>
-            <ul class="opt-list">
-              <li>Изменения бесшовные</li>
-              <li>Коммуникации не задействованы</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r7" value="0"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Не прогнозируется</div>
+            <ul class="opt-list"><li>В CJ ничего не меняется или изменения бесшовные</li><li>Исходящие коммуникации не задействованы</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="6">
-        <label class="score-option">
-          <input type="radio" name="r7" value="1">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Умеренное влияние</div>
-            <ul class="opt-list">
-              <li>Небольшой охват</li>
-              <li>Задействован 1 вид коммуникаций</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r7" value="1"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Умеренное влияние</div>
+            <ul class="opt-list"><li>Небольшой охват</li><li>Умеренные изменения в CJ</li><li>Задействован минимум 1 вид коммуникаций:</li></ul>
+            <div class="comm-types" id="commTypes1">
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c1_n"><span class="comm-type-label">Нотификации (сервисные, в разных каналах)</span></label>
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c1_i"><span class="comm-type-label">Информирование и рассылки в разных каналах</span></label>
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c1_p"><span class="comm-type-label">Продвижение (реклама, CVM, баннеры)</span></label>
+            </div>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="6">
-        <label class="score-option">
-          <input type="radio" name="r7" value="2">
-          <span class="radio-wrap"></span>
-          <div class="score-body">
-            <div class="opt-title">Риск повышенной обращаемости</div>
-            <ul class="opt-list">
-              <li>Большой охват</li>
-              <li>Несколько каналов связи</li>
-            </ul>
+        <label class="score-option"><input type="radio" name="r7" value="2"><span class="radio-wrap"></span>
+          <div class="score-body"><div class="opt-title">Риск повышенной обращаемости</div>
+            <ul class="opt-list"><li>Большой охват</li><li>Существенные изменения в CJ</li><li>Задействовано несколько или все виды коммуникаций:</li></ul>
+            <div class="comm-types" id="commTypes2">
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c2_n"><span class="comm-type-label">Нотификации (сервисные, в разных каналах)</span></label>
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c2_i"><span class="comm-type-label">Информирование и рассылки в разных каналах</span></label>
+              <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c2_p"><span class="comm-type-label">Продвижение (реклама, CVM, баннеры)</span></label>
+            </div>
           </div>
         </label>
       </div>
-      <div class="td-comment"><textarea class="comment-area" placeholder="Подробности..."></textarea></div>
+      <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
   </div><!-- /matrixBody -->
 
-  <!-- Footer -->
-  <div class="footer">
-
-    <!-- Score pill -->
-    <div class="score-pill" id="scorePill">
-      <span class="score-pill-label">Итого</span>
-      <span class="score-pill-value" id="totalScore">0</span>
-      <span class="score-pill-max">из 14 баллов</span>
+  <!-- Result Section -->
+  <div class="result-section">
+    <div class="hint-bar" id="hintBar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Заполните все 7 критериев — результат и артефакт появятся автоматически
     </div>
-
-    <div class="sep"></div>
-
-    <!-- Progress + tier result -->
-    <div style="flex:1;display:flex;flex-direction:column;gap:16px;">
-
-      <!-- Hint (before all rows filled) -->
-      <div class="hint-bar" id="hintBar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Заполните все 7 критериев для получения результата
+    <div class="result-layout" id="resultLayout">
+      <div class="score-pill" id="scorePill">
+        <span class="score-pill-label">Итого</span>
+        <span class="score-pill-value" id="totalScore">0</span>
+        <span class="score-pill-max">из 14 баллов</span>
       </div>
-
-      <!-- Progress bar -->
-      <div class="progress-wrap" id="progressWrap" style="display:none">
-        <div class="progress-label">
-          <span id="progressLabel">Уровень нагрузки</span>
-          <span id="progressVal">0 / 14</span>
+      <div class="result-right" id="resultRight">
+        <div class="tier2-warn" id="tier2Warn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Внимание: высокая токсичность в сочетании с широким охватом — повышенный риск для клиентского опыта. Рекомендуем Tier 2 независимо от итоговой суммы баллов.
         </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-      </div>
-
-      <!-- Tier block -->
-      <div class="tier-block" id="tierBlock">
-        <div class="tier-header">
+        <div class="tier-header-block">
           <div class="tier-dot" id="tierDot"></div>
-          <div class="tier-name" id="tierName"></div>
+          <div class="tier-name-col">
+            <div class="tier-name-text" id="tierName"></div>
+            <div class="tier-desc" id="tierDesc"></div>
+          </div>
           <span class="tier-tag" id="tierTag"></span>
         </div>
-        <div class="tier-rows">
-          <div class="tier-row">
-            <span class="tier-row-label">Решение</span>
-            <span class="tier-row-val" id="resSol"></span>
+        <div class="score-progress">
+          <div class="prog-labels">
+            <span class="prog-label-l">Уровень нагрузки на CX-команду</span>
+            <span class="prog-label-r" id="progRight"></span>
           </div>
-          <div class="tier-row">
-            <span class="tier-row-label">Действие</span>
-            <span class="tier-row-val" id="resAct"></span>
-          </div>
-          <div class="tier-row">
-            <span class="tier-row-label">Артефакт</span>
-            <span class="tier-row-val" id="resArt"></span>
-          </div>
+          <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+        </div>
+        <div class="artifact-block" id="artifactBlock">
+          <div class="artifact-label">Артефакт для Jira</div>
+          <div id="artifactContent"></div>
         </div>
         <div class="cta-row">
           <button class="btn-primary" id="copyBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Скопировать для Jira
           </button>
-          <button class="btn-secondary" id="resetBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+          <button class="btn-secondary" id="pdfBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Сохранить PDF
+          </button>
+          <button class="btn-ghost" id="resetBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 100-9.17"/></svg>
             Сбросить
           </button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
+<!-- Tooltip popup -->
+<div class="tooltip-popup" id="tooltipPopup">
+  <button class="tip-close-btn" id="tipClose">✕</button>
+  <div id="tooltipContent"></div>
+</div>
+
 <script>
-  const MAX = 14;
-  const ROWS = 7;
+const MAX = 14, ROWS = 7;
 
-  const tiers = [
-    {
-      max: 6,
-      cls: 'tier-t0',
-      tagCls: 'tag-green',
-      label: 'Tier 0 — Self-Service / Автопилот',
-      tag: 'Низкая нагрузка',
-      dot: '#00B956',
-      sol: 'Пропуск без участия эксперта',
-      act: 'Автономная реализация',
-      art: 'Дисклеймер в Jira об ответственности за UX',
-    },
-    {
-      max: 10,
-      cls: 'tier-t1',
-      tagCls: 'tag-orange',
-      label: 'Tier 1 — Minimal Engagement / Штурман',
-      tag: 'Средняя нагрузка',
-      dot: '#FF9F0A',
-      sol: 'Экспертная консультация',
-      act: 'Анализ вводных и текстовый чертёж процесса',
-      art: 'Письменное CX-заключение',
-    },
-    {
-      max: 14,
-      cls: 'tier-t2',
-      tagCls: 'tag-red',
-      label: 'Tier 2 — Full Design / Навигатор',
-      tag: 'Высокая нагрузка',
-      dot: '#FF4D4F',
-      sol: 'Полное сопровождение запуска',
-      act: 'Проектирование сценариев',
-      art: 'CJM, User flow, прототип (опционально)',
-    },
-  ];
+const TIERS = [
+  { max:6,  cls:'tier-t0', tagCls:'tag-green',  dot:'#00B956',     label:'Tier 0 — Self-Service / Автопилот',         tag:'Низкая нагрузка',  desc:'Задачи с низким риском и стандартной логикой.', art:'tier0' },
+  { max:10, cls:'tier-t1', tagCls:'tag-orange', dot:'#FF9F0A',     label:'Tier 1 — Minimal Engagement / Штурман',     tag:'Средняя нагрузка', desc:'Задачи среднего влияния или с элементами новшества.', art:'tier1' },
+  { max:14, cls:'tier-t2', tagCls:'tag-red',    dot:'#FF4D4F',     label:'Tier 2 — Full Design / Навигатор',          tag:'Высокая нагрузка', desc:'Высокорисковые, уникальные или стратегические запуски.', art:'tier2' },
+];
 
-  const critNames = [
-    'Reach (Охват)',
-    'Impact (Влияние)',
-    'Validation (Обоснование)',
-    'CX-сложность и степень изменений',
-    'Токсичность',
-    'Реализация',
-    'Влияние на обращаемость',
-  ];
+const CRIT_NAMES = ['Reach (Охват)','Impact (Влияние)','Validation (Обоснование)','CX-сложность и степень изменений','Токсичность','Реализация','Влияние на обращаемость'];
 
-  // Score cells click handler
-  document.querySelectorAll('.td-score').forEach(cell => {
-    cell.addEventListener('click', () => {
-      const radio = cell.querySelector('input[type="radio"]');
-      if (radio) {
-        radio.checked = true;
-        // Highlight within row
-        const row = cell.closest('.matrix-row');
-        row.querySelectorAll('.td-score').forEach(c => c.classList.remove('is-selected'));
-        cell.classList.add('is-selected');
-        update();
-      }
-    });
+const TIPS = [
+  {
+    title: 'Reach — Охват',
+    desc: 'Этот критерий отвечает на вопрос: сколько клиентов столкнётся с изменением? Чем шире охват — тем выше цена ошибки в сценарии и тем важнее продуманность каждого шага.',
+    how:  'Подумайте: кто конкретно увидит это изменение? Отдельный нишевый сегмент с особыми условиями — или большинство клиентов, которые пользуются базовыми услугами?',
+    edge: 'Личный кабинет, биллинг, базовые коммуникации — почти всегда 2 балла, даже если правка кажется минорной. Региональный тест в одном городе без планов масштабирования — скорее 1 балл.'
+  },
+  {
+    title: 'Impact — Влияние',
+    desc: 'Impact — это не о том, насколько важен продукт для бизнеса, а о том, насколько изменение ощутимо для самого клиента. Видит ли он разницу до и после? Становится ли ему проще?',
+    how:  'Спросите себя: клиент заметит это изменение? Есть ли конкретная метрика, по которой можно измерить эффект: снижение оттока, рост АБПП, уменьшение обращений в КЦ?',
+    edge: 'Если эффект очевиден интуитивно, но не посчитан — это 1 балл, а не 2. 2 балла — только когда есть конкретная измеримая цель. «Наверное поможет» — 0 баллов.'
+  },
+  {
+    title: 'Validation — Обоснование',
+    desc: 'Обоснование показывает, насколько хорошо изучена потребность. Запуск без валидации — это гипотеза, которую ещё нужно проверить. Запуск с данными — это взвешенное решение.',
+    how:  'Есть ли реальные данные, подтверждающие, что это нужно клиентам прямо сейчас? Или это внутреннее предположение команды без внешних подтверждений?',
+    edge: 'Требование регулятора или директива топ-менеджмента — автоматически 2 балла, даже без исследований. Небольшой опрос из 10 клиентов — скорее 1 балл, а не 2.'
+  },
+  {
+    title: 'CX-сложность — Степень изменений',
+    desc: 'Оценивает, насколько сильно меняется путь клиента. Минорная правка кнопки — это одно. Новый сценарий подключения с несколькими шагами и развилками — совсем другое.',
+    how:  'Сколько шагов клиента затрагивает изменение? Появляются ли новые точки выбора или решения, которые клиент должен принять? Меняется ли логика взаимодействия принципиально?',
+    edge: 'Если клиент делает то же самое, но интерфейс чуть поменялся — 0–1 балл. Если появляется принципиально новая логика или тип взаимодействия без аналогов — 2 балла.'
+  },
+  {
+    title: 'Токсичность',
+    desc: 'Токсичность — потенциал запуска вызвать негативную реакцию: ощущение обмана, навязывания или ухудшения условий. Это самый часто недооцениваемый критерий: продакт редко воспринимает свой продукт как токсичный.',
+    how:  'Задайте себе честный вопрос: клиент обрадуется этому изменению или расстроится? Мы что-то забираем, ограничиваем или навязываем? Если есть сомнение — ставьте балл выше.',
+    edge: 'Любое повышение цены или монетизация ранее бесплатного — автоматически 2 балла без исключений. Новое уведомление, даже полезное — минимум 1 балл. «Мы просто информируем» тоже может быть навязчивым.'
+  },
+  {
+    title: 'Реализация',
+    desc: 'Оценивает уникальность технической и UX-реализации. Делаем то, что уже делали в других продуктах — или создаём что-то новое, без готового образца и проверенного паттерна?',
+    how:  'Есть ли похожий реализованный сценарий в другом продукте компании, на который можно опереться один в один? Или нужно проектировать взаимодействие с чистого листа?',
+    edge: 'Берём существующий паттерн и адаптируем под конкретный продукт — 1 балл. Если аналогов нет вообще и нужно изобретать новое взаимодействие — 2 балла.'
+  },
+  {
+    title: 'Влияние на обращаемость',
+    desc: 'Оцениваем риск роста обращений в поддержку после запуска. Чем больше клиентов узнают об изменении и чем активнее коммуникация — тем выше вероятность вопросов, недопонимания и жалоб в КЦ.',
+    how:  'Будут ли клиенты получать сообщения об этом изменении? Через сколько каналов? Насколько изменение неожиданное? Потребует ли дополнительных действий с его стороны?',
+    edge: 'Если клиент вообще не узнает об изменении — 0 баллов. Если изменение активно продвигается через несколько каналов одновременно — скорее всего, 2 балла. Отметьте задействованные каналы ниже.'
+  }
+];
+
+// Progress dots init
+const dotsWrap = document.getElementById('progressDots');
+for (let i = 0; i < ROWS; i++) {
+  const d = document.createElement('div');
+  d.className = 'progress-dot';
+  d.id = 'dot-' + i;
+  dotsWrap.appendChild(d);
+}
+
+// Auto date
+document.getElementById('autoDate').textContent = new Date().toLocaleDateString('ru-RU', { day:'2-digit', month:'long', year:'numeric' });
+
+// Score cell clicks
+document.querySelectorAll('.td-score').forEach(cell => {
+  cell.addEventListener('click', () => {
+    const radio = cell.querySelector('input[type="radio"]');
+    if (!radio) return;
+    radio.checked = true;
+    const row = cell.closest('.matrix-row');
+    row.querySelectorAll('.td-score').forEach(c => c.classList.remove('is-selected'));
+    cell.classList.add('is-selected');
+
+    const rowIdx = +cell.dataset.row;
+    const score  = +cell.dataset.score;
+
+    // Criterion 7: comm-types toggle
+    if (rowIdx === 6) {
+      document.getElementById('commTypes1').classList.toggle('open', score === 1);
+      document.getElementById('commTypes2').classList.toggle('open', score === 2);
+    }
+    // Toxicity nudge
+    if (rowIdx === 4) {
+      document.getElementById('toxNudge').classList.toggle('show', score === 0);
+    }
+
+    update();
   });
+});
 
-  function update() {
-    const checked = document.querySelectorAll('input[type="radio"]:checked');
-    let score = 0;
-    checked.forEach(rb => score += parseInt(rb.value));
+function update() {
+  const checked = document.querySelectorAll('#matrixBody input[type="radio"]:checked');
+  let score = 0;
+  const rowScores = {};
+  checked.forEach(rb => {
+    const cell = rb.closest('.td-score');
+    const ri = +cell.dataset.row;
+    const v  = +rb.value;
+    score += v;
+    rowScores[ri] = v;
+  });
+  const filled = checked.length;
 
-    const filled = checked.length;
-    document.getElementById('totalScore').textContent = score;
+  // Progress dots + counter
+  for (let i = 0; i < ROWS; i++) document.getElementById('dot-'+i).classList.toggle('filled', i in rowScores);
+  document.getElementById('progressCount').textContent = filled;
+  document.getElementById('totalScore').textContent = score;
 
-    const pFill = document.getElementById('progressFill');
-    const pVal  = document.getElementById('progressVal');
-    const pWrap = document.getElementById('progressWrap');
-    const hint  = document.getElementById('hintBar');
-    const tb    = document.getElementById('tierBlock');
-    const pill  = document.getElementById('scorePill');
-
-    if (filled > 0) {
-      pWrap.style.display = 'block';
-      hint.style.opacity = filled === ROWS ? '0' : '1';
-      hint.style.pointerEvents = filled === ROWS ? 'none' : 'auto';
-      pFill.style.width = `${Math.round((score / MAX) * 100)}%`;
-      pVal.textContent = `${score} / ${MAX}`;
-    }
-
-    if (filled === ROWS) {
-      const tier = tiers.find(t => score <= t.max);
-      hint.style.display = 'none';
-      tb.classList.add('visible');
-
-      // Remove old tier classes from pill
-      pill.classList.remove('tier-t0','tier-t1','tier-t2');
-      pill.classList.add(tier.cls);
-
-      // Update tier block
-      document.getElementById('tierDot').style.background = tier.dot;
-      document.getElementById('tierName').textContent = tier.label;
-      const tag = document.getElementById('tierTag');
-      tag.className = `tier-tag ${tier.tagCls}`;
-      tag.textContent = tier.tag;
-      document.getElementById('resSol').textContent = tier.sol;
-      document.getElementById('resAct').textContent = tier.act;
-      document.getElementById('resArt').textContent = tier.art;
-      document.getElementById('progressLabel').textContent = tier.label;
-
-      // Progress bar color via tier class
-      pFill.style.background = tier.dot;
-    }
+  if (filled < ROWS) {
+    document.getElementById('hintBar').classList.remove('hidden');
+    document.getElementById('resultLayout').classList.remove('show');
+    return;
   }
 
-  // Copy to Jira
-  document.getElementById('copyBtn').addEventListener('click', function() {
-    const checked = document.querySelectorAll('input[type="radio"]:checked');
-    if (checked.length < ROWS) return;
+  document.getElementById('hintBar').classList.add('hidden');
+  document.getElementById('resultLayout').classList.add('show');
 
-    const score = parseInt(document.getElementById('totalScore').textContent);
-    const tier = tiers.find(t => score <= t.max);
+  const tier = TIERS.find(t => score <= t.max);
 
-    let jira = `h3. Результат скоринга продуктового запуска\n`;
-    jira += `|| Критерий || Состояние || Балл || Комментарий ||\n`;
+  // Score pill
+  const pill = document.getElementById('scorePill');
+  pill.className = 'score-pill ' + tier.cls;
 
-    document.querySelectorAll('.matrix-row').forEach((row, i) => {
-      const rb = row.querySelector('input:checked');
-      const state = rb ? rb.closest('.td-score').querySelector('.opt-title').textContent.trim() : '—';
-      const val = rb ? rb.value : '—';
-      const comm = row.querySelector('textarea').value.replace(/\n/g, ' ') || ' ';
-      jira += `| ${critNames[i]} | ${state} | ${val} | ${comm} |\n`;
-    });
+  // Tier block
+  document.getElementById('tierDot').style.background = tier.dot;
+  document.getElementById('tierName').textContent = tier.label;
+  document.getElementById('tierDesc').textContent = tier.desc;
+  const tag = document.getElementById('tierTag');
+  tag.className = 'tier-tag ' + tier.tagCls;
+  tag.textContent = tier.tag;
 
-    jira += `\n*ИТОГО:* ${score} баллов из ${MAX}\n`;
-    jira += `*ФОРМАТ:* ${tier.label}\n`;
-    jira += `* Решение: ${tier.sol}\n`;
-    jira += `* Действие: ${tier.act}\n`;
-    jira += `* Артефакт: ${tier.art}`;
+  // Progress bar
+  const pct = Math.round((score / MAX) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progFill').style.background = tier.dot;
+  document.getElementById('progRight').textContent = score + ' / ' + MAX + ' баллов';
 
-    navigator.clipboard.writeText(jira).catch(() => {
-      const el = document.createElement('textarea');
-      el.value = jira;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-    });
+  // Auto-Tier-2 warning: toxicity=2 + (reach=2 or impact=2)
+  const tox = rowScores[4] ?? 0;
+  const reach = rowScores[0] ?? 0;
+  const impact = rowScores[1] ?? 0;
+  document.getElementById('tier2Warn').classList.toggle('show', tox === 2 && (reach === 2 || impact === 2));
 
-    this.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!`;
-    setTimeout(() => {
-      this.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Скопировать для Jira`;
-    }, 2500);
+  renderArtifact(tier);
+}
+
+function renderArtifact(tier) {
+  const c = document.getElementById('artifactContent');
+  if (tier.art === 'tier0') {
+    c.innerHTML = `<div class="artifact-text">Задача классифицирована как стандартное решение с низким уровнем риска. Проектирование CJ-командой не проводится.
+
+Ответственность за дизайн продукта и финальный путь пользователя остаётся на стороне Продукта.
+
+В случае выхода на ComCom согласование инициативы Клиентским опытом будет носить технический характер.
+
+В течение первых 14 дней после запуска Продукту необходимо обеспечить мониторинг обращаемости и аварий (своими силами или с привлечением коллег из BSS, ОМУН и КС).
+
+В случае выявления негативных аномалий (всплеск обращаемости, жалоб) задача подлежит переоценке и редизайну с участием CJ-экспертов.</div>`;
+  } else if (tier.art === 'tier1') {
+    c.innerHTML = `<div class="artifact-text">Для обеспечения качества опыта требуется соблюсти следующие CX-требования и рекомендации:</div>
+      <div class="artifact-divider"></div>
+      <div class="artifact-field-label">Обязательные требования</div>
+      <textarea class="artifact-textarea" id="t1mandatory" placeholder="Опишите обязательные CX-требования...&#10;Например: прозрачность стоимости, управляемость (выход), подтверждение, информирование клиента"></textarea>
+      <div class="artifact-field-label">Рекомендации</div>
+      <textarea class="artifact-textarea" id="t1recs" placeholder="Опишите рекомендации по улучшению опыта...&#10;Например: предсказуемость, сохранение контекста, визуальный акцент на ключевых действиях"></textarea>
+      <div class="artifact-closing">Детальные CJ не требуются. Контроль реализации данных пунктов остаётся за владельцем продукта.</div>`;
+  } else {
+    c.innerHTML = `<div class="artifact-text">Задача классифицирована как высокорисковый или стратегический запуск. Требуется полное сопровождение проектирования со стороны CJ-эксперта.
+
+Формат работы:
+— Исследование и анализ текущего пути клиента
+— Проектирование E2E Customer Journey
+— Выявление friction points и точек риска
+— Разработка сценариев взаимодействия
+— Прототипирование (при необходимости)
+
+Ожидаемые артефакты: User Flow (схема), CJM, визуальный сценарий.
+
+Срок и формат участия согласуются с CJ-экспертом отдельно.</div>`;
+  }
+}
+
+// ── Tooltips ────────────────────────────────────────────────────────────────
+let activeTipBtn = null;
+document.querySelectorAll('.tooltip-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const idx = +btn.dataset.tip;
+    if (activeTipBtn === btn) { closeTooltip(); return; }
+    if (activeTipBtn) closeTooltip();
+    activeTipBtn = btn;
+    btn.classList.add('active');
+    const tip = TIPS[idx];
+    const popup = document.getElementById('tooltipPopup');
+    document.getElementById('tooltipContent').innerHTML = `
+      <div class="tip-title">${tip.title}</div>
+      <div class="tip-section"><div class="tip-section-label">О чём этот критерий</div><div class="tip-section-text">${tip.desc}</div></div>
+      <div class="tip-divider"></div>
+      <div class="tip-section"><div class="tip-section-label">Как выбрать оценку</div><div class="tip-section-text">${tip.how}</div></div>
+      <div class="tip-divider"></div>
+      <div class="tip-section"><div class="tip-section-label">Пограничные случаи</div><div class="tip-section-text">${tip.edge}</div></div>`;
+    popup.classList.add('show');
+    const r = btn.getBoundingClientRect();
+    let left = r.right + 10, top = r.top;
+    if (left + 320 > window.innerWidth - 16) left = r.left - 330;
+    if (top + 300 > window.innerHeight - 16) top = window.innerHeight - 316;
+    if (top < 8) top = 8;
+    popup.style.left = left + 'px';
+    popup.style.top  = top  + 'px';
+  });
+});
+document.getElementById('tipClose').addEventListener('click', closeTooltip);
+document.addEventListener('click', e => {
+  if (!e.target.closest('.tooltip-popup') && !e.target.closest('.tooltip-btn')) closeTooltip();
+});
+function closeTooltip() {
+  document.getElementById('tooltipPopup').classList.remove('show');
+  if (activeTipBtn) { activeTipBtn.classList.remove('active'); activeTipBtn = null; }
+}
+
+// ── Copy for Jira ────────────────────────────────────────────────────────────
+document.getElementById('copyBtn').addEventListener('click', function() {
+  const checked = document.querySelectorAll('#matrixBody input[type="radio"]:checked');
+  if (checked.length < ROWS) return;
+  const score = +document.getElementById('totalScore').textContent;
+  const tier  = TIERS.find(t => score <= t.max);
+  const name  = document.getElementById('launchName').value || '—';
+  const date  = document.getElementById('autoDate').textContent;
+
+  let txt = `h2. Результат CX-скоринга продуктового запуска\n*Запуск:* ${name}\n*Дата:* ${date}\n\nh3. Матрица оценки\n|| Критерий || Оценка || Балл || Комментарий ||\n`;
+
+  document.querySelectorAll('#matrixBody .matrix-row').forEach((row, i) => {
+    const rb    = row.querySelector('input:checked');
+    const state = rb ? rb.closest('.td-score').querySelector('.opt-title').textContent.trim() : '—';
+    const val   = rb ? rb.value : '—';
+    const comm  = (row.querySelector('textarea')?.value || '').replace(/\n/g,' ') || ' ';
+    let extra   = '';
+    if (i === 6 && rb) {
+      const ctId = +rb.value === 1 ? 'commTypes1' : +rb.value === 2 ? 'commTypes2' : null;
+      if (ctId) {
+        const sel = [...document.querySelectorAll(`#${ctId} input:checked`)].map(cb => cb.closest('.comm-type-item').querySelector('.comm-type-label').textContent.trim());
+        if (sel.length) extra = ' [' + sel.join(', ') + ']';
+      }
+    }
+    txt += `| ${CRIT_NAMES[i]} | ${state}${extra} | ${val} | ${comm} |\n`;
   });
 
-  // Reset
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-    document.querySelectorAll('.td-score').forEach(c => c.classList.remove('is-selected'));
-    document.querySelectorAll('.comment-area').forEach(t => t.value = '');
-    document.getElementById('totalScore').textContent = '0';
-    document.getElementById('progressWrap').style.display = 'none';
-    document.getElementById('progressFill').style.width = '0';
-    document.getElementById('hintBar').style.display = 'flex';
-    document.getElementById('hintBar').style.opacity = '1';
-    document.getElementById('tierBlock').classList.remove('visible');
-    document.getElementById('scorePill').classList.remove('tier-t0','tier-t1','tier-t2');
+  txt += `\n*ИТОГО:* ${score} баллов из ${MAX}\n*ФОРМАТ:* ${tier.label}\n*Нагрузка:* ${tier.tag}\n\nh3. Артефакт\n`;
+
+  if (tier.art === 'tier0') {
+    txt += `Задача классифицирована как стандартное решение с низким уровнем риска. Проектирование CJ-командой не проводится.\nОтветственность за дизайн продукта остаётся на стороне Продукта.\nВ течение первых 14 дней после запуска — обеспечить мониторинг обращаемости и аварий.\n`;
+  } else if (tier.art === 'tier1') {
+    const m = document.getElementById('t1mandatory')?.value || '—';
+    const r = document.getElementById('t1recs')?.value || '—';
+    txt += `*Обязательные требования:*\n${m}\n\n*Рекомендации:*\n${r}\n\nКонтроль реализации остаётся за владельцем продукта.\n`;
+  } else {
+    txt += `Требуется полное сопровождение проектирования CJ-экспертом.\nОжидаемые артефакты: User Flow, CJM, визуальный сценарий.\nСрок и формат участия согласуются с CJ-экспертом отдельно.\n`;
+  }
+
+  navigator.clipboard.writeText(txt).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = txt; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
   });
+
+  const orig = this.innerHTML;
+  this.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!`;
+  setTimeout(() => this.innerHTML = orig, 2500);
+});
+
+// ── PDF ──────────────────────────────────────────────────────────────────────
+document.getElementById('pdfBtn').addEventListener('click', () => window.print());
+
+// ── Reset ────────────────────────────────────────────────────────────────────
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.querySelectorAll('#matrixBody input[type="radio"], #matrixBody input[type="checkbox"]').forEach(i => i.checked = false);
+  document.querySelectorAll('#matrixBody .td-score').forEach(c => c.classList.remove('is-selected'));
+  document.querySelectorAll('.comment-area').forEach(t => t.value = '');
+  document.querySelectorAll('.comm-types').forEach(ct => ct.classList.remove('open'));
+  document.getElementById('toxNudge').classList.remove('show');
+  document.getElementById('launchName').value = '';
+  document.getElementById('totalScore').textContent = '0';
+  document.getElementById('progressCount').textContent = '0';
+  for (let i = 0; i < ROWS; i++) document.getElementById('dot-'+i).classList.remove('filled');
+  document.getElementById('hintBar').classList.remove('hidden');
+  document.getElementById('resultLayout').classList.remove('show');
+  document.getElementById('tier2Warn').classList.remove('show');
+  document.getElementById('scorePill').className = 'score-pill';
+  closeTooltip();
+});
 </script>
-
 </body>
 </html>
