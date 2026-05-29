@@ -603,7 +603,7 @@ function addItem(block, productVal, incrementVal, descVal) {
         '<input type="text" class="item-product" value="' + (productVal || '').replace(/"/g, '&quot;') + '">' +
       '</div>' +
       '<div class="item-col">' +
-        '<div class="item-field-label">Инкремент</div>' +
+        '<div class="item-field-label">Инкремент <span class="tip-wrap"><i class="tip-icon" data-tip="inc-glossary">?</i></span></div>' +
         '<select class="item-increment">' + incOpts + '</select>' +
       '</div>' +
     '</div>' +
@@ -723,23 +723,39 @@ function toast(msg) {
 // ── TOOLTIP ───────────────────────────────────
 var floatingTip = document.getElementById('floatingTip');
 
+var INC_GLOSSARY =
+  '<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы инкрементов</div>' +
+  '<div style="display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.45">' +
+    '<div><b style="color:#fff">Run-запуск</b> <span style="opacity:.7">— инициатива, проработанная на этой неделе</span></div>' +
+    '<div><b style="color:#fff">Фича</b> <span style="opacity:.7">— то, что CJE предложил при проектировании</span></div>' +
+    '<div><b style="color:#fff">Артефакт</b> <span style="opacity:.7">— выпущенный материал: CJM, прототип и др.</span></div>' +
+    '<div><b style="color:#fff">Выход на ПК</b> <span style="opacity:.7">— инициатива, сопровождённая при выходе на ПК</span></div>' +
+  '</div>';
+
 document.addEventListener('mouseover', function(e) {
   var icon = e.target.closest('.tip-icon');
   if (!icon) return;
   var text = icon.getAttribute('data-tip');
   if (!text) return;
-  floatingTip.textContent = text;
+
+  if (text === 'inc-glossary') {
+    floatingTip.innerHTML = INC_GLOSSARY;
+    floatingTip.style.width = '280px';
+  } else {
+    floatingTip.textContent = text;
+    floatingTip.style.width = '220px';
+  }
+
   floatingTip.style.display = 'block';
   var r = icon.getBoundingClientRect();
   floatingTip.style.left = (r.left + r.width / 2) + 'px';
   floatingTip.style.top = (r.top - 10) + 'px';
   floatingTip.style.transform = 'translate(-50%, -100%)';
-  floatingTip.style.background = 'var(--text-primary)';
+  floatingTip.style.background = '#2B2D33';
   floatingTip.style.color = '#fff';
   floatingTip.style.fontSize = '12px';
-  floatingTip.style.padding = '8px 12px';
+  floatingTip.style.padding = '10px 14px';
   floatingTip.style.borderRadius = '12px';
-  floatingTip.style.width = '220px';
   floatingTip.style.whiteSpace = 'normal';
   floatingTip.style.lineHeight = '1.5';
   floatingTip.style.boxShadow = '0 4px 16px rgba(0,0,0,.2)';
