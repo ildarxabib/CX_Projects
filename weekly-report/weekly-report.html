@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Еженедельный отчёт — МегаФон B2B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00B956;
+    --green-hover: #00A94F;
+    --green-pressed: #009447;
+    --bg: #F2F4F7;
+    --card: #FFFFFF;
+    --surface: #F7F8FA;
+    --border: #D2D5DA;
+    --border-light: #E6E9EE;
+    --text-primary: #2B2D33;
+    --text-secondary: #8F96A4;
+    --text-disabled: #A8AFB9;
+    --success-bg: #EAFBF1;
+    --info-bg: #DDF5FF;
+    --info-accent: #00B5FF;
+    --error-bg: #FFF0F0;
+    --error-accent: #FF4D4F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border-light);
+    height: 60px;
+    display: flex; align-items: center;
+    padding: 0 40px; gap: 12px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--green) 0%, #00D2FF 100%);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .logo-text { font-size: 16px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
+  .topbar-divider { width: 1px; height: 20px; background: var(--border-light); margin: 0 4px; }
+  .topbar-title { font-size: 15px; font-weight: 500; color: var(--text-secondary); }
+
+  /* PAGE */
+  .page { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .page-header { margin-bottom: 32px; }
+  .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
+  .page-header p { font-size: 15px; color: var(--text-secondary); }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 24px;
+    padding: 28px 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 17px; font-weight: 600; color: var(--text-primary);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .icon-badge {
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; background: var(--surface);
+  }
+
+  /* META ROW */
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* FIELD */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field-input {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 15px; padding: 11px 16px;
+    outline: none; width: 100%; -webkit-appearance: none;
+    transition: border-color .18s, box-shadow .18s;
+  }
+  .field-input::placeholder { color: var(--text-disabled); }
+  .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.1); }
+
+  /* WEEK NAV */
+  .week-nav { display: flex; align-items: center; gap: 6px; }
+  .week-arrow {
+    width: 40px; height: 40px; border-radius: 12px;
+    border: 1.5px solid var(--border); background: #fff; color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1; flex-shrink: 0;
+    transition: border-color .18s, color .18s;
+  }
+  .week-arrow:hover { border-color: var(--green); color: var(--green); }
+  .week-value {
+    flex: 1; background: #fff; border: 1.5px solid var(--border);
+    border-radius: 16px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 500;
+    padding: 10px 14px; text-align: center; cursor: pointer;
+    transition: border-color .18s; white-space: nowrap; user-select: none;
+  }
+  .week-value:hover { border-color: var(--green); }
+
+  /* TOOLTIP */
+  .tip-wrap { position: relative; display: inline-flex; }
+  .tip-icon {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border-light);
+    color: var(--text-secondary); font-size: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: default; font-style: normal;
+    transition: border-color .18s, color .18s;
+  }
+  .tip-icon:hover { border-color: var(--green); color: var(--green); }
+  .tip-box {
+    position: absolute; bottom: calc(100% + 8px);
+    left: 50%; transform: translateX(-50%);
+    background: var(--text-primary); color: #fff;
+    font-size: 12px; font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400; line-height: 1.5; padding: 8px 12px;
+    border-radius: 12px; width: 220px; white-space: normal;
+    pointer-events: none; opacity: 0; transition: opacity .18s;
+    z-index: 100; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  }
+  .tip-box::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--text-primary);
+  }
+  .tip-wrap:hover .tip-box { opacity: 1; }
+
+  /* BLOCKS */
+  .blocks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  .block-card {
+    background: var(--card); border: 1.5px solid var(--border-light);
+    border-radius: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    overflow: hidden; transition: box-shadow .2s;
+    display: flex; flex-direction: column;
+  }
+  .block-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+
+  .block-head {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .block-head-left { display: flex; align-items: center; gap: 10px; }
+  .block-label { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+
+  .block-badge {
+    font-size: 12px; font-weight: 500; padding: 3px 10px;
+    border-radius: 999px; background: var(--surface); color: var(--text-secondary);
+    transition: background .2s, color .2s;
+  }
+  .block-badge.done-items { background: var(--success-bg); color: var(--green); }
+  .block-badge.plan-items { background: var(--info-bg); color: var(--info-accent); }
+
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.green { background: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.15); }
+  .status-dot.blue  { background: var(--info-accent); box-shadow: 0 0 0 3px rgba(0,181,255,.15); }
+
+  .items-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+
+  /* ITEM */
+  .item-row {
+    background: var(--surface); border: 1.5px solid var(--border-light);
+    border-radius: 16px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    animation: slideIn .2s ease; position: relative;
+  }
+  .item-row:hover { border-color: var(--border); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* row 1: num + product + increment + delete */
+  .item-top {
+    display: grid;
+    grid-template-columns: 18px 1fr 1fr 28px;
+    align-items: center;
+    gap: 8px;
+  }
+  .item-num {
+    font-size: 11px; font-weight: 700; color: var(--text-disabled);
+    user-select: none; text-align: right;
+  }
+
+  .item-field-label {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+
+  .item-product {
+    background: #fff; border: 1.5px solid var(--border-light);
+    border-radius: 10px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 500;
+    padding: 7px 12px; outline: none; width: 100%;
+    height: 36px;
+    transition: border-color .18s;
+  }
+  .item-product::placeholder { color: var(--text-disabled); }
+  .item-product:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
+
+  .item-increment {
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+    border: 1.5px solid var(--border-light);
+    border-radius: 10px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 500;
+    padding: 7px 30px 7px 12px; outline: none; cursor: pointer;
+    -webkit-appearance: none; width: 100%; height: 36px;
+    transition: border-color .18s;
+  }
+  .item-increment:hover { border-color: var(--green); }
+  .item-increment:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
+  .item-increment option { background: #fff; color: var(--text-primary); }
+
+  .item-del {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 1.5px solid transparent; background: transparent;
+    color: var(--text-disabled); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .item-del:hover { background: var(--error-bg); border-color: rgba(255,77,79,.2); color: var(--error-accent); }
+
+  /* row 2: description textarea */
+  .item-desc {
+    background: #fff; border: 1.5px solid var(--border-light);
+    border-radius: 10px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 14px;
+    padding: 10px 12px; outline: none;
+    height: 64px; resize: none; overflow: hidden; width: 100%;
+    transition: border-color .18s;
+    line-height: 1.5;
+  }
+  .item-desc:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
+  .item-desc::placeholder { color: var(--text-disabled); }
+
+  .add-row { padding: 0 20px 20px; }
+  .add-btn {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    background: transparent; border: 1.5px dashed var(--border);
+    border-radius: 14px; color: var(--text-secondary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 500;
+    padding: 10px 16px; cursor: pointer;
+    transition: border-color .18s, color .18s, background .18s;
+  }
+  .add-btn:hover { border-color: var(--green); color: var(--green); background: var(--success-bg); }
+
+  /* COMMENTS */
+  .comments-textarea {
+    width: 100%; background: var(--surface); border: 1.5px solid var(--border-light);
+    border-radius: 16px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 14px;
+    padding: 12px 16px; outline: none; height: 80px; resize: none;
+    transition: border-color .18s;
+  }
+  .comments-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); background: #fff; }
+  .comments-textarea::placeholder { color: var(--text-disabled); }
+
+  /* ACTIONS */
+  .actions-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--green); color: #fff; border: none;
+    border-radius: 14px; font-family: 'Inter', Arial, sans-serif;
+    font-size: 15px; font-weight: 600; padding: 12px 28px; cursor: pointer;
+    transition: background .18s, box-shadow .18s, transform .1s;
+    box-shadow: 0 4px 12px rgba(0,185,86,.25);
+  }
+  .btn-primary:hover { background: var(--green-hover); box-shadow: 0 6px 18px rgba(0,185,86,.35); transform: translateY(-1px); }
+  .btn-primary:active { background: var(--green-pressed); transform: translateY(0); box-shadow: none; }
+
+  .btn-secondary {
+    background: #fff; color: var(--text-primary);
+    border: 1.5px solid var(--border); border-radius: 14px;
+    font-family: 'Inter', Arial, sans-serif; font-size: 15px; font-weight: 500;
+    padding: 11px 24px; cursor: pointer;
+    transition: border-color .18s, color .18s;
+  }
+  .btn-secondary:hover { border-color: var(--green); color: var(--green); }
+
+
+
+  .btn-ghost {
+    background: transparent; border: none; color: var(--text-secondary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 14px;
+    padding: 8px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: color .18s;
+  }
+  .btn-ghost:hover { color: var(--error-accent); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(43,45,51,.5);
+    backdrop-filter: blur(6px); z-index: 200;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff; border-radius: 24px;
+    width: 100%; max-width: 640px; max-height: 85vh; overflow-y: auto;
+    transform: translateY(20px); transition: transform .25s;
+    box-shadow: 0 24px 64px rgba(0,0,0,.15);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    padding: 24px 28px 20px; border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: #fff; border-radius: 24px 24px 0 0;
+  }
+  .modal-header h2 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 10px;
+    border: 1.5px solid var(--border-light); background: var(--surface);
+    color: var(--text-secondary); font-size: 18px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: border-color .18s, color .18s;
+  }
+  .modal-close:hover { border-color: var(--error-accent); color: var(--error-accent); }
+  .modal-body { padding: 24px 28px; }
+  .preview-text {
+    background: var(--surface); border: 1.5px solid var(--border-light);
+    border-radius: 16px; padding: 20px;
+    font-size: 13.5px; line-height: 1.9; color: var(--text-primary);
+    white-space: pre-wrap; word-break: break-word;
+    font-family: 'Inter', Arial, monospace;
+    max-height: 400px; overflow-y: auto;
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 32px; right: 32px;
+    background: var(--text-primary); color: #fff;
+    font-size: 14px; font-weight: 500; padding: 14px 20px;
+    border-radius: 14px; z-index: 300;
+    transform: translateY(16px); opacity: 0;
+    transition: all .25s; pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  /* col headers inside item */
+  .item-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .item-col { display: flex; flex-direction: column; gap: 4px; }
+
+  @media (max-width: 720px) {
+    .meta-row { grid-template-columns: 1fr; }
+    .blocks-grid { grid-template-columns: 1fr; }
+    .item-top { grid-template-columns: 18px 1fr 28px; }
+    .item-cols { grid-template-columns: 1fr; }
+    .topbar { padding: 0 20px; }
+    .page { padding: 24px 16px 80px; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="logo-mark">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+  </div>
+  <span class="logo-text">МегаФон</span>
+  <div class="topbar-divider"></div>
+  <span class="topbar-title">Еженедельный отчёт</span>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1 id="pageTitle">Новый отчёт</h1>
+    <p>Заполните форму — готовый отчёт можно скопировать или отправить по почте</p>
+  </div>
+
+  <!-- META -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      Параметры отчёта
+    </div>
+    <div class="meta-row">
+      <div class="field">
+        <label class="field-label">
+          Сотрудник
+          <span class="tip-wrap">
+            <i class="tip-icon">?</i>
+            <span class="tip-box">Имя и фамилия сотрудника, составляющего отчёт</span>
+          </span>
+        </label>
+        <input class="field-input" id="employee" oninput="updateTitle()">
+      </div>
+      <div class="field">
+        <label class="field-label">
+          Неделя
+          <span class="tip-wrap">
+            <i class="tip-icon">?</i>
+            <span class="tip-box">Рабочая неделя отчёта. Используйте стрелки для навигации</span>
+          </span>
+        </label>
+        <div class="week-nav">
+          <button class="week-arrow" onclick="changeWeek(-1)">&#8249;</button>
+          <div class="week-value" id="weekVal" onclick="pickWeek()" title="Выбрать неделю"></div>
+          <button class="week-arrow" onclick="changeWeek(1)">&#8250;</button>
+        </div>
+        <input type="week" id="weekPicker" style="position:fixed;opacity:0;pointer-events:none;width:0;height:0" onchange="onWeekPicked()">
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCKS -->
+  <div class="blocks-grid">
+
+    <div class="block-card">
+      <div class="block-head">
+        <div class="block-head-left">
+          <div class="status-dot green"></div>
+          <span class="block-label">Что было сделано</span>
+          <span class="tip-wrap">
+            <i class="tip-icon">?</i>
+            <span class="tip-box">Завершённые задачи, фичи, артефакты и результаты за прошедшую неделю</span>
+          </span>
+        </div>
+        <span class="block-badge" id="doneBadge">0 пунктов</span>
+      </div>
+      <div class="items-list" id="doneList"></div>
+      <div class="add-row">
+        <button class="add-btn" onclick="addItem('done')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Добавить пункт
+        </button>
+      </div>
+    </div>
+
+    <div class="block-card">
+      <div class="block-head">
+        <div class="block-head-left">
+          <div class="status-dot blue"></div>
+          <span class="block-label">Планы на эту неделю</span>
+          <span class="tip-wrap">
+            <i class="tip-icon">?</i>
+            <span class="tip-box">Задачи и цели, которые планируется выполнить на текущей неделе</span>
+          </span>
+        </div>
+        <span class="block-badge" id="planBadge">0 пунктов</span>
+      </div>
+      <div class="items-list" id="planList"></div>
+      <div class="add-row">
+        <button class="add-btn" onclick="addItem('plan')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Добавить пункт
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMMENTS -->
+  <div class="card">
+    <div class="card-title">
+      <div class="icon-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      Комментарии и блокеры
+      <span class="tip-wrap">
+        <i class="tip-icon">?</i>
+        <span class="tip-box">Важный контекст, риски, зависимости от других команд</span>
+      </span>
+    </div>
+    <textarea class="comments-textarea" id="comments" placeholder="Опишите блокеры, зависимости или дополнительный контекст…"></textarea>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions-row">
+    <button class="btn-primary" onclick="showPreview()">Сформировать отчёт</button>
+    <button class="btn-secondary" onclick="copyReport()">Скопировать текст</button>
+
+    <button class="btn-ghost" onclick="clearAll(false)">Очистить форму</button>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Готовый отчёт</h2>
+      <button class="modal-close" onclick="closeModal()">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div class="preview-text" id="previewText"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="copyFromModal()">Скопировать</button>
+        <button class="btn-secondary" onclick="mailReport()">Открыть в почте</button>
+        <button class="btn-secondary" onclick="closeModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastText"></span>
+</div>
+
+<script>
+var INCREMENTS = ['Run-запуск','Фича','Артефакт','Выход на ПК'];
+var weekOffset = 0;
+
+function getWeekRange(offset) {
+  var now = new Date();
+  var day = now.getDay() || 7;
+  var mon = new Date(now);
+  mon.setDate(now.getDate() - day + 1 + offset * 7);
+  var fri = new Date(mon);
+  fri.setDate(mon.getDate() + 4);
+  var fmt = function(d) { return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'}); };
+  return fmt(mon) + ' — ' + fmt(fri);
+}
+
+function updateWeek() {
+  var label = getWeekRange(weekOffset);
+  var tag = weekOffset === 0 ? ' (тек.)' : weekOffset === -1 ? ' (пред.)' : '';
+  document.getElementById('weekVal').textContent = label + tag;
+}
+
+function changeWeek(d) { weekOffset += d; updateWeek(); }
+
+function pickWeek() {
+  var p = document.getElementById('weekPicker');
+  p.style.pointerEvents = 'auto';
+  p.click();
+  setTimeout(function() { p.style.pointerEvents = 'none'; }, 500);
+}
+
+function onWeekPicked() {
+  var val = document.getElementById('weekPicker').value;
+  if (!val) return;
+  var parts = val.split('-W');
+  var y = parseInt(parts[0]), w = parseInt(parts[1]);
+  var now = new Date();
+  var day = now.getDay() || 7;
+  var thisMon = new Date(now);
+  thisMon.setDate(now.getDate() - day + 1);
+  thisMon.setHours(0,0,0,0);
+  var jan4 = new Date(y, 0, 4);
+  var w1 = new Date(jan4);
+  w1.setDate(jan4.getDate() - (jan4.getDay() || 7) + 1);
+  var picked = new Date(w1);
+  picked.setDate(w1.getDate() + (w - 1) * 7);
+  picked.setHours(0,0,0,0);
+  weekOffset = Math.round((picked - thisMon) / 604800000);
+  updateWeek();
+}
+
+function updateTitle() {
+  var val = document.getElementById('employee').value.trim();
+  document.getElementById('pageTitle').textContent = val ? 'Отчёт: ' + val : 'Новый отчёт';
+}
+
+function plural(n) {
+  if (n === 1) return '1 пункт';
+  if (n >= 2 && n <= 4) return n + ' пункта';
+  return n + ' пунктов';
+}
+
+function updateBadge(block) {
+  var n = document.getElementById(block + 'List').querySelectorAll('.item-row').length;
+  var el = document.getElementById(block + 'Badge');
+  el.textContent = plural(n);
+  el.className = 'block-badge' + (n > 0 ? (block === 'done' ? ' done-items' : ' plan-items') : '');
+}
+
+function addItem(block, productVal, incrementVal, descVal) {
+  var list = document.getElementById(block + 'List');
+  var idx = list.querySelectorAll('.item-row').length + 1;
+  var descPh = block === 'done' ? 'Опишите что было сделано…' : 'Опишите что планируется…';
+
+  var incOpts = INCREMENTS.map(function(i) {
+    return '<option value="' + i + '"' + (i === (incrementVal || INCREMENTS[0]) ? ' selected' : '') + '>' + i + '</option>';
+  }).join('');
+
+  var row = document.createElement('div');
+  row.className = 'item-row';
+  row.innerHTML =
+    '<div class="item-top">' +
+      '<span class="item-num">' + idx + '</span>' +
+      '<div class="item-col">' +
+        '<div class="item-field-label">Продукт</div>' +
+        '<input type="text" class="item-product" value="' + (productVal || '').replace(/"/g,'&quot;') + '">' +
+      '</div>' +
+      '<div class="item-col">' +
+        '<div class="item-field-label">Инкремент</div>' +
+        '<select class="item-increment">' + incOpts + '</select>' +
+      '</div>' +
+      '<button class="item-del" onclick="delItem(this,\'' + block + '\')" title="Удалить">' +
+        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>' +
+    '<textarea class="item-desc" placeholder="' + descPh + '" rows="2">' + (descVal || '') + '</textarea>';
+
+  list.appendChild(row);
+  if (!productVal) row.querySelector('.item-product').focus();
+  updateBadge(block);
+}
+
+function delItem(btn, block) {
+  btn.closest('.item-row').remove();
+  reindex(block);
+  updateBadge(block);
+}
+
+function reindex(block) {
+  document.getElementById(block + 'List').querySelectorAll('.item-row').forEach(function(r, i) {
+    r.querySelector('.item-num').textContent = i + 1;
+  });
+}
+
+function getItems(block) {
+  var rows = document.getElementById(block + 'List').querySelectorAll('.item-row');
+  var out = [];
+  rows.forEach(function(r) {
+    var product = r.querySelector('.item-product').value.trim();
+    var increment = r.querySelector('.item-increment').value;
+    var desc = r.querySelector('.item-desc').value.trim();
+    if (product || desc) out.push({ product: product, increment: increment, desc: desc });
+  });
+  return out;
+}
+
+function buildReport() {
+  var emp = document.getElementById('employee').value.trim() || '—';
+  var week = getWeekRange(weekOffset);
+  var comments = document.getElementById('comments').value.trim();
+  var done = getItems('done');
+  var plan = getItems('plan');
+
+  var s = '';
+  s += '📋 ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ\n';
+  s += '─────────────────────────────────────\n';
+  s += 'Сотрудник : ' + emp + '\n';
+  s += 'Период    : ' + week + '\n';
+  s += '─────────────────────────────────────\n\n';
+
+  s += '✅ ЧТО БЫЛО СДЕЛАНО\n';
+  if (!done.length) {
+    s += '   (не заполнено)\n';
+  } else {
+    done.forEach(function(i, n) {
+      s += '   ' + (n+1) + '. [' + i.increment + '] ' + (i.product || '—') + '\n';
+      if (i.desc) s += '      ' + i.desc + '\n';
+    });
+  }
+
+  s += '\n🗓 ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n';
+  if (!plan.length) {
+    s += '   (не заполнено)\n';
+  } else {
+    plan.forEach(function(i, n) {
+      s += '   ' + (n+1) + '. [' + i.increment + '] ' + (i.product || '—') + '\n';
+      if (i.desc) s += '      ' + i.desc + '\n';
+    });
+  }
+
+  if (comments) {
+    s += '\n💬 КОММЕНТАРИИ И БЛОКЕРЫ\n   ' + comments.split('\n').join('\n   ') + '\n';
+  }
+
+  return s;
+}
+
+function showPreview() {
+  document.getElementById('previewText').textContent = buildReport();
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModalBg(e) { if (e.target.id === 'modal') closeModal(); }
+
+function copyReport() {
+  navigator.clipboard.writeText(buildReport()).then(function() { toast('Скопировано в буфер обмена'); });
+}
+
+function copyFromModal() {
+  navigator.clipboard.writeText(document.getElementById('previewText').textContent).then(function() {
+    toast('Скопировано');
+    setTimeout(closeModal, 700);
+  });
+}
+
+function mailReport() {
+  var emp = document.getElementById('employee').value.trim() || 'Сотрудник';
+  var week = getWeekRange(weekOffset);
+  var subj = encodeURIComponent('Отчёт: ' + emp + ' / ' + week);
+  var body = encodeURIComponent(buildReport());
+  window.location.href = 'mailto:?subject=' + subj + '&body=' + body;
+}
+
+
+
+function clearAll(silent) {
+  if (!silent && !confirm('Очистить всю форму?')) return;
+  document.getElementById('employee').value = '';
+  document.getElementById('comments').value = '';
+  document.getElementById('doneList').innerHTML = '';
+  document.getElementById('planList').innerHTML = '';
+  updateBadge('done');
+  updateBadge('plan');
+  weekOffset = 0;
+  updateWeek();
+  updateTitle();
+}
+
+function toast(msg) {
+  document.getElementById('toastText').textContent = msg;
+  var t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+updateWeek();
+addItem('done');
+addItem('plan');
+</script>
+</body>
+</html>
