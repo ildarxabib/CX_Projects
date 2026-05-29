@@ -83,23 +83,18 @@
     flex-shrink: 0; background: var(--surface);
   }
 
-  /* META ROW */
+  /* META */
   .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  /* FIELD */
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field-label {
     font-size: 13px; font-weight: 500; color: var(--text-secondary);
     display: flex; align-items: center; gap: 6px;
   }
   .field-input {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    color: var(--text-primary);
-    font-family: 'Inter', Arial, sans-serif;
-    font-size: 15px; padding: 11px 16px;
-    outline: none; width: 100%; -webkit-appearance: none;
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: 16px; color: var(--text-primary);
+    font-family: 'Inter', Arial, sans-serif; font-size: 15px;
+    padding: 11px 16px; outline: none; width: 100%; -webkit-appearance: none;
     transition: border-color .18s, box-shadow .18s;
   }
   .field-input::placeholder { color: var(--text-disabled); }
@@ -136,20 +131,15 @@
   }
   .tip-icon:hover { border-color: var(--green); color: var(--green); }
   .tip-box {
-    position: absolute; bottom: calc(100% + 8px);
-    left: 50%; transform: translateX(-50%);
+    display: none;
+    position: fixed;
     background: var(--text-primary); color: #fff;
     font-size: 12px; font-family: 'Inter', Arial, sans-serif;
     font-weight: 400; line-height: 1.5; padding: 8px 12px;
     border-radius: 12px; width: 220px; white-space: normal;
-    pointer-events: none; opacity: 0; transition: opacity .18s;
-    z-index: 100; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    pointer-events: none;
+    z-index: 9999; box-shadow: 0 4px 16px rgba(0,0,0,.2);
   }
-  .tip-box::after {
-    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-    border: 5px solid transparent; border-top-color: var(--text-primary);
-  }
-  .tip-wrap:hover .tip-box { opacity: 1; }
 
   /* BLOCKS */
   .blocks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
@@ -157,7 +147,7 @@
   .block-card {
     background: var(--card); border: 1.5px solid var(--border-light);
     border-radius: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.05);
-    overflow: hidden; transition: box-shadow .2s;
+    transition: box-shadow .2s;
     display: flex; flex-direction: column;
   }
   .block-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
@@ -181,14 +171,15 @@
   .status-dot.green { background: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.15); }
   .status-dot.blue  { background: var(--info-accent); box-shadow: 0 0 0 3px rgba(0,181,255,.15); }
 
-  .items-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .items-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 20px; }
 
   /* ITEM */
   .item-row {
     background: var(--surface); border: 1.5px solid var(--border-light);
     border-radius: 16px; padding: 14px 16px;
     display: flex; flex-direction: column; gap: 10px;
-    animation: slideIn .2s ease; position: relative;
+    animation: slideIn .2s ease;
+    position: relative;
   }
   .item-row:hover { border-color: var(--border); }
 
@@ -197,30 +188,32 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* row 1: num + product + increment + delete */
-  .item-top {
-    display: grid;
-    grid-template-columns: 18px 1fr 1fr 28px;
-    align-items: center;
-    gap: 8px;
+  .item-del {
+    position: absolute; top: 10px; right: 10px;
+    width: 24px; height: 24px; border-radius: 6px;
+    border: 1.5px solid transparent; background: transparent;
+    color: var(--text-disabled); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, border-color .15s, color .15s;
   }
-  .item-num {
-    font-size: 11px; font-weight: 700; color: var(--text-disabled);
-    user-select: none; text-align: right;
-  }
+  .item-del:hover { background: var(--error-bg); border-color: rgba(255,77,79,.2); color: var(--error-accent); }
 
+  .item-fields {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-right: 28px;
+  }
+  .item-col { display: flex; flex-direction: column; gap: 4px; }
   .item-field-label {
     font-size: 11px; font-weight: 600; color: var(--text-secondary);
     text-transform: uppercase; letter-spacing: 0.6px;
-    margin-bottom: 4px;
   }
 
   .item-product {
     background: #fff; border: 1.5px solid var(--border-light);
     border-radius: 10px; color: var(--text-primary);
     font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 500;
-    padding: 7px 12px; outline: none; width: 100%;
-    height: 36px;
+    padding: 7px 12px; outline: none; width: 100%; height: 36px;
     transition: border-color .18s;
   }
   .item-product::placeholder { color: var(--text-disabled); }
@@ -239,25 +232,13 @@
   .item-increment:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
   .item-increment option { background: #fff; color: var(--text-primary); }
 
-  .item-del {
-    width: 28px; height: 28px; border-radius: 8px;
-    border: 1.5px solid transparent; background: transparent;
-    color: var(--text-disabled); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: background .15s, border-color .15s, color .15s;
-  }
-  .item-del:hover { background: var(--error-bg); border-color: rgba(255,77,79,.2); color: var(--error-accent); }
-
-  /* row 2: description textarea */
   .item-desc {
     background: #fff; border: 1.5px solid var(--border-light);
     border-radius: 10px; color: var(--text-primary);
     font-family: 'Inter', Arial, sans-serif; font-size: 14px;
     padding: 10px 12px; outline: none;
     height: 64px; resize: none; overflow: hidden; width: 100%;
-    transition: border-color .18s;
-    line-height: 1.5;
+    transition: border-color .18s; line-height: 1.5;
   }
   .item-desc:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
   .item-desc::placeholder { color: var(--text-disabled); }
@@ -306,8 +287,6 @@
   }
   .btn-secondary:hover { border-color: var(--green); color: var(--green); }
 
-
-
   .btn-ghost {
     background: transparent; border: none; color: var(--text-secondary);
     font-family: 'Inter', Arial, sans-serif; font-size: 14px;
@@ -336,6 +315,7 @@
     padding: 24px 28px 20px; border-bottom: 1px solid var(--border-light);
     display: flex; align-items: center; justify-content: space-between;
     position: sticky; top: 0; background: #fff; border-radius: 24px 24px 0 0;
+    z-index: 1;
   }
   .modal-header h2 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
   .modal-close {
@@ -352,7 +332,7 @@
     border-radius: 16px; padding: 20px;
     font-size: 13.5px; line-height: 1.9; color: var(--text-primary);
     white-space: pre-wrap; word-break: break-word;
-    font-family: 'Inter', Arial, monospace;
+    font-family: 'Courier New', monospace;
     max-height: 400px; overflow-y: auto;
   }
   .modal-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
@@ -371,19 +351,10 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
-  /* col headers inside item */
-  .item-cols {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .item-col { display: flex; flex-direction: column; gap: 4px; }
-
   @media (max-width: 720px) {
     .meta-row { grid-template-columns: 1fr; }
     .blocks-grid { grid-template-columns: 1fr; }
-    .item-top { grid-template-columns: 18px 1fr 28px; }
-    .item-cols { grid-template-columns: 1fr; }
+    .item-fields { grid-template-columns: 1fr; }
     .topbar { padding: 0 20px; }
     .page { padding: 24px 16px 80px; }
     .card { padding: 20px; }
@@ -421,7 +392,7 @@
         <label class="field-label">
           Сотрудник
           <span class="tip-wrap">
-            <i class="tip-icon">?</i>
+            <i class="tip-icon" data-tip="Имя и фамилия сотрудника, составляющего отчёт">?</i>
             <span class="tip-box">Имя и фамилия сотрудника, составляющего отчёт</span>
           </span>
         </label>
@@ -431,13 +402,13 @@
         <label class="field-label">
           Неделя
           <span class="tip-wrap">
-            <i class="tip-icon">?</i>
-            <span class="tip-box">Рабочая неделя отчёта. Используйте стрелки для навигации</span>
+            <i class="tip-icon" data-tip="Рабочая неделя отчёта. Используйте стрелки для навигации между неделями">?</i>
+            <span class="tip-box">Рабочая неделя отчёта. Используйте стрелки для навигации между неделями</span>
           </span>
         </label>
         <div class="week-nav">
           <button class="week-arrow" onclick="changeWeek(-1)">&#8249;</button>
-          <div class="week-value" id="weekVal" onclick="pickWeek()" title="Выбрать неделю"></div>
+          <div class="week-value" id="weekVal"></div>
           <button class="week-arrow" onclick="changeWeek(1)">&#8250;</button>
         </div>
         <input type="week" id="weekPicker" style="position:fixed;opacity:0;pointer-events:none;width:0;height:0" onchange="onWeekPicked()">
@@ -454,7 +425,7 @@
           <div class="status-dot green"></div>
           <span class="block-label">Что было сделано</span>
           <span class="tip-wrap">
-            <i class="tip-icon">?</i>
+            <i class="tip-icon" data-tip="Завершённые задачи, фичи, артефакты и результаты за прошедшую неделю">?</i>
             <span class="tip-box">Завершённые задачи, фичи, артефакты и результаты за прошедшую неделю</span>
           </span>
         </div>
@@ -475,7 +446,7 @@
           <div class="status-dot blue"></div>
           <span class="block-label">Планы на эту неделю</span>
           <span class="tip-wrap">
-            <i class="tip-icon">?</i>
+            <i class="tip-icon" data-tip="Задачи и цели, которые планируется выполнить на текущей неделе">?</i>
             <span class="tip-box">Задачи и цели, которые планируется выполнить на текущей неделе</span>
           </span>
         </div>
@@ -500,7 +471,7 @@
       </div>
       Комментарии и блокеры
       <span class="tip-wrap">
-        <i class="tip-icon">?</i>
+        <i class="tip-icon" data-tip="Важный контекст, риски, зависимости от других команд">?</i>
         <span class="tip-box">Важный контекст, риски, зависимости от других команд</span>
       </span>
     </div>
@@ -511,8 +482,7 @@
   <div class="actions-row">
     <button class="btn-primary" onclick="showPreview()">Сформировать отчёт</button>
     <button class="btn-secondary" onclick="copyReport()">Скопировать текст</button>
-
-    <button class="btn-ghost" onclick="clearAll(false)">Очистить форму</button>
+    <button class="btn-ghost" onclick="clearAll()">Очистить форму</button>
   </div>
 
 </div>
@@ -540,10 +510,14 @@
   <span id="toastText"></span>
 </div>
 
+<!-- Floating tooltip element -->
+<span class="tip-box" id="floatingTip" style="display:none;position:fixed;z-index:9999;"></span>
+
 <script>
-var INCREMENTS = ['Run-запуск','Фича','Артефакт','Выход на ПК'];
+var INCREMENTS = ['Run-запуск', 'Фича', 'Артефакт', 'Выход на ПК'];
 var weekOffset = 0;
 
+// ── WEEK ──────────────────────────────────────
 function getWeekRange(offset) {
   var now = new Date();
   var day = now.getDay() || 7;
@@ -551,7 +525,9 @@ function getWeekRange(offset) {
   mon.setDate(now.getDate() - day + 1 + offset * 7);
   var fri = new Date(mon);
   fri.setDate(mon.getDate() + 4);
-  var fmt = function(d) { return d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'}); };
+  var fmt = function(d) {
+    return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+  };
   return fmt(mon) + ' — ' + fmt(fri);
 }
 
@@ -561,13 +537,9 @@ function updateWeek() {
   document.getElementById('weekVal').textContent = label + tag;
 }
 
-function changeWeek(d) { weekOffset += d; updateWeek(); }
-
-function pickWeek() {
-  var p = document.getElementById('weekPicker');
-  p.style.pointerEvents = 'auto';
-  p.click();
-  setTimeout(function() { p.style.pointerEvents = 'none'; }, 500);
+function changeWeek(d) {
+  weekOffset += d;
+  updateWeek();
 }
 
 function onWeekPicked() {
@@ -579,22 +551,24 @@ function onWeekPicked() {
   var day = now.getDay() || 7;
   var thisMon = new Date(now);
   thisMon.setDate(now.getDate() - day + 1);
-  thisMon.setHours(0,0,0,0);
+  thisMon.setHours(0, 0, 0, 0);
   var jan4 = new Date(y, 0, 4);
   var w1 = new Date(jan4);
   w1.setDate(jan4.getDate() - (jan4.getDay() || 7) + 1);
   var picked = new Date(w1);
   picked.setDate(w1.getDate() + (w - 1) * 7);
-  picked.setHours(0,0,0,0);
+  picked.setHours(0, 0, 0, 0);
   weekOffset = Math.round((picked - thisMon) / 604800000);
   updateWeek();
 }
 
+// ── TITLE ─────────────────────────────────────
 function updateTitle() {
   var val = document.getElementById('employee').value.trim();
   document.getElementById('pageTitle').textContent = val ? 'Отчёт: ' + val : 'Новый отчёт';
 }
 
+// ── BADGE ─────────────────────────────────────
 function plural(n) {
   if (n === 1) return '1 пункт';
   if (n >= 2 && n <= 4) return n + ' пункта';
@@ -608,33 +582,32 @@ function updateBadge(block) {
   el.className = 'block-badge' + (n > 0 ? (block === 'done' ? ' done-items' : ' plan-items') : '');
 }
 
+// ── ITEMS ─────────────────────────────────────
 function addItem(block, productVal, incrementVal, descVal) {
   var list = document.getElementById(block + 'List');
-  var idx = list.querySelectorAll('.item-row').length + 1;
   var descPh = block === 'done' ? 'Опишите что было сделано…' : 'Опишите что планируется…';
-
-  var incOpts = INCREMENTS.map(function(i) {
-    return '<option value="' + i + '"' + (i === (incrementVal || INCREMENTS[0]) ? ' selected' : '') + '>' + i + '</option>';
+  var incOpts = INCREMENTS.map(function(inc) {
+    var sel = inc === (incrementVal || INCREMENTS[0]) ? ' selected' : '';
+    return '<option value="' + inc + '"' + sel + '>' + inc + '</option>';
   }).join('');
 
   var row = document.createElement('div');
   row.className = 'item-row';
   row.innerHTML =
-    '<div class="item-top">' +
-      '<span class="item-num">' + idx + '</span>' +
+    '<button class="item-del" onclick="delItem(this,\'' + block + '\')" title="Удалить">' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+    '</button>' +
+    '<div class="item-fields">' +
       '<div class="item-col">' +
         '<div class="item-field-label">Продукт</div>' +
-        '<input type="text" class="item-product" value="' + (productVal || '').replace(/"/g,'&quot;') + '">' +
+        '<input type="text" class="item-product" value="' + (productVal || '').replace(/"/g, '&quot;') + '">' +
       '</div>' +
       '<div class="item-col">' +
         '<div class="item-field-label">Инкремент</div>' +
         '<select class="item-increment">' + incOpts + '</select>' +
       '</div>' +
-      '<button class="item-del" onclick="delItem(this,\'' + block + '\')" title="Удалить">' +
-        '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
-      '</button>' +
     '</div>' +
-    '<textarea class="item-desc" placeholder="' + descPh + '" rows="2">' + (descVal || '') + '</textarea>';
+    '<textarea class="item-desc" placeholder="' + descPh + '">' + (descVal || '') + '</textarea>';
 
   list.appendChild(row);
   if (!productVal) row.querySelector('.item-product').focus();
@@ -643,14 +616,7 @@ function addItem(block, productVal, incrementVal, descVal) {
 
 function delItem(btn, block) {
   btn.closest('.item-row').remove();
-  reindex(block);
   updateBadge(block);
-}
-
-function reindex(block) {
-  document.getElementById(block + 'List').querySelectorAll('.item-row').forEach(function(r, i) {
-    r.querySelector('.item-num').textContent = i + 1;
-  });
 }
 
 function getItems(block) {
@@ -665,6 +631,7 @@ function getItems(block) {
   return out;
 }
 
+// ── REPORT ────────────────────────────────────
 function buildReport() {
   var emp = document.getElementById('employee').value.trim() || '—';
   var week = getWeekRange(weekOffset);
@@ -683,9 +650,9 @@ function buildReport() {
   if (!done.length) {
     s += '   (не заполнено)\n';
   } else {
-    done.forEach(function(i, n) {
-      s += '   ' + (n+1) + '. [' + i.increment + '] ' + (i.product || '—') + '\n';
-      if (i.desc) s += '      ' + i.desc + '\n';
+    done.forEach(function(item, n) {
+      s += '   ' + (n + 1) + '. [' + item.increment + '] ' + (item.product || '—') + '\n';
+      if (item.desc) s += '      ' + item.desc + '\n';
     });
   }
 
@@ -693,38 +660,36 @@ function buildReport() {
   if (!plan.length) {
     s += '   (не заполнено)\n';
   } else {
-    plan.forEach(function(i, n) {
-      s += '   ' + (n+1) + '. [' + i.increment + '] ' + (i.product || '—') + '\n';
-      if (i.desc) s += '      ' + i.desc + '\n';
+    plan.forEach(function(item, n) {
+      s += '   ' + (n + 1) + '. [' + item.increment + '] ' + (item.product || '—') + '\n';
+      if (item.desc) s += '      ' + item.desc + '\n';
     });
   }
 
   if (comments) {
     s += '\n💬 КОММЕНТАРИИ И БЛОКЕРЫ\n   ' + comments.split('\n').join('\n   ') + '\n';
   }
-
   return s;
 }
 
+// ── MODAL ─────────────────────────────────────
 function showPreview() {
   document.getElementById('previewText').textContent = buildReport();
   document.getElementById('modal').classList.add('open');
 }
-
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function closeModalBg(e) { if (e.target.id === 'modal') closeModal(); }
 
+// ── COPY / MAIL ───────────────────────────────
 function copyReport() {
   navigator.clipboard.writeText(buildReport()).then(function() { toast('Скопировано в буфер обмена'); });
 }
-
 function copyFromModal() {
   navigator.clipboard.writeText(document.getElementById('previewText').textContent).then(function() {
     toast('Скопировано');
     setTimeout(closeModal, 700);
   });
 }
-
 function mailReport() {
   var emp = document.getElementById('employee').value.trim() || 'Сотрудник';
   var week = getWeekRange(weekOffset);
@@ -733,10 +698,9 @@ function mailReport() {
   window.location.href = 'mailto:?subject=' + subj + '&body=' + body;
 }
 
-
-
-function clearAll(silent) {
-  if (!silent && !confirm('Очистить всю форму?')) return;
+// ── CLEAR ─────────────────────────────────────
+function clearAll() {
+  if (!confirm('Очистить всю форму?')) return;
   document.getElementById('employee').value = '';
   document.getElementById('comments').value = '';
   document.getElementById('doneList').innerHTML = '';
@@ -748,6 +712,7 @@ function clearAll(silent) {
   updateTitle();
 }
 
+// ── TOAST ─────────────────────────────────────
 function toast(msg) {
   document.getElementById('toastText').textContent = msg;
   var t = document.getElementById('toast');
@@ -755,6 +720,39 @@ function toast(msg) {
   setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
+// ── TOOLTIP ───────────────────────────────────
+var floatingTip = document.getElementById('floatingTip');
+
+document.addEventListener('mouseover', function(e) {
+  var icon = e.target.closest('.tip-icon');
+  if (!icon) return;
+  var text = icon.getAttribute('data-tip');
+  if (!text) return;
+  floatingTip.textContent = text;
+  floatingTip.style.display = 'block';
+  var r = icon.getBoundingClientRect();
+  floatingTip.style.left = (r.left + r.width / 2) + 'px';
+  floatingTip.style.top = (r.top - 10) + 'px';
+  floatingTip.style.transform = 'translate(-50%, -100%)';
+  floatingTip.style.background = 'var(--text-primary)';
+  floatingTip.style.color = '#fff';
+  floatingTip.style.fontSize = '12px';
+  floatingTip.style.padding = '8px 12px';
+  floatingTip.style.borderRadius = '12px';
+  floatingTip.style.width = '220px';
+  floatingTip.style.whiteSpace = 'normal';
+  floatingTip.style.lineHeight = '1.5';
+  floatingTip.style.boxShadow = '0 4px 16px rgba(0,0,0,.2)';
+  floatingTip.style.pointerEvents = 'none';
+});
+
+document.addEventListener('mouseout', function(e) {
+  if (e.target.closest('.tip-icon')) {
+    floatingTip.style.display = 'none';
+  }
+});
+
+// ── INIT ──────────────────────────────────────
 updateWeek();
 addItem('done');
 addItem('plan');
