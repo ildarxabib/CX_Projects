@@ -120,7 +120,7 @@
     transition:max-height .3s ease,opacity .25s ease,margin .3s ease;
     margin-top:0;
   }
-  .conditional.open{max-height:2000px;opacity:1;margin-top:24px;margin-bottom:24px;}
+  .conditional.open{max-height:2000px;opacity:1;margin-top:24px;margin-bottom:24px;overflow:visible;}
 
   .hint{
     display:flex;gap:10px;align-items:flex-start;
@@ -297,9 +297,15 @@
     </div>
     <div class="conditional" id="cjm-block">
       <div class="field">
-        <label class="lbl">Когда ориентировочно будут необходимы артефакты (CJM, прототипы и т.д.)?
+        <label class="lbl">Перечисли, какие работы понадобятся
+          <span class="tip"><span class="tip-icon">?</span><span class="tip-bubble">Проектирование CJ, анализ CJ AS IS, экспертные консультации, макеты / прототипы и т.д.</span></span>
         </label>
-        <input type="text" data-q="Срок артефактов проектирования" placeholder="">
+        <textarea data-q="Работы по проектированию" placeholder="Перечисли необходимые работы"></textarea>
+      </div>
+      <div class="field">
+        <label class="lbl">Когда потребуются результаты?
+        </label>
+        <input type="text" data-q="Срок результатов проектирования" placeholder="Укажи дату">
       </div>
     </div>
 
@@ -313,9 +319,15 @@
     </div>
     <div class="conditional" id="shpk-block">
       <div class="field">
-        <label class="lbl">Когда ориентировочно будут необходимы результаты (ШПК, тексты и т.д.)?
+        <label class="lbl">Перечисли, какие работы понадобятся
+          <span class="tip"><span class="tip-icon">?</span><span class="tip-bubble">Написание текстов, проработка логики коммуникаций, ШПК / биллинговые уведомления, экспертные консультации и т.д.</span></span>
         </label>
-        <input type="text" data-q="Срок результатов коммуникаций" placeholder="">
+        <textarea data-q="Работы по коммуникациям" placeholder="Перечисли необходимые работы"></textarea>
+      </div>
+      <div class="field">
+        <label class="lbl">Когда потребуются результаты?
+        </label>
+        <input type="text" data-q="Срок результатов коммуникаций" placeholder="Укажи дату">
       </div>
     </div>
 
