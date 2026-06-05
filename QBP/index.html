@@ -37,7 +37,7 @@
     display:flex;align-items:center;justify-content:center;
   }
 
-  .progress{flex:1;height:6px;background:var(--border-2);border-radius:999px;overflow:hidden;min-width:80px;}
+  .progress{flex:1;height:10px;background:var(--border-2);border-radius:999px;overflow:hidden;min-width:80px;}
   .progress-fill{height:100%;background:linear-gradient(90deg,#00B956,#00D2FF);width:0;transition:width .6s ease;border-radius:999px;}
 
   .card{
@@ -53,8 +53,30 @@
 
   .field{margin-bottom:24px;}
   .field:last-child{margin-bottom:0;}
-  label.lbl{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.5;}
-  label.lbl .req{color:var(--green);margin-left:0;}
+  label.lbl{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.5;}
+  label.lbl .req{color:var(--green);margin-left:-6px;}
+
+  /* tooltip */
+  .tip{position:relative;display:inline-flex;flex-shrink:0;}
+  .tip-icon{
+    width:16px;height:16px;border-radius:50%;border:1.5px solid var(--text-2);
+    color:var(--text-2);font-size:11px;font-weight:700;line-height:1;
+    display:flex;align-items:center;justify-content:center;cursor:help;
+    transition:all .15s ease;user-select:none;
+  }
+  .tip:hover .tip-icon{border-color:var(--green);color:var(--green);}
+  .tip-bubble{
+    position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);
+    background:var(--text);color:#fff;font-size:12.5px;font-weight:400;line-height:1.45;
+    padding:10px 14px;border-radius:12px;width:max-content;max-width:280px;
+    box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;visibility:hidden;
+    transition:all .18s ease;z-index:50;pointer-events:none;text-transform:none;letter-spacing:normal;
+  }
+  .tip-bubble::after{
+    content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    border:6px solid transparent;border-top-color:var(--text);
+  }
+  .tip:hover .tip-bubble, .tip.show .tip-bubble{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
 
   input[type=text], textarea, input[type=date]{
     width:100%; background:var(--card); border:1.5px solid var(--border);
@@ -64,6 +86,18 @@
   textarea{height:auto;min-height:84px;padding:12px 16px;resize:none;line-height:1.55;}
   input::placeholder, textarea::placeholder{color:var(--text-2);}
   input:focus, textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.10);}
+  input:disabled, textarea:disabled{background:var(--bg);color:var(--text-dis);cursor:not-allowed;}
+
+  /* checkbox */
+  .check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;margin-top:10px;font-size:14px;color:var(--text);}
+  .check input{position:absolute;opacity:0;width:0;height:0;}
+  .check .box{
+    width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);
+    background:#fff;display:flex;align-items:center;justify-content:center;transition:all .15s ease;flex-shrink:0;
+  }
+  .check .box svg{opacity:0;transition:opacity .15s ease;}
+  .check input:checked + .box{background:var(--green);border-color:var(--green);}
+  .check input:checked + .box svg{opacity:1;}
 
   .sub-fields{display:grid;gap:12px;}
   .sub-fields .mini{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:12px;}
@@ -86,7 +120,7 @@
     transition:max-height .3s ease,opacity .25s ease,margin .3s ease;
     margin-top:0;
   }
-  .conditional.open{max-height:2000px;opacity:1;margin-top:24px;}
+  .conditional.open{max-height:2000px;opacity:1;margin-top:24px;margin-bottom:24px;}
 
   .hint{
     display:flex;gap:10px;align-items:flex-start;
@@ -114,6 +148,7 @@
   .btn-primary{background:var(--green);color:#fff;}
   .btn-primary:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.30);}
   .btn-primary:active{background:var(--green-pressed);transform:scale(.98);}
+  .btn-primary:disabled{background:var(--bg);color:var(--text-dis);cursor:not-allowed;box-shadow:none;transform:none;}
   .btn-secondary{background:#fff;color:var(--text);border:1.5px solid var(--border);}
   .btn-secondary:hover{border-color:var(--green);color:var(--green);}
 
@@ -147,45 +182,62 @@
     <p class="group-sub">Кто заявляет и по какому продукту нужны ресурсы.</p>
 
     <div class="field">
-      <label class="lbl">1. Название твоей команды<span class="req">*</span></label>
+      <label class="lbl">Название твоей команды
+      </label>
       <input type="text" data-q="Название команды" placeholder="Направление или отдел">
     </div>
     <div class="field">
-      <label class="lbl">2. По какому продукту / процессу нужны ресурсы КО<span class="req">*</span></label>
+      <label class="lbl">По какому продукту / процессу нужны ресурсы КО
+      </label>
       <input type="text" data-q="Продукт / процесс" placeholder="Например: Виртуальная АТС">
     </div>
     <div class="field">
-      <label class="lbl">3. Суть инициативы (кратко)<span class="req">*</span></label>
+      <label class="lbl">Суть инициативы (кратко)
+      </label>
       <textarea data-q="Суть инициативы" placeholder="Опиши инициативу в 2–3 предложениях"></textarea>
     </div>
     <div class="field">
-      <label class="lbl">4. Ссылки на материалы (если есть)</label>
+      <label class="lbl">Предпосылки инициативы
+        <span class="tip"><span class="tip-icon">?</span><span class="tip-bubble">Например: стратегический проект, требование регулятора, поручение топ-менеджмента, эффективный бизнес-кейс, изменения на рынке и т.д.</span></span>
+      </label>
+      <textarea data-q="Предпосылки инициативы" placeholder="Почему эта инициатива появилась и почему сейчас"></textarea>
+    </div>
+    <div class="field">
+      <label class="lbl">Ссылки на материалы (если есть)
+      </label>
       <div class="sub-fields">
         <div class="mini"><label>Jira</label><input type="text" data-q="Jira" ></div>
         <div class="mini"><label>Confluence</label><input type="text" data-q="Confluence" ></div>
-        <div class="mini"><label>Презентация</label><input type="text" data-q="Презентация" ></div>
       </div>
     </div>
+  </div>
+
+  <!-- БЛОК «Эффекты» -->
+  <div class="card">
+    <p class="group-label">Ожидаемые эффекты</p>
+    <p class="group-sub">Зачем это бизнесу и какой результат ожидается.</p>
+
     <div class="field">
-      <label class="lbl">5. Какую бизнес-задачу / проблему решаем?<span class="req">*</span></label>
-      <textarea data-q="Бизнес-задача" placeholder="Что меняется для бизнеса и клиента"></textarea>
-    </div>
-    <div class="field">
-      <label class="lbl">6. Тип активности<span class="req">*</span></label>
-      <div class="seg" data-q="Тип активности" data-single>
-        <div class="chip">Run (операционка)</div>
-        <div class="chip">Change (крупный проект)</div>
-      </div>
+      <label class="lbl">Ожидаемые эффекты и потенциальный инкремент
+        <span class="tip"><span class="tip-icon">?</span><span class="tip-bubble">Влияние на выручку, абонентскую базу, сокращение операционных затрат и т.д. Если возможно — с количественной оценкой.</span></span>
+      </label>
+      <textarea id="increment-input" data-q="Ожидаемые эффекты и инкремент" placeholder="Какой эффект ожидается и его оценка, например: +5 млн ₽ / год, −10% обращений"></textarea>
+      <label class="check">
+        <input type="checkbox" id="no-effect" data-q="Эффект не посчитан">
+        <span class="box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        Эффект не посчитан
+      </label>
     </div>
   </div>
 
   <!-- БЛОК 2: Исследование -->
   <div class="card">
     <p class="group-label">Исследование</p>
-    <p class="group-sub">Если исследование нужно — откроются дополнительные вопросы (пп. 8–13).</p>
+    <p class="group-sub">Если исследование нужно — откроются дополнительные вопросы.</p>
 
     <div class="field">
-      <label class="lbl">7. Тебе потребуется исследование?<span class="req">*</span></label>
+      <label class="lbl">Тебе потребуется исследование?
+      </label>
       <div class="seg yesno" id="needs-research" data-q="Нужно исследование" data-single>
         <div class="chip">Да</div>
         <div class="chip">Нет</div>
@@ -194,74 +246,87 @@
 
     <div class="conditional" id="research-block">
       <div class="field">
-        <label class="lbl">8. Какое исследование необходимо?</label>
+        <label class="lbl">Какое исследование необходимо?
+          <span class="tip"><span class="tip-icon">?</span><span class="tip-bubble">Качественное (интервью, юзабилити) или количественное (опросы, статистика).</span></span>
+        </label>
         <div class="seg" data-q="Тип исследования" data-single>
           <div class="chip">Качественное</div>
           <div class="chip">Количественное</div>
         </div>
       </div>
       <div class="field">
-        <label class="lbl">9. Цель исследования</label>
+        <label class="lbl">Цель исследования
+        </label>
         <textarea data-q="Цель исследования" placeholder="Что хотим узнать и зачем"></textarea>
       </div>
       <div class="field">
-        <label class="lbl">10. Какие вопросы / гипотезы нужно изучить?</label>
+        <label class="lbl">Какие вопросы / гипотезы нужно изучить?
+        </label>
         <textarea data-q="Вопросы и гипотезы" placeholder="Основные исследовательские вопросы, гипотезы"></textarea>
       </div>
       <div class="field">
-        <label class="lbl">11. Какие данные / результаты уже есть по теме?</label>
+        <label class="lbl">Какие данные / результаты уже есть по теме?
+        </label>
         <textarea data-q="Что уже известно" placeholder="Аналитика, обращения, прошлые исследования"></textarea>
       </div>
       <div class="field">
-        <label class="lbl">12. Когда нужен результат исследования?</label>
+        <label class="lbl">Когда нужен результат исследования?
+        </label>
         <input type="text" data-q="Срок исследования" placeholder="Например: к 15.09">
       </div>
       <div class="field">
-        <label class="lbl">13. Комментарий</label>
+        <label class="lbl">Комментарий
+        </label>
         <textarea data-q="Комментарий по исследованию" placeholder="Любые уточнения"></textarea>
       </div>
     </div>
   </div>
 
-  <!-- БЛОК 3: CJM / ШПК / релиз -->
+  <!-- БЛОК 3: Клиентские пути / коммуникации / сроки -->
   <div class="card">
-    <p class="group-label">CJM, ШПК и сроки</p>
+    <p class="group-label">Клиентские пути, коммуникации и сроки</p>
     <p class="group-sub">Дополнительные потребности и контрольные даты.</p>
 
     <div class="field">
-      <label class="lbl">14. Тебе потребуется CJM?<span class="req">*</span></label>
-      <div class="seg yesno" id="needs-cjm" data-q="Нужен CJM" data-single>
+      <label class="lbl">Потребуется проектирование клиентских путей?
+      </label>
+      <div class="seg yesno" id="needs-cjm" data-q="Проектирование клиентских путей" data-single>
         <div class="chip">Да</div>
         <div class="chip">Нет</div>
       </div>
     </div>
     <div class="conditional" id="cjm-block">
       <div class="field">
-        <label class="lbl">15. Когда — если есть понимание?</label>
-        <input type="text" data-q="Срок CJM" placeholder="Например: Q3">
+        <label class="lbl">Когда ориентировочно будут необходимы артефакты (CJM, прототипы и т.д.)?
+        </label>
+        <input type="text" data-q="Срок артефактов проектирования" placeholder="">
       </div>
     </div>
 
     <div class="field">
-      <label class="lbl">16. Тебе потребуется ШПК (биллинговые коммуникации)?<span class="req">*</span></label>
-      <div class="seg yesno" id="needs-shpk" data-q="Нужен ШПК" data-single>
+      <label class="lbl">Тебе потребуется написание текстов, проработка логики коммуникаций?
+      </label>
+      <div class="seg yesno" id="needs-shpk" data-q="Тексты и логика коммуникаций" data-single>
         <div class="chip">Да</div>
         <div class="chip">Нет</div>
       </div>
     </div>
     <div class="conditional" id="shpk-block">
       <div class="field">
-        <label class="lbl">17. Дата передачи ШПК на ИТ-анализ / конфигурирование</label>
-        <input type="text" data-q="Дата передачи ШПК" placeholder="если известно">
+        <label class="lbl">Когда ориентировочно будут необходимы результаты (ШПК, тексты и т.д.)?
+        </label>
+        <input type="text" data-q="Срок результатов коммуникаций" placeholder="">
       </div>
     </div>
 
     <div class="field">
-      <label class="lbl">18. Если непонятно, какая экспертиза КО нужна — опиши задачу своими словами</label>
+      <label class="lbl">Если непонятно, какая экспертиза КО нужна — опиши задачу своими словами
+      </label>
       <textarea data-q="Задача своими словами" placeholder="Свободное описание"></textarea>
     </div>
     <div class="field">
-      <label class="lbl">19. Планируемая дата релиза / вывода в КЭ<span class="req">*</span></label>
+      <label class="lbl">Планируемая дата релиза / вывода в КЭ
+      </label>
       <input type="text" data-q="Дата релиза / КЭ" placeholder="Например: 30.09.2026">
     </div>
   </div>
@@ -269,7 +334,7 @@
   <!-- ACTIONS -->
   <div class="actions">
     <div class="progress-wrap">
-      <span class="fmt-note">Формат: таблица для Jira / Confluence</span>
+      <span class="fmt-note">Прогресс заполнения</span>
       <div class="progress-row">
         <div class="progress"><div class="progress-fill" id="progress"></div></div>
         <span class="progress-pct" id="progress-pct">0%</span>
@@ -333,6 +398,7 @@
       const q = el.getAttribute('data-q');
       let v = '';
       if(el.classList.contains('seg')) v = segValue(el);
+      else if(el.type === 'checkbox') v = el.checked ? 'Да' : '';
       else v = el.value.trim();
       rows.push([q, v]);
     });
@@ -350,13 +416,18 @@
 
   // Progress
   function updateProgress(){
-    const required = ['Название команды','Продукт / процесс','Суть инициативы','Бизнес-задача',
-      'Тип активности','Нужно исследование','Нужен CJM','Нужен ШПК','Дата релиза / КЭ'];
+    const required = ['Название команды','Продукт / процесс','Суть инициативы','Предпосылки инициативы',
+      'Ожидаемые эффекты и инкремент','Нужно исследование','Проектирование клиентских путей','Тексты и логика коммуникаций','Дата релиза / КЭ'];
     let filled = 0;
     required.forEach(q=>{
       const el = document.querySelector('[data-q="'+q+'"]');
       if(!el) return;
-      const v = el.classList.contains('seg') ? segValue(el) : el.value.trim();
+      let v = el.classList.contains('seg') ? segValue(el) : el.value.trim();
+      // эффект засчитывается, если заполнен текст или отмечен «Эффект не посчитан»
+      if(q === 'Ожидаемые эффекты и инкремент'){
+        const ne = document.getElementById('no-effect');
+        if(ne && ne.checked) v = 'Да';
+      }
       if(v) filled++;
     });
     const pct = Math.round(filled/required.length*100);
@@ -369,6 +440,30 @@
   });
 
   // Format switch removed — формат всегда Jira-таблица
+
+  // «Эффект не посчитан» → дизейблим поле инкремента
+  const noEffect = document.getElementById('no-effect');
+  const incrementInput = document.getElementById('increment-input');
+  if(noEffect && incrementInput){
+    noEffect.addEventListener('change',()=>{
+      incrementInput.disabled = noEffect.checked;
+      if(noEffect.checked) incrementInput.value = '';
+      updateProgress();
+    });
+  }
+
+  // Тултипы: тап для тач-устройств
+  document.querySelectorAll('.tip').forEach(tip=>{
+    tip.addEventListener('click',e=>{
+      e.preventDefault();
+      const open = tip.classList.contains('show');
+      document.querySelectorAll('.tip').forEach(t=>t.classList.remove('show'));
+      if(!open) tip.classList.add('show');
+    });
+  });
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.tip')) document.querySelectorAll('.tip').forEach(t=>t.classList.remove('show'));
+  });
 
   // Copy
   const copyBtn = document.getElementById('copy-btn');
