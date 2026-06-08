@@ -141,22 +141,22 @@ if (JSON.stringify(context.result.levels) !== JSON.stringify(expectedLevels)) {
 if (context.result.escaped !== "значение \\| тест; строка") {
   throw new Error(`Wiki escaping failed: ${context.result.escaped}`);
 }
-if (!context.result.wiki.startsWith("|| Блок || Значение ||")) {
+if (!context.result.wiki.startsWith("||Блок||Значение||")) {
   throw new Error("Wiki header is missing");
 }
 if (!context.result.wiki.includes("Иван \\| Иванов")) {
   throw new Error("Wiki pipe escaping is missing");
 }
-if (!context.result.wiki.includes("| Роль | — |")) {
+if (!context.result.wiki.includes("|Роль|—|")) {
   throw new Error("Empty wiki values are not normalized");
 }
-if (!context.result.wiki.includes("| Архетип | Паладин |")) {
+if (!context.result.wiki.includes("|Архетип|Паладин|")) {
   throw new Error("Archetype row is missing");
 }
-if (!context.result.wiki.includes("| Направления | Виртуальная АТС; Облачное видеонаблюдение |")) {
+if (!context.result.wiki.includes("|Направления|Виртуальная АТС; Облачное видеонаблюдение|")) {
   throw new Error("Directions row is invalid");
 }
-if (!context.result.wiki.includes("| Инструменты эксперта | Service Blueprint; SQL; Python |")) {
+if (!context.result.wiki.includes("|Инструменты эксперта|Service Blueprint; SQL; Python|")) {
   throw new Error("Tools row is invalid");
 }
 if (!context.result.wiki.includes("📉 −12% обращений")) {
@@ -168,5 +168,11 @@ if (!context.result.wiki.includes("Запуск — роль: Проектиро
 ["Чем могу помочь", "Основной инструмент", "Методики и инструменты"].forEach((label) => {
   if (context.result.wiki.includes(label)) throw new Error(`Removed wiki row is still present: ${label}`);
 });
+["ClipboardItem", "text/html", "generateHtmlTable"].forEach((text) => {
+  if (js.includes(text)) throw new Error(`HTML clipboard format is still present: ${text}`);
+});
+if (!js.includes("navigator.clipboard.writeText(currentWikiMarkup)")) {
+  throw new Error("Plain-text wiki clipboard copy is missing");
+}
 
 console.log(`Verified compact preview, clean fields, sticky styles, wiki details and ${ids.length} unique ids.`);

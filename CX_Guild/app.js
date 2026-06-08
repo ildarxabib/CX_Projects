@@ -497,7 +497,7 @@ function normalizeWikiValue(value) {
   return normalized || "—";
 }
 
-function generateWiki(data) {
+function getProfileRows(data) {
   const competencyText = data.competencies
     .map((competency) => `${competency.label}: ${"●".repeat(competency.value)}${"○".repeat(5 - competency.value)}`)
     .join("; ");
@@ -509,7 +509,7 @@ function generateWiki(data) {
 
   const metricText = data.metrics.map(formatMetric).join("; ");
 
-  const rows = [
+  return [
     ["Имя", data.fullName],
     ["Роль", data.role],
     ["Команда", data.team],
@@ -525,10 +525,14 @@ function generateWiki(data) {
     ["Влияние на показатели", metricText],
     ["Достижения", data.achievements.join("; ")]
   ];
+}
+
+function generateWiki(data) {
+  const rows = getProfileRows(data);
 
   return [
-    "|| Блок || Значение ||",
-    ...rows.map(([label, value]) => `| ${normalizeWikiValue(label)} | ${normalizeWikiValue(value)} |`)
+    "||Блок||Значение||",
+    ...rows.map(([label, value]) => `|${normalizeWikiValue(label)}|${normalizeWikiValue(value)}|`)
   ].join("\n");
 }
 
@@ -572,14 +576,12 @@ function clearForm() {
 }
 
 async function copyWiki() {
-  const text = currentWikiMarkup;
-
   try {
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(currentWikiMarkup);
     } else {
       const temporary = document.createElement("textarea");
-      temporary.value = text;
+      temporary.value = currentWikiMarkup;
       temporary.setAttribute("readonly", "");
       temporary.style.position = "fixed";
       temporary.style.opacity = "0";
@@ -595,7 +597,7 @@ async function copyWiki() {
   }
 }
 
-function showToast(message = "Профиль скопирован. Можно вставить в Confluence.") {
+function showToast(message = "Wiki-разметка скопирована.") {
   clearTimeout(toastTimer);
   toast.querySelector("span:last-child").textContent = message;
   toast.hidden = false;
