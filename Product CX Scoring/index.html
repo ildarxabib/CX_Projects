@@ -1,709 +1,860 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CX / Product Review Scorecard</title>
-
 <style>
-:root{
-  --green:#00B956;
-  --green-hover:#00A94F;
-  --green-pressed:#009447;
-  --purple:#731982;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root{
+    --green:#00B956;--green-hover:#00A94F;--green-light:#EAFBF1;--green-border:rgba(0,185,86,.2);
+    --bg:#F2F4F7;--card:#FFFFFF;--surface:#F7F8FA;--border:#E6E9EE;--border-dark:#D2D5DA;
+    --text:#2B2D33;--secondary:#8F96A4;--disabled:#A8AFB9;
+    --warn-bg:#FFF6E5;--warn:#FF9F0A;--info-bg:#DDF5FF;--info:#00B5FF;--err-bg:#FFF0F0;--err:#FF4D4F;
+    --purple:#731982;--purple-bg:#F3E8F9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:32px 24px 80px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .view{display:none;animation:fadeUp .35s ease both}
+  .view.active{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-  --bg:#F2F4F7;
-  --card:#FFFFFF;
-  --surface:#F7F8FA;
+  /* OVERVIEW */
+  .ov-head{margin-bottom:24px}
+  .ov-eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+  .ov-title{font-size:32px;font-weight:700;margin-bottom:8px;line-height:1.15}
+  .ov-sub{font-size:15px;color:var(--secondary);line-height:1.6;max-width:700px}
 
-  --border:#D2D5DA;
-  --border-soft:#E6E9EE;
+  /* MODE TOGGLE */
+  .mode-bar{display:flex;align-items:center;gap:16px;margin:20px 0 24px;flex-wrap:wrap}
+  .mode-switch{display:inline-flex;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:4px;gap:4px}
+  .mode-opt{padding:8px 18px;border-radius:10px;font-size:14px;font-weight:600;color:var(--secondary);cursor:pointer;border:none;background:transparent;transition:background .15s,color .15s;font-family:'Inter',sans-serif}
+  .mode-opt.active{background:var(--green);color:#fff}
+  .mode-hint{font-size:12px;color:var(--secondary);line-height:1.5;flex:1;min-width:220px}
+  .mode-hint b{color:var(--text);font-weight:600}
 
-  --text:#2B2D33;
-  --secondary:#8F96A4;
+  .summary-card{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+  .summary-ring{position:relative;width:96px;height:96px;flex-shrink:0}
+  .summary-ring svg{transform:rotate(-90deg)}
+  .summary-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .summary-ring-pct{font-size:22px;font-weight:700;line-height:1}
+  .summary-ring-lbl{font-size:9px;color:var(--secondary);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .summary-info{flex:1;min-width:200px}
+  .summary-zone{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:600;margin-bottom:8px}
+  .summary-zone .dot{width:7px;height:7px;border-radius:50%}
+  .summary-text{font-size:13px;color:var(--secondary);line-height:1.6}
+  .zone-red{background:var(--err-bg);color:var(--err)}.zone-red .dot{background:var(--err)}
+  .zone-yellow{background:var(--warn-bg);color:var(--warn)}.zone-yellow .dot{background:var(--warn)}
+  .zone-green{background:var(--green-light);color:var(--green)}.zone-green .dot{background:var(--green)}
+  .zone-ref{background:var(--info-bg);color:var(--info)}.zone-ref .dot{background:var(--info)}
+  .zone-empty{background:var(--bg);color:var(--secondary)}.zone-empty .dot{background:var(--secondary)}
 
-  --success-bg:#EAFBF1;
-  --info-bg:#DDF5FF;
-  --warning-bg:#FFF6E5;
-  --error-bg:#FFF0F0;
-}
+  .stage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .stage-card{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:24px;cursor:pointer;transition:border-color .15s,box-shadow .2s,transform .2s;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+  .stage-card:hover{border-color:var(--green);box-shadow:0 8px 28px rgba(0,0,0,.10);transform:translateY(-2px)}
+  .stage-card:hover .stage-icon{background:var(--green-light)}
+  .stage-icon{width:48px;height:48px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;transition:background .15s}
+  .stage-num{font-size:11px;font-weight:600;color:var(--secondary);letter-spacing:.05em;margin-bottom:4px}
+  .stage-name{font-size:17px;font-weight:600;line-height:1.3;margin-bottom:6px}
+  .stage-short{font-size:13px;color:var(--secondary);line-height:1.55;margin-bottom:18px;flex:1}
+  .stage-bar{height:5px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:14px}
+  .stage-bar-fill{height:100%;border-radius:999px;background:var(--green);transition:width .4s ease;width:0}
+  .stage-foot{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border)}
+  .stage-progress-txt{font-size:12px;color:var(--secondary)}
+  .stage-progress-txt b{color:var(--text);font-weight:600}
+  .stage-score-pill{font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .pill-empty{background:var(--bg);color:var(--secondary)}
+  .pill-red{background:var(--err-bg);color:var(--err)}.pill-yellow{background:var(--warn-bg);color:var(--warn)}
+  .pill-green{background:var(--green-light);color:var(--green)}.pill-ref{background:var(--info-bg);color:var(--info)}
 
-*{
-  box-sizing:border-box;
-}
+  .usage-strip{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:24px;margin-top:24px}
+  .usage-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .usage-sub{font-size:12px;color:var(--secondary);margin-bottom:18px}
+  .usage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .usage-item{background:var(--surface);border-radius:16px;padding:16px}
+  .usage-item-icon{font-size:18px;margin-bottom:8px}
+  .usage-item-name{font-size:13px;font-weight:600;margin-bottom:4px}
+  .usage-item-desc{font-size:12px;color:var(--secondary);line-height:1.5}
 
-body{
-  margin:0;
-  background:var(--bg);
-  font-family:"MegaFon Graphik LC","Inter",Arial,sans-serif;
-  color:var(--text);
-}
+  /* STAGE DETAIL */
+  .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--secondary);background:none;border:none;cursor:pointer;padding:6px 0;margin-bottom:16px;transition:color .15s;font-family:'Inter',sans-serif}
+  .back-btn:hover{color:var(--green)}
+  .sd-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+  .sd-icon{width:56px;height:56px;border-radius:16px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+  .sd-meta{flex:1}
+  .sd-num{font-size:12px;font-weight:600;color:var(--secondary);letter-spacing:.05em;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .sd-mode-tag{padding:2px 9px;border-radius:999px;font-size:10px;font-weight:600;background:var(--green-light);color:var(--green);text-transform:none;letter-spacing:0}
+  .sd-title{font-size:26px;font-weight:700;line-height:1.2;margin-bottom:4px}
+  .sd-sub{font-size:14px;color:var(--secondary);line-height:1.55}
 
-.container{
-  max-width:1440px;
-  margin:0 auto;
-  padding:40px 32px 80px;
-}
+  .training-note{background:var(--purple-bg);border:1px solid rgba(115,25,130,.15);border-radius:16px;padding:14px 18px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start}
+  .training-note-icon{font-size:16px;flex-shrink:0}
+  .training-note-text{font-size:12px;color:var(--text);line-height:1.65}
+  .training-note-text b{color:var(--purple);font-weight:600}
 
-.hero{
-  background:linear-gradient(135deg,#FFFFFF 0%,#EAFBF1 60%,#DDF5FF 100%);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:40px;
-  box-shadow:0 16px 40px rgba(43,45,51,.08);
-  margin-bottom:24px;
-}
+  .sd-progress{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .sd-progress-label{font-size:13px;color:var(--secondary);white-space:nowrap}
+  .sd-progress-label b{color:var(--text);font-weight:600}
+  .sd-progress-track{flex:1;height:6px;background:var(--border);border-radius:999px;overflow:hidden}
+  .sd-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#00D2FF);border-radius:999px;width:0;transition:width .4s ease}
+  .sd-progress-pct{font-size:13px;font-weight:600;color:var(--green);white-space:nowrap}
 
-h1{
-  margin:0 0 12px;
-  font-size:44px;
-  line-height:1.05;
-  font-weight:700;
-  letter-spacing:-.03em;
-}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:0 4px;align-items:center}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--secondary)}
+  .legend-dot{width:8px;height:8px;border-radius:2px}
 
-.hero-sub{
-  color:var(--secondary);
-  font-size:17px;
-  margin-bottom:28px;
-}
+  /* SUBGROUP */
+  .subgroup{margin-bottom:8px}
+  .subgroup-head{display:flex;align-items:center;gap:10px;margin:24px 4px 12px}
+  .subgroup-line{flex:1;height:1px;background:var(--border)}
+  .subgroup-name{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--secondary)}
 
-.hero-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-}
+  /* CRITERION */
+  .crit-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:20px 24px;margin-bottom:14px;transition:opacity .2s}
+  .crit-card.na{opacity:.6}
+  .crit-top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;flex-wrap:wrap}
+  .crit-left{flex:1;min-width:260px}
+  .crit-title-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px}
+  .crit-title{font-size:15px;font-weight:600;line-height:1.4}
+  .crit-edge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:2px 7px;border-radius:999px;margin-left:2px;white-space:nowrap}
+  .crit-sub{font-size:12px;color:var(--secondary);line-height:1.55}
 
-input,select,textarea{
-  width:100%;
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:12px 14px;
-  font-size:15px;
-  font-family:inherit;
-  background:#fff;
-  outline:none;
-}
+  .slider-zone{flex-shrink:0;width:300px}
+  .slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .slider-cur{font-size:13px;font-weight:700;transition:color .15s}
+  .slider-cur.lvl-none{color:var(--disabled)}
+  .slider-cur.lvl0{color:var(--err)}.slider-cur.lvl1{color:var(--warn)}
+  .slider-cur.lvl2{color:var(--green)}.slider-cur.lvl3{color:var(--green)}
+  .na-toggle{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--secondary);cursor:pointer;user-select:none}
+  .na-toggle input{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--border-dark);border-radius:5px;cursor:pointer;position:relative;transition:background .15s,border-color .15s;flex-shrink:0}
+  .na-toggle input:checked{background:var(--secondary);border-color:var(--secondary)}
+  .na-toggle input:checked::after{content:'✓';position:absolute;inset:0;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 
-input:focus,
-select:focus,
-textarea:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 4px rgba(0,185,86,.12);
-}
+  .slider-rail{position:relative}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:var(--border);outline:none;cursor:pointer;margin:0;display:block}
+  input[type=range]:disabled{cursor:not-allowed;opacity:.5}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--border-dark);cursor:pointer;transition:border-color .15s;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--border-dark);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  input[type=range].set.lvl0::-webkit-slider-thumb{border-color:var(--err)}
+  input[type=range].set.lvl1::-webkit-slider-thumb{border-color:var(--warn)}
+  input[type=range].set.lvl2::-webkit-slider-thumb{border-color:var(--green)}
+  input[type=range].set.lvl3::-webkit-slider-thumb{border-color:var(--green)}
+  input[type=range].set.lvl0::-moz-range-thumb{border-color:var(--err)}
+  input[type=range].set.lvl1::-moz-range-thumb{border-color:var(--warn)}
+  input[type=range].set.lvl2::-moz-range-thumb{border-color:var(--green)}
+  input[type=range].set.lvl3::-moz-range-thumb{border-color:var(--green)}
+  .slider-ticks{position:relative;height:14px;margin-top:9px}
+  .slider-tick{position:absolute;transform:translateX(-50%);font-size:9px;color:var(--secondary);white-space:nowrap;line-height:1}
+  .slider-tick[data-v="0"]{left:11px}
+  .slider-tick[data-v="1"]{left:calc(11px + (100% - 22px) * 0.33333)}
+  .slider-tick[data-v="2"]{left:calc(11px + (100% - 22px) * 0.66667)}
+  .slider-tick[data-v="3"]{left:calc(100% - 11px)}
 
-textarea{
-  resize:none;
-  min-height:72px;
-  max-height:72px;
-}
+  .crit-bottom{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+  .conf-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .conf-label{font-size:12px;color:var(--secondary);font-weight:500}
+  .conf-btn{font-size:11px;font-weight:500;padding:5px 12px;border-radius:999px;border:1.5px solid var(--border-dark);background:var(--card);color:var(--secondary);cursor:pointer;transition:border-color .15s,color .15s,background .15s;font-family:'Inter',sans-serif}
+  .conf-btn:hover{border-color:var(--green);color:var(--green)}
+  .conf-btn.active{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+  .comment-field{width:100%;padding:10px 14px;border:1.5px solid var(--border-dark);border-radius:12px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;resize:none;outline:none;transition:border-color .15s;line-height:1.55;min-height:64px}
+  .comment-field:focus{border-color:var(--green)}
+  .comment-field::placeholder{color:var(--disabled)}
 
-.sticky{
-  position:sticky;
-  top:0;
-  z-index:100;
-  margin-bottom:24px;
-}
+  /* TOOLTIP */
+  .tt-trigger{width:18px;height:18px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border-dark);color:var(--secondary);font-size:10px;font-weight:700;cursor:help;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;transition:background .15s,border-color .15s,color .15s;font-family:'Inter',sans-serif}
+  .tt-trigger:hover,.tt-trigger.active{background:var(--green-light);border-color:var(--green);color:var(--green)}
+  #tt-root{position:fixed;inset:0;z-index:9999;pointer-events:none}
+  .tt-popup{position:fixed;width:400px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.13),0 4px 16px rgba(0,0,0,.07);pointer-events:auto;opacity:0;transform:translateY(6px);transition:opacity .16s ease,transform .16s ease;display:none;max-height:82vh;overflow-y:auto}
+  .tt-popup.visible{opacity:1;transform:translateY(0);display:block}
+  .tt-head{background:var(--green-light);border-bottom:1px solid var(--green-border);padding:12px 14px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:1}
+  .tt-head-title{font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.07em;flex:1}
+  .tt-body{padding:14px;display:flex;flex-direction:column;gap:14px}
+  .tt-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--secondary);margin-bottom:7px}
+  .tt-what{font-size:12px;color:var(--text);line-height:1.65}
+  .tt-ladder{display:flex;flex-direction:column;gap:6px}
+  .tt-level{display:flex;gap:9px;align-items:flex-start;background:var(--bg);border-radius:10px;padding:9px 11px}
+  .tt-level-chip{min-width:74px;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:700;text-align:center;align-self:flex-start;flex-shrink:0;line-height:1.4}
+  .chip0{background:var(--err-bg);color:var(--err)}.chip1{background:var(--warn-bg);color:var(--warn)}
+  .chip2{background:var(--green-light);color:var(--green)}.chip3{background:var(--green);color:#fff}
+  .tt-level-text{font-size:12px;color:var(--text);line-height:1.55}
+  .tt-benchmark{background:var(--warn-bg);border-radius:10px;padding:9px 11px;display:flex;gap:9px;align-items:flex-start}
+  .tt-benchmark-icon{font-size:14px;flex-shrink:0;line-height:1.6}
+  .tt-benchmark-text{font-size:12px;color:var(--text);line-height:1.6}
+  .tt-benchmark-text b{font-weight:600}
 
-.score-panel{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px 24px;
-  box-shadow:0 10px 28px rgba(43,45,51,.08);
-}
-
-.score-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-}
-
-.score-main{
-  display:flex;
-  gap:24px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-
-.score-value{
-  font-size:36px;
-  font-weight:700;
-}
-
-.badge{
-  padding:8px 14px;
-  border-radius:999px;
-  font-weight:700;
-  font-size:14px;
-}
-
-.progress{
-  width:280px;
-  height:12px;
-  background:var(--surface);
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress-fill{
-  width:0;
-  height:100%;
-  background:linear-gradient(90deg,var(--green),#00D2FF);
-}
-
-.btns{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-button{
-  border:none;
-  border-radius:14px;
-  padding:12px 16px;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-primary{
-  background:var(--green);
-  color:#fff;
-}
-
-.btn-secondary{
-  background:#fff;
-  border:1px solid var(--border);
-}
-
-.rules{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:24px;
-}
-
-.rule{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
-}
-
-.card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:24px;
-  box-shadow:0 12px 32px rgba(43,45,51,.06);
-  margin-bottom:20px;
-  overflow:hidden;
-}
-
-.block-header{
-  padding:24px 28px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  cursor:pointer;
-  background:linear-gradient(180deg,#FFFFFF 0%,#F7F8FA 100%);
-}
-
-.block-left h3{
-  margin:0;
-  font-size:22px;
-}
-
-.block-left p{
-  margin:6px 0 0;
-  color:var(--secondary);
-  font-size:14px;
-}
-
-.block-meta{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.block-content{
-  display:none;
-  border-top:1px solid var(--border-soft);
-}
-
-.block-content.open{
-  display:block;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th{
-  background:var(--surface);
-  color:var(--secondary);
-  font-size:13px;
-  text-align:left;
-  padding:14px 16px;
-}
-
-td{
-  padding:16px;
-  border-top:1px solid var(--border-soft);
-  vertical-align:top;
-}
-
-.summary{
-  padding:24px;
-  display:grid;
-  gap:16px;
-}
-
-.zone-red{background:var(--error-bg);}
-.zone-yellow{background:var(--warning-bg);}
-.zone-green{background:var(--success-bg);}
-.zone-platinum{background:var(--info-bg);}
+  .sd-foot{display:flex;align-items:center;justify-content:space-between;margin-top:24px;gap:12px}
+  .btn-primary{background:var(--green);color:#fff;border:none;border-radius:14px;padding:0 28px;height:48px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s;font-family:'Inter',sans-serif}
+  .btn-primary:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
+  .btn-secondary{background:#fff;color:var(--text);border:1.5px solid var(--border-dark);border-radius:14px;padding:0 24px;height:48px;font-size:15px;font-weight:600;cursor:pointer;transition:border-color .15s,color .15s;font-family:'Inter',sans-serif}
+  .btn-secondary:hover{border-color:var(--green);color:var(--green)}
 </style>
 </head>
 <body>
+<div id="tt-root"></div>
+<div class="wrap">
 
-<div class="container">
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+    <div class="ov-head">
+      <div class="ov-eyebrow">CX / Product Review Scorecard</div>
+      <div class="ov-title">Оценка зрелости клиентского опыта</div>
+      <div class="ov-sub">Пять ключевых этапов цифрового сценария. Пройдите анкету по каждому — система рассчитает зрелость и подсветит слабые зоны. Подсказки с калибровкой оценок и бенчмарками помогают оценивать объективно и обучаться по ходу работы.</div>
+    </div>
 
-<div class="hero">
-  <h1>CX / Product Review Scorecard</h1>
-  <div class="hero-sub">
-    Онлайн-форма для оценки зрелости клиентского опыта продукта
+    <div class="mode-bar">
+      <div class="mode-switch">
+        <button class="mode-opt active" id="mode-short" onclick="setMode('short')">Краткий</button>
+        <button class="mode-opt" id="mode-full" onclick="setMode('full')">Расширенный</button>
+      </div>
+      <div class="mode-hint" id="mode-hint"><b>Краткий чек-лист</b> — обязательный костяк критериев для быстрой проверки (15–20 мин). Подходит для продуктового комитета и gate перед запуском.</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-ring">
+        <svg width="96" height="96">
+          <circle cx="48" cy="48" r="42" fill="none" stroke="#E6E9EE" stroke-width="8"/>
+          <circle id="ring-fill" cx="48" cy="48" r="42" fill="none" stroke="#00B956" stroke-width="8" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" style="transition:stroke-dashoffset .6s ease,stroke .3s ease"/>
+        </svg>
+        <div class="summary-ring-val"><span class="summary-ring-pct" id="ring-pct">—</span><span class="summary-ring-lbl">зрелость</span></div>
+      </div>
+      <div class="summary-info">
+        <div class="summary-zone zone-empty" id="summary-zone"><span class="dot"></span>Оценка не начата</div>
+        <div class="summary-text" id="summary-text">Заполните хотя бы один этап, чтобы увидеть общий уровень зрелости и зону качества продукта.</div>
+      </div>
+    </div>
+
+    <div class="stage-grid" id="stage-grid"></div>
+
+    <div class="usage-strip">
+      <div class="usage-title">🎓 Как пользоваться инструментом</div>
+      <div class="usage-sub">Scorecard работает в нескольких контекстах — выберите свой сценарий применения</div>
+      <div class="usage-grid">
+        <div class="usage-item"><div class="usage-item-icon">✏️</div><div class="usage-item-name">Проектирование (TO BE)</div><div class="usage-item-desc">Критерии как чек-лист полноты при разработке нового продукта или сценария.</div></div>
+        <div class="usage-item"><div class="usage-item-icon">🚀</div><div class="usage-item-name">Анализ запуска</div><div class="usage-item-desc">Оценка готовности продукта перед выходом в рынок и фиксация рисков.</div></div>
+        <div class="usage-item"><div class="usage-item-icon">🔍</div><div class="usage-item-name">Аудит (AS IS)</div><div class="usage-item-desc">Поиск слабых зон в действующем продукте и формирование backlog.</div></div>
+        <div class="usage-item"><div class="usage-item-icon">👥</div><div class="usage-item-name">Продуктовый комитет</div><div class="usage-item-desc">Единый язык: score, бенчмарки и аргументы вместо мнений.</div></div>
+      </div>
+    </div>
   </div>
 
-  <div class="hero-grid">
-    <input id="product" placeholder="Продукт">
-    <select id="reviewType">
-      <option>Запуск продукта</option>
-      <option>Квартальное ревью</option>
-      <option>Глубокий аудит</option>
-      <option>Редизайн сценария</option>
-    </select>
-    <input id="owner" placeholder="Ответственный">
-    <input id="reviewer" placeholder="CX Reviewer">
-    <input id="date" type="date">
-  </div>
-</div>
-
-<div class="sticky">
-  <div class="score-panel">
-    <div class="score-top">
-      <div class="score-main">
-        <div class="score-value" id="totalScore">0%</div>
-        <div class="badge" id="zoneBadge">Не заполнено</div>
-        <div class="progress">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div id="filledMeta">0 / 120 критериев</div>
+  <!-- STAGE DETAIL -->
+  <div class="view" id="view-stage">
+    <button class="back-btn" onclick="showOverview()">← Ко всем этапам</button>
+    <div class="sd-head">
+      <div class="sd-icon" id="sd-icon">💎</div>
+      <div class="sd-meta">
+        <div class="sd-num"><span id="sd-num">Этап 1 из 5</span><span class="sd-mode-tag" id="sd-mode-tag">Краткий</span></div>
+        <div class="sd-title" id="sd-title">—</div>
+        <div class="sd-sub" id="sd-sub">—</div>
       </div>
-
-      <div class="btns">
-        <button class="btn-secondary" onclick="resetForm()">Очистить</button>
-        <button class="btn-secondary" onclick="copySummary()">Скопировать итог</button>
-        <button class="btn-primary" onclick="window.print()">PDF / Печать</button>
-      </div>
+    </div>
+    <div class="training-note"><span class="training-note-icon">🎓</span><span class="training-note-text" id="sd-training">—</span></div>
+    <div class="sd-progress">
+      <span class="sd-progress-label"><b id="sd-filled">0</b> из <b id="sd-total">0</b> критериев</span>
+      <div class="sd-progress-track"><div class="sd-progress-fill" id="sd-fill"></div></div>
+      <span class="sd-progress-pct" id="sd-pct">0%</span>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--err)"></div>0 — Блокер</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div>1 — Критично</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green);opacity:.55"></div>2 — База</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>3 — Эталон</div>
+      <div class="legend-item" style="margin-left:auto">💡 Наведите на <b style="margin:0 3px">?</b> — калибровка и бенчмарки</div>
+    </div>
+    <div id="crit-list"></div>
+    <div class="sd-foot">
+      <button class="btn-secondary" onclick="showOverview()">← Ко всем этапам</button>
+      <button class="btn-primary" id="sd-next" onclick="nextStage()">Следующий этап →</button>
     </div>
   </div>
 </div>
 
-<div class="rules">
-  <div class="rule"><strong>0 — Нет</strong><br>Критерий отсутствует</div>
-  <div class="rule"><strong>1 — Критично</strong><br>Слабая реализация</div>
-  <div class="rule"><strong>2 — База</strong><br>Минимальный стандарт</div>
-  <div class="rule"><strong>3 — Эталон</strong><br>Лучшее решение</div>
-</div>
-
-<div id="blocksContainer"></div>
-
-<div class="card">
-  <div class="summary">
-    <textarea placeholder="Основные сильные стороны"></textarea>
-    <textarea placeholder="Ключевые зоны роста"></textarea>
-    <textarea placeholder="Критические риски"></textarea>
-    <textarea placeholder="План улучшений"></textarea>
-  </div>
-</div>
-
 <script>
-const blocks = [
-
+/* ════════ DATA: stages → subgroups → criteria ════════
+   c={id,t,q,core,edge,w,l:[blocker,critично,база,эталон],b} */
+const STAGES=[
 {
-title:"Исследования и обоснование",
-desc:"Проверяем, насколько продуктовые решения опираются на данные, рынок и подтверждённые гипотезы.",
-items:[
-["Анализ рынка","Есть актуальные данные по рынку, трендам, динамике спроса и ожиданиям клиентов."],
-["Конкурентный анализ","Есть сравнение конкурентов по функциям, цене, условиям, UX, поддержке и сильным сторонам."],
-["CustDev / интервью","Проведены интервью с клиентами или пользователями, боли подтверждены фактами."],
-["JTBD / роли клиентов","Определены задачи клиента и роли в сценарии: ЛПР, администратор, бухгалтер, пользователь."],
-["Проверка гипотез","Ключевые гипотезы проверены до разработки через прототипы, MVP, интервью или тесты."],
-["Анализ текущего CJ","Для существующего продукта описан текущий путь клиента, боли, разрывы и узкие места."],
-["Анализ обращений и жалоб","Изучены обращения в поддержку, жалобы, причины отказов и повторные проблемы."],
-["Аналитика воронки","Есть данные по этапам: визиты, заявки, контакт, КП, договор, подключение, активация."]
-]
-},
-
-{
-title:"Коммерческая упаковка и ценность",
-desc:"Проверяем, насколько клиент понимает ценность продукта, отличие от альтернатив и следующий шаг.",
-items:[
-["Ценностное предложение","Клиент быстро понимает, что это за продукт, для кого он и какую проблему решает."],
-["Конкурентные отличия","Показано, чем продукт лучше альтернатив: скорость, цена, надёжность, удобство, поддержка, интеграции."],
-["Бизнес-кейсы","Описаны конкретные задачи клиента, которые решает продукт, с примерами реального применения."],
-["Отраслевая специфика","Предложение адаптировано под разные сегменты, отрасли или типы B2B-клиентов."],
-["Эффект / выгода","Понятно, что получает клиент: экономия времени, денег, снижение рисков, рост продаж или удобство."],
-["Прозрачность тарифов","Стоимость, условия подключения, ограничения, скрытые платежи и условия отключения понятны заранее."],
-["Понятный целевой шаг","Клиент понимает, что делать дальше: оставить заявку, подключить, получить расчёт или консультацию."],
-["Доказательства доверия","Есть кейсы, цифры, отзывы, сертификаты, SLA, логотипы клиентов, гарантии или примеры внедрения."]
-]
-},
-
-{
-title:"Заявка, лиды и продажи",
-desc:"Проверяем путь от интереса клиента до обработки заявки, продажи и передачи в подключение.",
-items:[
-["SLA первого контакта","Определён норматив, за сколько времени клиент должен получить первый ответ после заявки."],
-["Контроль SLA","SLA реально измеряется: есть отчётность, контроль просрочек и причины нарушений."],
-["Подтверждение заявки","После отправки заявки клиент сразу получает подтверждение, что заявка принята."],
-["Прозрачный статус заявки","Клиент понимает, на каком этапе находится заявка и что будет дальше."],
-["Ответственный за заявку","Понятно, кто отвечает за доведение заявки до результата."],
-["Бесшовная передача","Данные клиента не теряются между сайтом, CRM, продажами, подключением и поддержкой."],
-["Минимум лишних вопросов","У клиента не запрашивают лишние данные до момента, когда они действительно нужны."],
-["Передача в подключение","После продажи клиент не попадает в «чёрную дыру»; следующий этап понятен и управляем."]
-]
-},
-
-{
-title:"Оформление, договор и документы",
-desc:"Проверяем, насколько просто клиенту пройти юридические и операционные шаги.",
-items:[
-["Понятный сценарий оформления","Клиент понимает все шаги до подключения: заявка, проверка, договор, оплата, активация."],
-["Минимум ручного ввода","Используются автозаполнение, данные из профиля, подсказки, маски и повторное использование данных."],
-["Проверка данных","Ошибки в ИНН, телефоне, email, адресе и документах выявляются до финальной отправки."],
-["Прозрачность документов","Клиент понимает, какие документы нужны, зачем они нужны и в каком формате их загрузить."],
-["Цифровое подписание","Где возможно, реализовано онлайн-подписание: ЭДО, УКЭП, простая электронная подпись, ЛК."],
-["Статус договора / счёта","Клиент видит статусы: договор сформирован, счёт выставлен, ожидается оплата, подписано."],
-["Понятные юридические условия","Рядом с полным текстом есть краткое объяснение ключевых условий человеческим языком."],
-["Исправление ошибок","Если документ или данные не подходят, клиент понимает причину и способ исправления."]
-]
-},
-
-{
-title:"Онбординг и активация",
-desc:"Проверяем, насколько быстро клиент начинает пользоваться продуктом и получает первую пользу.",
-items:[
-["Стартовый сценарий","После подключения клиент понимает, с чего начать."],
-["Welcome-коммуникация","Клиент получает приветственное сообщение с понятными первыми действиями."],
-["Пошаговая настройка","Сложный продукт разбит на понятные этапы настройки."],
-["Прогресс настройки","Клиент видит, сколько шагов уже выполнено и что осталось."],
-["Быстрый выход на пользу","Клиент быстро получает первый полезный результат от продукта."],
-["Подсказки в процессе","В сложных местах есть пояснения, примеры, подсказки и расшифровки терминов."],
-["Пустые состояния","Если данных ещё нет, экран объясняет, что делать дальше, а не выглядит пустым тупиком."],
-["Контроль активации","Измеряется, завершил ли клиент ключевые шаги и начал ли использовать продукт."]
-]
-},
-
-{
-title:"Самообслуживание",
-desc:"Проверяем, может ли клиент управлять продуктом без лишних обращений к менеджеру или в поддержку.",
-items:[
-["Базовые операции без поддержки","Клиент может сам выполнить основные действия без менеджера или оператора."],
-["Управление настройками","Клиент может самостоятельно менять параметры продукта."],
-["Управление пользователями","Можно добавлять, удалять и редактировать пользователей."],
-["Роли и доступы","Есть понятные роли, права, уровни доступа и ограничения."],
-["Документы и финансы","Счета, акты, оплаты, детализация и закрывающие документы доступны онлайн."],
-["История действий","Клиент видит, кто, когда и что изменил."],
-["Массовые действия","Для B2B-сценариев доступны массовые операции: загрузка пользователей, номеров, адресов, объектов."],
-["Самодиагностика","Клиент может сам понять причину проблемы или проверить статус услуги."]
-]
-},
-
-{
-title:"Поддержка и помощь",
-desc:"Проверяем доступность, контекстность и качество поддержки.",
-items:[
-["Доступный канал поддержки","Клиент легко находит, куда обратиться за помощью."],
-["Чат / цифровой канал","Есть быстрый цифровой канал: чат, форма обращения, бот или заявка."],
-["Понятный срок ответа","Клиент понимает, когда ждать ответ или решение."],
-["Контекст обращения","Поддержка видит продукт, клиента, историю, ошибку и не заставляет повторять данные."],
-["База знаний","Есть актуальные инструкции, FAQ, статьи и поиск по помощи."],
-["Встроенная помощь","Подсказки и помощь доступны прямо в интерфейсе в момент возникновения вопроса."],
-["Эскалация","Для сложных вопросов есть понятный путь передачи специалисту."],
-["Оценка поддержки","Собираются CSAT, оценка обращения или причины низких оценок."]
-]
-},
-
-{
-title:"Интерфейс и эвристики UX/UI",
-desc:"Проверяем удобство, понятность, консистентность и соответствие дизайн-системе.",
-items:[
-["Видимость статуса","Пользователь всегда понимает, что делает система: загрузка, прогресс, успех, ошибка, статус."],
-["Понятный язык","Используется язык клиента, а не внутренние термины компании."],
-["Контроль и свобода","Можно отменить действие, вернуться назад, исправить данные или выйти из процесса."],
-["Единообразие","Кнопки, статусы, цвета, термины и паттерны используются одинаково во всём продукте."],
-["Предотвращение ошибок","Интерфейс заранее помогает не ошибиться: маски, проверки, ограничения, предупреждения."],
-["Минимум визуального шума","Экран не перегружен; главное действие и важная информация хорошо выделены."],
-["Понятные ошибки","Ошибка объясняет, что случилось, почему и что нужно сделать дальше."],
-["Соответствие дизайн-системе","Используются актуальные компоненты, типографика, цвета, сетки и состояния элементов."]
-]
-},
-
-{
-title:"Формы и ввод данных",
-desc:"Проверяем, насколько легко клиенту заполнять данные без ошибок и потери прогресса.",
-items:[
-["Минимум полей","Запрашиваются только действительно необходимые данные."],
-["Логичная группировка","Поля сгруппированы по смыслу и идут в естественной последовательности."],
-["Понятные названия","Клиент понимает, что именно нужно указать в каждом поле."],
-["Подсказки","Для сложных полей есть примеры, формат и пояснения."],
-["Валидация до отправки","Ошибки показываются до отправки формы."],
-["Маски и автозаполнение","Используются маски телефона, ИНН, КПП, email, адреса и даты."],
-["Сохранение данных","Данные не теряются при ошибке, обновлении страницы или возврате назад."],
-["Понятные ошибки в форме","Текст ошибки помогает исправить конкретное поле."]
-]
-},
-
-{
-title:"Коммуникации и уведомления",
-desc:"Проверяем, получает ли клиент своевременные, понятные и полезные сообщения.",
-items:[
-["Подтверждение действий","Клиент получает подтверждение после заявки, оплаты, подключения или изменения настроек."],
-["Уведомления о статусах","Клиент получает обновления по заявке, договору, оплате, подключению, доставке или обращению."],
-["Понятный текст сообщений","Сообщение объясняет, что произошло, что делать дальше и куда обратиться."],
-["Правильный канал","Важные события отправляются в подходящий канал: SMS, email, ЛК, push или звонок."],
-["Нет лишнего шума","Коммуникации не дублируются, не раздражают и не создают информационный шум."],
-["История коммуникаций","Клиент может посмотреть историю уведомлений, событий и обращений."],
-["Триггерные сообщения","Уведомления запускаются по событиям: незавершённая настройка, ошибка оплаты, риск отключения."],
-["Коммуникации после запуска","Есть сопровождение клиента в первые дни или недели после подключения."]
-]
-},
-  
-{
-title:"Аналитика и метрики",
-desc:"Проверяем, есть ли данные для управления продуктом, сценарием и улучшениями.",
-items:[
-["Ключевые метрики определены","Есть набор метрик по воронке, активации, использованию, поддержке и удержанию."],
-["Сбор данных настроен","Метрики реально собираются, а не существуют только в презентации."],
-["Воронка заявки / подключения","Видны этапы: визит, заявка, контакт, КП, договор, подключение, активация."],
-["Метрики онбординга","Измеряются завершение настройки, время до первой пользы и отвал на шагах."],
-["Метрики использования","Видно, пользуется ли клиент продуктом и какие ключевые действия совершает."],
-["Метрики поддержки","Видны обращения, темы, SLA, повторные обращения и удовлетворённость."],
-["Причины отказов","Фиксируются причины потерь, отказов и незавершённых заявок."],
-["Оценка эффекта изменений","После доработок оценивается эффект: было / стало, конверсия, обращения, активация."]
-]
-},
-
-{
-title:"Удержание и развитие клиента",
-desc:"Проверяем, есть ли работа с рисками оттока, повторным вовлечением и развитием клиента.",
-items:[
-["Сигналы риска оттока","Есть признаки риска: снижение использования, жалобы, неоплата, ошибки, незавершённая настройка."],
-["Сценарии удержания","Есть действия при риске ухода: помощь, коммуникация, спецусловия, контакт менеджера."],
-["Повторное вовлечение","Есть сценарии возврата клиента к использованию продукта."],
-["Расширение использования","Есть релевантные предложения дополнительных функций или сценариев."],
-["Обучение новым возможностям","Клиент узнаёт о новых функциях через понятные коммуникации и инструкции."],
-["Обратная связь","Клиент может оставить отзыв, оценку, предложение или жалобу."],
-["Мониторинг здоровья клиента","Есть агрегированный индикатор состояния клиента или риска деградации опыта."],
-["План развития использования","Есть сценарии, которые помогают клиенту использовать продукт глубже и регулярнее."]
-]
-},
-
-{
-title:"Готовность запуска и управление качеством",
-desc:"Проверяем, готов ли продукт и все участники процесса к качественному запуску.",
-items:[
-["Целевой CJ задокументирован","Есть TO BE CJ, blueprint или схема end-to-end сценария."],
-["Роли и ответственность","Понятно, кто отвечает за каждый этап процесса."],
-["Участники согласованы","Продажи, поддержка, юристы, IT, операции и другие участники понимают свою роль."],
-["Нестандартные сценарии","Проработаны ошибки, отказы, задержки, спорные ситуации и ручные обходы."],
-["Готовность поддержки","Поддержка обучена, есть скрипты, база знаний и маршруты обращений."],
-["Готовность продаж","Продажи знают продукт, аргументы, ограничения, материалы и сценарий работы с клиентом."],
-["План мониторинга после запуска","Понятно, какие метрики смотреть в первые дни или недели после запуска."],
-["Критерии успешного запуска","Определено, по каким показателям запуск считается успешным."]
-]
-},
-  
-{
-title:"Безопасность и соответствие требованиям",
-desc:"Проверяем управляемость доступа, безопасность данных и контроль критичных действий.",
-items:[
-["Права доступа","Права пользователей настроены по ролям и не дают лишних полномочий."],
-["Защита данных","Сценарии работы с данными соответствуют требованиям безопасности."],
-["Прозрачные согласия","Пользователь понимает, на что даёт согласие и где посмотреть условия."],
-["Логирование действий","Критичные действия фиксируются в журнале событий."],
-["Подтверждение критичных действий","Опасные действия требуют подтверждения."],
-["Доступ к документам","Документы доступны только релевантным пользователям."],
-["Сценарий потери доступа","Понятно, как восстановить доступ / сменить администратора."],
-["Безопасное изменение настроек","При изменении критичных параметров есть предупреждения и проверки."]
-]
+ id:'value',icon:'💎',name:'Коммерческая ценность и упаковка',
+ short:'Понятна ли клиенту ценность продукта, для кого он и сколько стоит',
+ training:'Первый барьер: если клиент не понял <b>зачем ему продукт</b> и <b>чем он лучше альтернатив</b>, остальной путь не имеет значения. При проектировании проверяйте, что ценность сформулирована на языке клиента, а не функций. На комитете — раздел, где чаще всего «проседают» технически сильные продукты.',
+ groups:[
+  {name:'Ценностное предложение',crit:[
+   {id:'v1',t:'Ясность ценностного предложения',q:'Клиент за секунды понимает, какую задачу решает продукт',core:true,
+    w:'Сформулирована ли ценность на языке клиента и его задачи, а не через функции? Понятно ли без погружения?',
+    l:['Ценности нет — только название и список функций. Зачем продукт — непонятно.','Ценность размыта или подана техническим языком («SIP, IVR»). Выгоду приходится додумывать.','Ценность сформулирована понятно, на языке задачи клиента, считывается за секунды.','Ценность точно бьёт в задачу сегмента и подкреплена результатом (пример: Stripe — «Платёжная инфраструктура для интернета»).'],
+    b:'Чёткое value proposition повышает конверсию лендинга на 30–90%. Клиент решает остаться за 3–5 секунд.'},
+   {id:'v2',t:'Целевой сегмент и сценарий',q:'Понятно, для какого бизнеса и какой ситуации продукт',core:true,
+    w:'Видно ли, кому адресован продукт? Узнаёт ли клиент себя и свою ситуацию?',
+    l:['Адресат не обозначен — непонятно, кому и для чего продукт.','Заявлено «для любого бизнеса» — не цепляет никого конкретно.','Сегмент и сценарий обозначены явно, клиент узнаёт свою ситуацию.','Отдельные предложения под сегменты с релевантными кейсами.'],
+    b:'Сегментированные лендинги конвертируют на 20–40% лучше универсальных.'},
+   {id:'v3',t:'Дифференциация от альтернатив',q:'Понятно, чем продукт лучше конкурентов и бездействия',core:true,
+    w:'Объяснено ли, почему именно этот продукт, а не конкурент или статус-кво?',
+    l:['Отличий нет — продукт подан как «ещё одно решение».','Общие достоинства («надёжно», «удобно»), которые заявит любой конкурент.','Названы 2–3 конкретных преимущества, важных для сегмента.','Явное сравнение с альтернативами и блок «что вы получаете при переходе».'],
+    b:'Отсутствие дифференциации — причина №1 проигранных B2B-сделок наряду с ценой (Gartner).'},
+   {id:'v4',t:'Соответствие ожиданий и реальности',q:'Упаковка не обещает больше, чем продукт даёт',core:false,
+    w:'Не обещает ли упаковка больше, чем продукт реально делает? Совпадёт ли первый опыт с обещанием?',
+    l:['Упаковка обещает то, чего продукт не делает — клиент разочаруется сразу после покупки.','Заметный разрыв между обещанием и реальностью на отдельных функциях.','Обещания в целом соответствуют тому, что клиент получает.','Упаковка честно отражает продукт; первый опыт подтверждает ожидания или превосходит их.'],
+    b:'Разрыв между обещанием и реальностью — главная причина раннего оттока и негативных отзывов в B2B.'},
+  ]},
+  {name:'Ценообразование и условия',crit:[
+   {id:'v5',t:'Прозрачность цены',q:'Клиент понимает, сколько и за что платит',core:true,
+    w:'Прозрачна ли модель ценообразования? Понятно ли, что входит? Нет ли скрытых условий?',
+    l:['Цены нет нигде, даже ориентира — клиент уходит к конкуренту с прозрачным прайсом.','«Цена по запросу» без диапазона; что входит — неясно.','Понятные тарифные пакеты с указанием состава.','Калькулятор/конфигуратор: клиент собирает пакет и сразу видит стоимость.'],
+    b:'66% B2B-покупателей хотят видеть цену до контакта с продажами (Forrester).'},
+   {id:'v6',t:'Понятность состава тарифа',q:'Ясно, что входит в каждый тариф и чем они отличаются',core:false,
+    w:'Ясно ли, что входит в каждый тариф и чем тарифы отличаются между собой?',
+    l:['Состав тарифа не раскрыт — непонятно, что входит в цену.','Состав описан расплывчато; отличия тарифов приходится додумывать.','Понятно, что входит в каждый тариф и чем они отличаются.','Наглядное сравнение тарифов с явными отличиями; легко выбрать подходящий.'],
+    b:'Понятная упаковка тарифов снижает нагрузку на продажи и ускоряет самостоятельный выбор.'},
+   {id:'v7',t:'Прозрачность условий и расторжения',q:'Понятны условия договора, продления и выхода',core:false,
+    w:'Понятны ли условия договора, продления и расторжения? Нет ли скрытых обязательств?',
+    l:['Условия скрыты или непонятны — клиент не знает, на что подписывается.','Базовые условия есть, но детали (продление, расторжение) спрятаны мелким шрифтом.','Условия договора, продления и выхода доступны и понятны.','Условия прозрачны и поданы дружелюбно; клиент заранее понимает все обязательства.'],
+    b:'Скрытые условия — частая причина споров и оттока после первого периода.'},
+   {id:'v8',t:'Прозрачность доп. расходов',q:'Все доп. платежи видны заранее',core:false,
+    w:'Видны ли заранее все доп. платежи (подключение, обслуживание, превышения)?',
+    l:['Доп. расходы всплывают позже — неожиданные платежи.','Часть доп. расходов раскрыта, часть обнаруживается в процессе.','Основные доп. платежи указаны заранее.','Полная прозрачность стоимости владения: все платежи видны до решения.'],
+    b:'Неожиданные платежи — сильный фактор недоверия и претензий в B2B.'},
+  ]},
+  {name:'Доказательство ценности',crit:[
+   {id:'v9',t:'Аргументация выгоды (ROI / эффект)',q:'Ценность подкреплена измеримым эффектом',core:true,
+    w:'Есть ли количественная аргументация — экономия, рост, окупаемость? Подкреплена ли кейсами?',
+    l:['Выгода не аргументирована — только обещания без эффекта.','Общие формулировки («повышает эффективность») без цифр.','Конкретные цифры эффекта со ссылкой на кейс («−40% потерянных звонков»).','ROI-калькулятор: клиент вводит свои параметры и видит расчётный эффект.'],
+    b:'Контент с конкретными цифрами вызывает доверие в 3× чаще общих формулировок (Edelman).'},
+   {id:'v10',t:'Кейсы и истории клиентов',q:'Есть релевантные сегменту истории успеха',core:false,
+    w:'Есть ли релевантные сегменту истории успеха с конкретикой?',
+    l:['Кейсов нет — ценность ничем не подтверждена.','Кейсы общие, без цифр и отраслевой привязки.','Есть кейсы с конкретикой, релевантные части аудитории.','Кейсы сегментированы под аудиторию, с измеримыми результатами и узнаваемыми компаниями.'],
+    b:'Релевантные кейсы — один из сильнейших факторов B2B-доверия (DemandGen).'},
+   {id:'v11',t:'Снятие типовых возражений',q:'Отработаны частые сомнения клиента',core:false,
+    w:'Отработаны ли частые сомнения (безопасность, миграция, поддержка, цена)?',
+    l:['Возражения не отработаны — клиент уходит думать с сомнениями.','Часть возражений закрыта, ключевые (безопасность, миграция) — нет.','Основные возражения отработаны явным контентом (FAQ, блоки).','Системная работа: FAQ, гарантии, сравнения, ответы на скрытые страхи сегмента.'],
+    b:'Раздел вопросов и явное снятие возражений сокращают цикл принятия решения.'},
+  ]},
+  {name:'Регуляторная и юридическая прозрачность',crit:[
+   {id:'v12',t:'Прозрачность регуляторных требований',q:'Клиент понимает обязательства по закону (телеком-специфика)',core:false,
+    w:'Понятны ли клиенту регуляторные условия и обязательства (лицензии, законы, требования к оформлению)?',
+    l:['Регуляторные требования не раскрыты — клиент узнаёт об обязательствах постфактум.','Требования упомянуты, но непонятны и не объяснены на языке клиента.','Ключевые регуляторные условия раскрыты и доступны.','Требования объяснены понятно и вовремя, клиент заранее знает свои обязательства.'],
+    b:'Для телеком/cloud прозрачность регуляторных условий (требования к массовым вызовам, 152-ФЗ) — часть опыта и доверия.'},
+  ]},
+  {name:'Проба и снижение барьера входа',crit:[
+   {id:'v13',t:'Возможность попробовать',q:'Есть демо, пилот, пробный период или freemium',core:false,
+    w:'Есть ли демо, пилот, пробный период или freemium?',
+    l:['Попробовать нельзя — только покупка «вслепую».','Проба формально есть, но с серьёзными ограничениями.','Есть рабочий пробный период / демо, дающий понять ценность.','Лёгкая полноценная проба с быстрым выходом на ценность.'],
+    b:'Возможность попробовать снижает барьер входа и повышает конверсию в B2B.'},
+   {id:'v14',t:'Лёгкость старта пробы',q:'Начать пробу просто, без долгих согласований',core:false,
+    w:'Насколько просто начать пробу — без долгих согласований и жёстких обязательств?',
+    l:['Старт пробы требует договора/звонка/согласований — барьер убивает интерес.','Начать можно, но процесс громоздкий и небыстрый.','Проба запускается достаточно просто, с минимумом шагов.','Мгновенный старт пробы без обязательств — в пару кликов.'],
+    b:'Чем ниже барьер старта пробы, тем выше доля дошедших до момента ценности.'},
+  ]},
+ ]
 },
 {
-title:"Операционная и портфельная зрелость",
-desc:"Проверяем готовность внутренних процессов и масштабируемость решения.",
-items:[
-["Готовность операционного процесса","Описан внутренний процесс исполнения после продажи / заявки."],
-["Сроки исполнения","Понятны сроки подключения, доставки, настройки и активации."],
-["Ответственные команды","Понятно, какая команда отвечает за каждый этап."],
-["Контроль статусов внутри процесса","Внутренние статусы синхронизированы с клиентскими."],
-["Масштабируемость сценария","Сценарий выдерживает рост количества клиентов / пользователей."],
-["Переиспользуемость решений","Лучшие практики можно использовать в других продуктах."],
-["Единая логика портфеля","Опыт согласован с другими продуктами компании."],
-["Вклад в CX-стратегию","Продукт усиливает общую CX-стратегию, а не живёт отдельно."]
-]
-}
+ id:'landing',icon:'🖥️',name:'Интерфейс и UX витрины',
+ short:'Доносит ли витрина суть продукта и ведёт ли к целевому действию',
+ training:'Лендинг — <b>точка конверсии интереса в действие</b>. Важны не «красота», а ясность, иерархия и сила CTA. При анализе запуска смотрите на витрину глазами клиента, который видит её впервые. Частая ошибка — оценивать дизайн, а не способность экрана довести до заявки.',
+ groups:[
+  {name:'Первое впечатление',crit:[
+   {id:'l1',t:'Первый экран за 5 секунд',q:'Суть и следующее действие считываются за 5 секунд',core:true,
+    w:'Можно ли за 5 секунд понять, что предлагается и какое действие совершить? Не перегружен ли экран?',
+    l:['Суть не считывается — непонятно, что за продукт и что делать.','Экран перегружен: слайдер баннеров, несколько CTA, плотный текст.','Заголовок с ценностью + подзаголовок + один заметный CTA. Суть ясна.','Один сфокусированный месседж, много воздуха, единственное приоритетное действие.'],
+    b:'Правило 5 секунд: если суть не считывается — отказ 50%+ посетителей (NN/g).'},
+   {id:'l2',t:'Заметный и понятный CTA',q:'Главное действие выделено и не конкурирует с другими',core:true,
+    w:'Является ли основной CTA самым заметным? Понятно ли следствие клика? Один ли он приоритетный?',
+    l:['Целевого действия нет или оно спрятано.','Несколько равнозначных кнопок — клиент не знает, что выбрать.','Один контрастный приоритетный CTA с понятным следствием.','Один primary CTA на экран, вторичные действия визуально тише.'],
+    b:'Сокращение конкурирующих CTA до одного повышает конверсию на 10–40% (Unbounce).'},
+   {id:'l3',t:'Визуальная иерархия и читаемость',q:'Взгляд движется в нужном порядке, текст легко читать',core:true,
+    w:'Выстроена ли иерархия (заголовки → ключевое → детали)? Достаточно ли воздуха и контраста?',
+    l:['Стена однородного текста без структуры — не сканируется.','Иерархия слабая: мелкий шрифт, низкий контраст.','Чёткие уровни заголовков, короткие абзацы, выделение ключевого.','Полностью сканируемая структура — суть понятна при пролистывании по заголовкам.'],
+    b:'79% пользователей сканируют, а не читают страницы (NN/g).'},
+  ]},
+  {name:'Контент и доверие',crit:[
+   {id:'l4',t:'Социальное доказательство',q:'Есть кейсы, логотипы, отзывы',core:true,
+    w:'Есть ли элементы доверия — клиенты, кейсы, цифры, сертификаты? Релевантны ли сегменту?',
+    l:['Социального доказательства нет вообще.','Анонимные отзывы — не вызывают доверия.','Логотипы клиентов + кейсы с цифрами + отзывы с именами.','Кейсы сегментированы — клиент видит компанию, похожую на свою.'],
+    b:'Кейсы повышают доверие на 70%+ (DemandGen).'},
+   {id:'l5',t:'Полнота описания продукта',q:'Достаточно информации, чтобы решить без звонка',core:false,
+    w:'Достаточно ли информации для решения, без необходимости звонить?',
+    l:['Информации критически мало — без звонка не разобраться.','Базовое описание есть, ключевые вопросы без ответа.','Описание покрывает основные вопросы для решения.','Исчерпывающее структурированное описание: клиент решает полностью сам.'],
+    b:'66%+ B2B-покупателей предпочитают разобраться сами до контакта с продажами (Forrester).'},
+   {id:'l6',t:'Честность подачи',q:'Нет dark patterns и скрытых условий',core:false,
+    w:'Нет ли манипулятивных паттернов (dark patterns), скрытых условий мелким шрифтом?',
+    l:['Явные dark patterns: ложная срочность, скрытые условия, маскировка цены.','Встречаются сомнительные приёмы (навязчивость, мелкий шрифт на важном).','Подача честная, манипуляций нет.','Прозрачная и уважительная подача: важное на виду, никаких уловок.'],
+    b:'Dark patterns дают краткосрочный эффект, но разрушают доверие и повышают отток в B2B.'},
+  ]},
+  {name:'Конфигуратор / калькулятор стоимости',crit:[
+   {id:'l7',t:'Понятность конфигуратора',q:'Понятно, как собрать конфигурацию и из чего цена (если нет — Н/П)',core:true,
+    w:'Понятно ли, как собрать конфигурацию/тариф и из чего складывается цена? Если конфигуратора нет — отметьте «Не применимо».',
+    l:['Конфигуратор запутан — непонятно, что выбирать и как влияет на цену.','Работает, но логика опций и влияние на цену неочевидны.','Понятный конфигуратор: опции ясны, цена пересчитывается прозрачно.','Конфигуратор ведёт клиента: подсказки, дефолты, наглядный состав и итог.'],
+    b:'Прозрачный конфигуратор снижает потребность в звонке и ускоряет самостоятельное оформление.'},
+   {id:'l8',t:'Живой пересчёт и прозрачность итога',q:'Стоимость пересчитывается мгновенно, итог прозрачен',core:false,
+    w:'Пересчитывается ли стоимость мгновенно и видно ли, из чего складывается итог?',
+    l:['Итог не виден или не пересчитывается — непонятно, за что платить.','Пересчёт есть, но итог «прыгает» или состав непрозрачен.','Живой пересчёт с понятным составом итоговой стоимости.','Мгновенный пересчёт, детальный разбор итога, возможность сохранить расчёт.'],
+    b:'Прозрачный живой расчёт повышает доверие к цене и готовность оформить онлайн.'},
+  ]},
+  {name:'Техническое качество',crit:[
+   {id:'l9',t:'Скорость загрузки',q:'Витрина грузится быстро',core:false,
+    w:'Грузится ли витрина быстро? (один из ключевых факторов отказов)',
+    l:['Страница грузится недопустимо долго — клиент уходит.','Заметные задержки загрузки, особенно на мобильном.','Приемлемая скорость на основных устройствах.','Быстрая загрузка даже на слабом соединении.'],
+    b:'Рост времени загрузки с 1 до 3 сек повышает вероятность отказа на 32% (Google).'},
+   {id:'l10',t:'Поведение при медленном соединении / ошибках',q:'Страница деградирует достойно, без «белого экрана»',core:false,
+    w:'Деградирует ли страница достойно при проблемах с сетью, без «белого экрана»?',
+    l:['При проблемах — белый экран или сломанная вёрстка.','Деградация частичная: часть контента ломается.','Страница работает при медленном соединении, ключевой контент доступен.','Продуманная деградация: скелетоны, понятные состояния загрузки и ошибок.'],
+    b:'Достойная деградация удерживает клиентов на нестабильных соединениях.'},
+  ]},
+  {name:'Адаптивность',crit:[
+   {id:'l11',t:'Мобильный опыт',q:'Витрина удобна на телефоне',core:true,
+    w:'Корректно ли отображается на мобильном? Удобны ли тапы, формы, CTA? Не ломается ли вёрстка?',
+    l:['На мобильном вёрстка ломается — пользоваться невозможно.','Десктоп «ужат»: мелкие кнопки, неудобные формы.','Mobile-first: крупные тап-зоны, адаптированные формы, доступный CTA.','Продуманный мобильный flow с упрощённой формой и sticky-CTA.'],
+    b:'50%+ B2B-трафика мобильный; плохой mobile UX режет конверсию вдвое (Google).'},
+   {id:'l12',t:'Согласованность на устройствах и браузерах',q:'Одинаково работает на разных экранах и браузерах',core:false,
+    w:'Одинаково ли работает на разных экранах и в разных браузерах?',
+    l:['На части устройств/браузеров витрина ломается.','Заметные расхождения отображения между устройствами.','Согласованная работа на основных устройствах и браузерах.','Стабильно и единообразно везде, включая нестандартные экраны.'],
+    b:'Кросс-браузерные сбои режут конверсию незаметно для команды.'},
+  ]},
+  {name:'Связанные продукты',crit:[
+   {id:'l13',t:'Уместность кросс-продуктовых блоков',q:'Блоки «другие услуги» не конкурируют с основным действием',core:false,
+    w:'Не конкурируют ли блоки «другие услуги» с основным целевым действием?',
+    l:['Кросс-блоки перетягивают внимание и сбивают с основного CTA.','Связанные продукты заметно конкурируют с главным действием.','Кросс-блоки присутствуют, но не мешают основному пути.','Связанные продукты уместны, поданы ниже основного действия, дополняют, а не отвлекают.'],
+    b:'Избыточный кросс-сейл на витрине размывает фокус и снижает основную конверсию.'},
+  ]},
+  {name:'Доступность (Accessibility)',crit:[
+   {id:'l14',t:'Контраст и читаемость',q:'Контраст и шрифт комфортны для слабовидящих',core:false,
+    w:'Достаточны ли контраст текста и размер шрифта для слабовидящих?',
+    l:['Низкий контраст и мелкий шрифт делают контент нечитаемым для части людей.','Контраст местами недостаточен, есть проблемы с читаемостью.','Контраст и размеры соответствуют базовым требованиям.','Соответствие WCAG AA+; контент комфортно читается всеми.'],
+    b:'Доступность расширяет аудиторию и всё чаще является регуляторным требованием.'},
+   {id:'l15',t:'Навигация с клавиатуры и screen readers',q:'Можно пользоваться без мыши, корректна семантика',core:false,
+    w:'Можно ли пользоваться без мыши? Корректны ли alt-тексты и семантика?',
+    l:['Без мыши пользоваться невозможно; screen readers не считывают контент.','Частичная поддержка клавиатуры; семантика местами отсутствует.','Базовая клавиатурная навигация и корректная семантика.','Полная доступность: фокус, порядок табуляции, alt-тексты, ARIA.'],
+    b:'Клавиатурная и screen-reader доступность — основа соответствия стандартам (WCAG).'},
+  ]},
+ ]
+},
+{
+ id:'leads',icon:'📥',name:'Заявки, лиды, договор и чекаут',
+ short:'Что происходит после интереса: заявка, передача лида, оформление, оплата',
+ training:'Зона, где <b>теряется больше всего ценности между командами</b>. Клиент проявил интерес — дальше форма, продажи, документы, оплата. При аудите ищите разрывы на стыках. Здесь две воронки: заявочная (через менеджера) и self-service (онлайн-оформление) — оценивайте релевантную, неприменимую отмечайте «Н/П».',
+ groups:[
+  {name:'Подача заявки',crit:[
+   {id:'g1',t:'Простота формы заявки',q:'Минимум полей, нет лишнего трения',core:true,
+    w:'Сколько полей в форме? Все ли нужны на этом шаге? Понятно ли, что будет после отправки?',
+    l:['Формы нет, либо требует столько данных, что её невозможно пройти.','10+ обязательных полей (ИНН, юр.адрес) на первом шаге — клиент бросает.','Минимум полей (имя, телефон, компания), остальное уточняется позже.','Прогрессивная форма: сначала минимум, детали собираются по мере продвижения.'],
+    b:'Сокращение формы с 11 до 4 полей повышает конверсию на 120% (HubSpot).'},
+   {id:'g2',t:'Качество валидации полей',q:'Ошибки подсвечиваются понятно, в момент ввода',core:false,
+    w:'Понятно ли подсвечиваются ошибки, в момент ввода, а не после отправки?',
+    l:['Валидации нет — ошибки выясняются после отправки или теряются.','Валидация только после отправки всей формы; приходится возвращаться.','Inline-валидация ключевых полей в момент ввода.','Умная валидация: подсказки формата, мгновенная проверка, понятные сообщения.'],
+    b:'Inline-валидация снижает ошибки заполнения форм на 22% (Baymard).'},
+   {id:'g3',t:'Сохранение введённого',q:'Данные не теряются при ошибке или возврате',core:false,
+    w:'Не теряются ли данные при ошибке, перезагрузке или возврате назад?',
+    l:['Любая ошибка/перезагрузка обнуляет форму — клиент бросает.','Часть данных теряется при возврате или ошибке.','Введённые данные в основном сохраняются.','Автосохранение черновика; клиент может вернуться без потерь.'],
+    b:'Потеря введённых данных — частая причина отказа от длинных B2B-форм.'},
+  ]},
+  {name:'Подтверждение и прозрачность шага',crit:[
+   {id:'g4',t:'Прозрачность следующего шага',q:'Понятно, что дальше и когда, после отправки',core:true,
+    w:'Видит ли клиент после отправки, что будет дальше и в какие сроки? Получает ли подтверждение?',
+    l:['После отправки — ничего. Клиент не знает, увидели ли заявку.','«Спасибо» без срока и деталей — остаётся неопределённость.','«Заявка принята, менеджер свяжется за 2 часа» + email с номером.','Статус заявки в реальном времени + уведомления на каждом этапе.'],
+    b:'Неопределённость после заявки — частая причина тревожности и повторных обращений.'},
+   {id:'g5',t:'Подтверждение получения заявки',q:'Клиент получает подтверждение с номером и контактом',core:false,
+    w:'Получает ли клиент подтверждение с номером заявки и контактом?',
+    l:['Никакого подтверждения — клиент не знает, ушла ли заявка.','Только экранное «спасибо» без деталей и контакта.','Подтверждение на экране и в email с номером обращения.','Подтверждение с номером, контактом ответственного и сроком ответа.'],
+    b:'Подтверждение с деталями снижает тревожность и повторные обращения.'},
+  ]},
+  {name:'Обработка лида',crit:[
+   {id:'g6',t:'Скорость первого контакта (SLA)',q:'Лид обрабатывается быстро, пока интерес горячий',core:true,
+    w:'Как быстро первый контакт после заявки? Есть ли SLA? Соблюдается ли он?',
+    l:['Заявки обрабатываются хаотично или теряются.','Перезванивают через 1–2 дня — клиент уже выбрал конкурента.','Первый контакт в 1–2 часа в рабочее время, автоответ мгновенно.','Мгновенное распределение + контакт за 5 минут для горячих заявок.'],
+    b:'Контакт в первые 5 минут повышает шанс квалификации в 21× против 30 минут (HBR).'},
+   {id:'g7',t:'Передача лида без потерь',q:'Лид не теряется на стыке команд',core:true,
+    w:'Бесшовно ли передаётся лид между командами? Не приходится ли клиенту повторять данные?',
+    l:['Лиды теряются на стыках — заявка ушла, но до подключения не дошла.','Клиент повторяет данные разным людям: сайт, продажи, подключение.','Данные автоматически в CRM, менеджер видит контекст, клиент не повторяется.','Единый профиль клиента сквозь весь путь: интерес → заявка → продажа → подключение.'],
+    b:'Потери на стыках команд — главная причина утечки квалифицированных лидов.'},
+   {id:'g8',t:'Учёт нескольких ЛПР (B2B)',q:'Поддержан сценарий с несколькими лицами, принимающими решение',core:false,
+    w:'Поддержан ли сценарий, где решение принимают несколько человек (закупщик, ЛПР, пользователь)?',
+    l:['Процесс рассчитан на одного; в реальной B2B-закупке всё рассыпается.','Несколько ролей не учтены — всё привязано к одному контакту.','Базово учтено участие нескольких лиц (можно переслать, подключить коллегу).','Процесс спроектирован под группу ЛПР: роли, доступы, материалы для каждого.'],
+    b:'В B2B решение принимают в среднем 6–10 человек; игнорирование тормозит сделки (Gartner).'},
+  ]},
+  {name:'Оформление и документы',crit:[
+   {id:'g9',t:'Прозрачность оформления и документов',q:'Понятны документы, статусы и сроки',core:true,
+    w:'Прозрачен ли процесс оформления? Понятно ли, какие документы нужны и на каком этапе всё находится?',
+    l:['Процесс непрозрачен — клиент не знает статусов, сроков и документов.','Договор «где-то на согласовании», документы шлют почтой туда-обратно.','Чек-лист документов + статусы оформления + ЭДО для подписания.','Онлайн-кабинет сделки: документы, статусы, подписание и история в одном месте.'],
+    b:'Непрозрачность оформления — точка оттока уже после решения о покупке.'},
+   {id:'g10',t:'Электронный документооборот',q:'Есть ЭДО / онлайн-подписание без бумаги',core:false,
+    w:'Есть ли ЭДО / онлайн-подписание без бумаги?',
+    l:['Только бумажный документооборот — долго, тормозит сделку.','ЭДО частичный; часть документов всё равно бумажная.','Основные документы подписываются электронно.','Полный ЭДО: всё оформление и подписание онлайн.'],
+    b:'ЭДО сокращает цикл оформления сделки с недель до часов.'},
+   {id:'g11',t:'Прозрачность статуса сделки',q:'Клиент видит этап оформления в реальном времени',core:false,
+    w:'Видит ли клиент в реальном времени, на каком этапе оформление?',
+    l:['Статус непрозрачен — клиент не знает, что происходит.','Статус узнаётся только по запросу через менеджера.','Статус оформления доступен клиенту и обновляется.','Онлайн-кабинет сделки со статусами, документами и историей в реальном времени.'],
+    b:'Прозрачность статуса снижает нагрузку на поддержку и тревожность на оформлении.'},
+  ]},
+  {name:'Чекаут и оплата (self-service)',crit:[
+   {id:'g12',t:'Self-service оформление / чекаут',q:'Простой продукт можно оформить онлайн без звонка',core:true,
+    w:'Может ли клиент оформить продукт онлайн без обязательного звонка? Прозрачен ли чекаут?',
+    l:['Любая покупка только через менеджера и звонок, даже типовая.','Онлайн-оформление есть, но с трением: непонятные шаги, обрывы.','Self-service подключение простых продуктов: выбрал → оформил → пользуешься.','Чекаут с прозрачным summary, выбором опций и моментальной активацией.'],
+    b:'Self-service для несложных продуктов ожидают 75%+ B2B-покупателей (McKinsey).'},
+   {id:'g13',t:'Способы оплаты и их прозрачность',q:'Достаточно способов оплаты, понятных для B2B',core:false,
+    w:'Достаточно ли способов оплаты, понятны ли они для B2B (счёт, карта, безнал)?',
+    l:['Способов мало или они не подходят для B2B — оплатить неудобно.','Ограниченный способ оплаты, не покрывающий частые B2B-сценарии.','Основные B2B-способы оплаты доступны и понятны.','Гибкий выбор: счёт, безнал, карта, отсрочка; всё прозрачно.'],
+    b:'Несоответствие способов оплаты B2B-практике — частый барьер на чекауте.'},
+   {id:'g14',t:'Прозрачность итоговой стоимости',q:'Финальная сумма со составом видна до подтверждения',core:false,
+    w:'Видна ли финальная сумма со всеми составляющими до подтверждения?',
+    l:['Итоговая сумма неясна до конца — сюрприз на оплате.','Итог виден, но без разбивки; часть платежей всплывает позже.','Финальная сумма со составом видна до подтверждения.','Полностью прозрачный итог: налоги, опции, периодичность — всё до оплаты.'],
+    b:'Неожиданная итоговая стоимость — ведущая причина брошенных корзин (Baymard).'},
+  ]},
+  {name:'Сценарии срыва и нестандартные ситуации',crit:[
+   {id:'g15',t:'Обработка отказа / отклонения заявки',q:'Клиент понимает причину отказа и следующий шаг',core:false,edge:true,
+    w:'Что видит клиент, если заявку отклонили? Понятно ли почему и что делать дальше?',
+    l:['Отказ без объяснений или молча — клиент в тупике.','Об отказе сообщают, но без причины и без следующего шага.','Отказ объяснён, указан общий следующий шаг.','Отказ объяснён с причиной и понятной альтернативой/маршрутом решения.'],
+    b:'Грамотная обработка отказа сохраняет отношения и шанс на будущую сделку.'},
+   {id:'g16',t:'Нехватка данных от клиента',q:'Недостающее запрашивается понятно, без потери клиента',core:false,edge:true,
+    w:'Как система запрашивает недостающее, не теряя клиента?',
+    l:['При нехватке данных процесс останавливается, клиент теряется.','О недостающем сообщают неудобно (звонок без контекста).','Недостающее запрашивается понятно, с указанием, что нужно.','Запрос точечный, с контекстом и возможностью дозаполнить онлайн.'],
+    b:'Прозрачный дозапрос данных удерживает клиента в процессе оформления.'},
+   {id:'g17',t:'Возврат к брошенной заявке',q:'Можно вернуться к незавершённой заявке',core:false,edge:true,
+    w:'Может ли клиент вернуться к незавершённой заявке? Напоминает ли система?',
+    l:['Брошенная заявка теряется — нужно начинать заново.','Вернуться можно, но вручную и без сохранения прогресса.','Прогресс сохраняется, к заявке можно вернуться.','Сохранение + проактивное напоминание с прямой ссылкой на продолжение.'],
+    b:'Возврат к брошенным заявкам восстанавливает заметную долю конверсии.'},
+   {id:'g18',t:'Ошибка оплаты',q:'Понятно, что оплата не прошла, и как повторить',core:false,edge:true,
+    w:'Понятно ли, что оплата не прошла, и как повторить без потери прогресса?',
+    l:['При ошибке — непонятное сообщение, прогресс теряется.','Об ошибке сообщают, но без причины и удобного повтора.','Ошибка понятна, повторить можно без потери данных.','Понятная причина, сохранённый прогресс, альтернативные способы оплаты под рукой.'],
+    b:'Понятная обработка ошибок оплаты восстанавливает значительную часть прерванных платежей.'},
+  ]},
+ ]
+},
+{
+ id:'onboarding',icon:'🚀',name:'Онбординг и активация',
+ short:'Первый контакт с продуктом после подключения и выход на первую пользу',
+ training:'Онбординг определяет, <b>вернётся ли клиент после первого входа</b>. Здесь решается, дойдёт ли клиент до момента ценности или бросит продукт. При проектировании закладывайте быстрый «первый успех». При аудите смотрите на activation rate и Time to Value — ранние предикторы оттока.',
+ groups:[
+  {name:'Старт',crit:[
+   {id:'o1',t:'Welcome и подтверждение подключения',q:'Чёткий сигнал «всё готово» и следующий шаг',core:true,
+    w:'Получает ли клиент чёткое подтверждение подключения с указанием следующего шага и контактом?',
+    l:['Подтверждения нет — клиент не знает, подключился ли продукт.','«Услуга подключена» без деталей и следующего шага.','Email через минуты: «Активировано. Войдите в ЛК → первый шаг» + контакт.','Персонализированный email + in-app сообщение + чек-лист первых шагов с видео.'],
+    b:'Персонализированный welcome даёт +22% retention в первые 30 дней (Intercom).'},
+   {id:'o2',t:'Чек-лист первых шагов (Getting Started)',q:'Структурированный список действий с прогрессом',core:true,
+    w:'Есть ли структурированный список первых действий с индикатором прогресса, адаптированный под роль?',
+    l:['Никакого направления — клиент сам разбирается, с чего начать.','PDF на 40 страниц на email — клиент звонит в поддержку.','Виджет «Первые шаги»: пункты, прогресс-бар, прямые ссылки, галочки.','Интерактивный Getting Started, шаги под роль, gamification (HubSpot).'],
+    b:'Интерактивный чек-лист даёт activation rate в 2.1× выше PDF; оптимум 3–7 шагов (Appcues).'},
+  ]},
+  {name:'Выход на ценность',crit:[
+   {id:'o3',t:'Скорость выхода на первую пользу (Time to Value)',q:'Путь до первого результата минимален',core:true,
+    w:'Как быстро клиент получает первый ценный результат? Есть ли quick wins в первые 24 часа?',
+    l:['До первой пользы дойти почти невозможно без отдельного проекта внедрения.','Клиент ждёт специалиста 3–5 дней — интерес угасает.','Первый результат за ~30 минут, мастер ведёт без техзнаний.','Первый ценный результат за минуты по шаблону (Figma — TTV ≈ 120 сек).'],
+    b:'TTV < 1 дня → retention 80%+ через 90 дней; TTV > 7 дней → 40–55% (ProductLed).'},
+   {id:'o4',t:'Aha-момент',q:'Спроектирован момент первого ощущения ценности',core:false,
+    w:'Спроектирован ли момент, когда клиент впервые ощущает ценность? Ведёт ли продукт к нему?',
+    l:['Момент ценности не определён; продукт не ведёт к первому успеху.','Момент ценности понятен команде, но продукт к нему не ведёт.','Продукт подводит клиента к первому ощущению ценности.','Aha-момент спроектирован и достигается быстро; путь выстроен осознанно.'],
+    b:'Быстрое достижение aha-момента — сильный предиктор удержания (ProductLed).'},
+   {id:'o5',t:'Quick wins в первые 24 часа',q:'Есть быстрые ранние успехи',core:false,
+    w:'Есть ли быстрые ранние успехи, удерживающие интерес?',
+    l:['Никаких ранних успехов — первая польза далеко, интерес гаснет.','Ранние успехи случайны и не спроектированы.','Есть один-два быстрых ранних успеха в начале пути.','Серия продуманных quick wins ведёт от первого входа к ценности.'],
+    b:'Ранние быстрые успехи в первые 24 часа заметно повышают активацию.'},
+  ]},
+  {name:'Обучение и помощь',crit:[
+   {id:'o6',t:'Обучение в точке применения',q:'Подсказки и туториалы прямо в интерфейсе',core:true,
+    w:'Доступны ли подсказки, видео, туториалы там, где клиент действует, без выхода из продукта?',
+    l:['Обучающих материалов нет — клиент один на один с интерфейсом.','«Инструкция» ведёт на PDF на 80 страниц — клиент закрывает и звонит.','При сложной настройке — tooltip «как сделать за 5 минут» с видео.','Contextual tooltips по прогрессу (Intercom); inline-подсказки (Notion).'],
+    b:'Contextual in-app help снижает обращения в поддержку на 25–40% (Pendo).'},
+   {id:'o7',t:'Проактивное сопровождение',q:'Система реагирует, если клиент застрял или не вернулся',core:true,
+    w:'Реагирует ли система, если клиент застрял или не вернулся? Есть ли проактивные напоминания?',
+    l:['Брошенных клиентов никто не замечает — никакой реакции.','Есть только общая рассылка, не зависящая от поведения.','Не завершил настройку — через день email «осталось 2 шага».','Триггерные сценарии по поведению: для застрявших, неактивных, продвинутых.'],
+    b:'Поведенческие триггеры повышают завершение активации на 20–50% (Braze).'},
+  ]},
+  {name:'B2B-специфика онбординга',crit:[
+   {id:'o8',t:'Мультипользовательский онбординг',q:'Учтено, что настраивает админ, а пользуются сотрудники',core:false,
+    w:'Продумано ли, что настраивает админ, а пользуются сотрудники?',
+    l:['Онбординг рассчитан на одного; роли админа и сотрудников не разделены.','Разделение ролей формальное, сценарий настройки не поддержан.','Базово учтено: админ настраивает, сотрудники получают доступ.','Полноценный мультипользовательский онбординг: настройка, приглашения, роли, доступы.'],
+    b:'В B2B продукт настраивает админ, а пользуются сотрудники — игнорирование рвёт онбординг.'},
+   {id:'o9',t:'Онбординг под разные роли',q:'Первый опыт различается для админа, пользователя, бухгалтера',core:false,
+    w:'Различается ли первый опыт для админа, пользователя, бухгалтера?',
+    l:['Все роли видят одинаковый нерелевантный онбординг.','Роли почти не различаются; релевантность низкая.','Для ключевых ролей онбординг немного адаптирован.','Каждая роль получает релевантный первый опыт под свои задачи.'],
+    b:'Ролевой онбординг повышает релевантность и скорость освоения у разных пользователей.'},
+   {id:'o10',t:'Миграция данных из прежнего решения',q:'Продукт помогает перенести данные со старого инструмента',core:false,
+    w:'Помогает ли продукт перенести данные со старого инструмента?',
+    l:['Миграции нет — переносить всё вручную, барьер огромный.','Миграция возможна, но сложная и без поддержки.','Есть инструменты/помощь для переноса основных данных.','Сопровождаемая миграция: импорт, проверка, помощь — переход бесшовный.'],
+    b:'Сложность миграции — один из главных барьеров перехода с конкурентного решения.'},
+  ]},
+  {name:'Неуспешные сценарии',crit:[
+   {id:'o11',t:'Реакция на застревание',q:'Система замечает застрявшего и помогает',core:false,edge:true,
+    w:'Замечает ли система застрявшего клиента и помогает ли продвинуться?',
+    l:['Застрявшего клиента никто не замечает — он отваливается молча.','Реакция запоздалая и неперсональная.','Система замечает застревание и предлагает помощь.','Проактивная контекстная помощь именно в точке застревания.'],
+    b:'Поведенческие триггеры помощи повышают завершение активации на 20–50% (Braze).'},
+   {id:'o12',t:'Неуспешная активация',q:'Сбой активации обработан, есть путь решения',core:false,edge:true,
+    w:'Что происходит, если активация не удалась (тех. сбой, не хватило настройки)?',
+    l:['При сбое клиент остаётся без продукта и без объяснений.','О сбое сообщают, но без понятного пути решения.','Сбой объяснён, есть маршрут к решению или поддержке.','Сбой обработан мягко: причина, быстрый путь решения, проактивная поддержка.'],
+    b:'Необработанный сбой активации = потерянный клиент сразу после покупки.'},
+  ]},
+ ]
+},
+{
+ id:'heuristics',icon:'🧭',name:'Эвристики юзабилити',
+ short:'Базовые принципы удобства интерфейса (по Я. Нильсену) и современные расширения',
+ training:'Эвристики — <b>универсальный язык для оценки удобства</b> любого интерфейса. Применимы к любому экрану и дают команде общую рамку. Используйте при ревью макетов и как обучающий минимум для новых сотрудников: принципы Нильсена — азбука UX.',
+ groups:[
+  {name:'Эвристики Нильсена',crit:[
+   {id:'h1',t:'Видимость статуса системы',q:'Интерфейс всегда сообщает, что происходит',core:true,
+    w:'Понимает ли пользователь состояние системы? Есть ли обратная связь на действия?',
+    l:['Действия без отклика — пользователь жмёт повторно, создаёт дубли.','Обратная связь непоследовательна — часть действий «молчит».','Каждое действие имеет отклик: «Сохранено», прогресс, статус.','Мгновенная обратная связь везде; долгие процессы показывают прогресс и время.'],
+    b:'Видимость статуса — эвристика №1 Нильсена и самая частая претензия к удобству.'},
+   {id:'h2',t:'Соответствие реальному миру',q:'Язык интерфейса понятен пользователю',core:true,
+    w:'Использует ли интерфейс язык пользователя, а не внутренний жаргон?',
+    l:['Сплошной жаргон («биллинговый аккаунт», «активные SKU») — клиент не понимает.','Местами понятно, но термины систем прорываются в интерфейс.','Понятные клиенту формулировки: «Ваши счета», «Подключённые услуги».','Тексты протестированы на клиентах; термины совпадают с их картиной мира.'],
+    b:'Жаргон повышает когнитивную нагрузку и количество ошибок (NN/g).'},
+   {id:'h3',t:'Свобода действий и контроль',q:'Можно отменить действие и вернуться назад',core:true,
+    w:'Может ли пользователь отменить действие, вернуться, выйти без потерь?',
+    l:['Действия необратимы, выхода нет — ошибка ведёт к потере данных.','Отмена есть не везде; из формы нельзя выйти без потерь.','Отмена удаления, «Назад» в мастере, выход с сохранением черновика.','Undo/redo, автосохранение черновиков, понятный выход из любого процесса.'],
+    b:'Возможность отмены снижает страх ошибки и повышает готовность действовать (Нильсен №3).'},
+   {id:'h4',t:'Консистентность и стандарты',q:'Одинаковые элементы работают одинаково',core:true,
+    w:'Единообразны ли элементы, термины и паттерны по всему продукту?',
+    l:['Хаос: одно действие называется и выглядит по-разному.','Заметные расхождения в стилях и терминах между разделами.','Единый дизайн-код: кнопки, цвета, иконки, термины одинаковы.','Дизайн-система с переиспользуемыми компонентами — консистентность по умолчанию.'],
+    b:'Консистентность снижает время обучения и количество ошибок (NN/g).'},
+   {id:'h5',t:'Предотвращение ошибок',q:'Интерфейс не даёт ошибиться',core:true,
+    w:'Предотвращает ли интерфейс ошибки до их совершения — ограничения, валидация, подтверждения?',
+    l:['Ничто не защищает — легко совершить деструктивное действие.','Ошибки ловятся только после отправки формы.','Inline-валидация, подтверждение опасных действий.','Умные дефолты, недоступные невалидные опции, защита от случайных действий.'],
+    b:'Inline-валидация снижает ошибки форм на 22% (Baymard).'},
+   {id:'h6',t:'Узнавание вместо запоминания',q:'Информация под рукой, её не надо держать в голове',core:true,
+    w:'Не заставляет ли интерфейс запоминать информацию между экранами?',
+    l:['Нужно держать в голове коды, параметры — память перегружена.','Часть информации приходится запоминать (код из SMS на другом экране).','Подсказки действий, видимые ранее введённые данные.','Автоподстановка кодов, контекстные подсказки, недавние элементы под рукой.'],
+    b:'Память ограничена ~7 элементами; опора на узнавание снижает нагрузку (Нильсен №6).'},
+   {id:'h7',t:'Гибкость и эффективность',q:'Опытные пользователи работают быстрее',core:true,
+    w:'Есть ли ускорители для опытных — горячие клавиши, шаблоны, массовые действия — не мешая новичкам?',
+    l:['Каждое действие только через полный мастер, даже рутинное.','Ускорители почти отсутствуют — опытные работают медленно.','Есть шаблоны, избранное, массовые операции.','Прогрессивное раскрытие: простой путь новичкам, ускорители — продвинутым.'],
+    b:'Ускорители повышают эффективность опытных без ущерба новичкам (Нильсен №7).'},
+   {id:'h8',t:'Помощь в исправлении ошибок',q:'Сообщения об ошибках понятны и подсказывают решение',core:true,
+    w:'Понятны ли сообщения об ошибках? Объясняют ли, что не так и как исправить?',
+    l:['«Ошибка 0x80004005» — без объяснений и пути решения.','Ошибка понятна, но не подсказывает, что делать.','«Неверный формат телефона. Пример: +7 900 123-45-67».','Ошибка указывает на поле, объясняет причину, предлагает действие или контакт.'],
+    b:'Понятные сообщения об ошибках восстанавливают до 40% прерванных сценариев (Baymard).'},
+   {id:'h9',t:'Эстетичный и минималистичный дизайн',q:'Нет визуального шума, конкурирующего с задачей',core:false,
+    w:'Нет ли визуального шума, конкурирующего с нужной информацией?',
+    l:['Интерфейс перегружен: визуальный шум мешает выполнять задачи.','Лишних элементов много, фокус размывается.','Дизайн в целом чистый, ключевое выделено.','Минимализм: на экране только то, что помогает задаче.'],
+    b:'Лишние элементы конкурируют за внимание и снижают заметность важного (Нильсен №8).'},
+   {id:'h10',t:'Помощь и документация',q:'Справка доступна, когда нужна, и легко находится',core:false,
+    w:'Доступна ли справка, когда нужна, и легко ли её найти?',
+    l:['Помощи нет или её невозможно найти в нужный момент.','Документация есть, но оторвана от контекста и труднонаходима.','Справка доступна и покрывает типовые вопросы.','Контекстная помощь в точке нужды + структурированная база знаний.'],
+    b:'Доступная контекстная помощь снижает обращения в поддержку (Нильсен №10).'},
+  ]},
+  {name:'Современные расширения',crit:[
+   {id:'h11',t:'Доверие и прозрачность',q:'Интерфейс честен: понятны последствия и данные',core:false,
+    w:'Честен ли интерфейс: нет dark patterns, понятны последствия действий, прозрачно использование данных?',
+    l:['Интерфейс манипулятивен: скрытые последствия, неясное использование данных.','Встречаются непрозрачные моменты в действиях или данных.','Действия и их последствия в целом прозрачны.','Полная честность: понятные последствия, прозрачные данные, никаких уловок.'],
+    b:'Доверие к интерфейсу — растущий фактор удержания и репутации продукта.'},
+   {id:'h12',t:'Мобильные паттерны',q:'Учтена специфика тача: зоны, жесты, клавиатура',core:false,
+    w:'Учтена ли специфика тача: размеры тап-зон, жесты, поведение экранной клавиатуры?',
+    l:['Мобильное взаимодействие не учтено: мелкие зоны, клавиатура перекрывает поля.','Базовая адаптация есть, тач-специфика проработана слабо.','Тап-зоны, жесты и клавиатура удобны на мобильном.','Полноценные мобильные паттерны: удобные зоны, жесты, корректная клавиатура и автофокус.'],
+    b:'Более половины B2B-трафика мобильный; тач-специфика влияет на завершение задач.'},
+  ]},
+ ]
+},
 ];
 
-function renderBlocks(){
-  const container=document.getElementById('blocksContainer');
-  container.innerHTML='';
+/* ════════ STATE ════════ */
+const scores={}, naSet=new Set(), confs={}, comments={};
+let currentStageIdx=0, MODE='short';
+const SCORE_LABELS=['Блокер','Критично','База','Эталон'];
 
-  blocks.forEach((block,bIndex)=>{
-    container.innerHTML += `
-      <div class="card">
-        <div class="block-header" onclick="toggleBlock(${bIndex})">
-          <div class="block-left">
-            <h3>${bIndex+1}. ${block.title}</h3>
-            <p>${block.desc}</p>
-          </div>
-          <div class="block-meta">
-            <div id="blockFilled-${bIndex}">0 / ${block.items.length}</div>
-            <div id="blockScore-${bIndex}">0%</div>
-          </div>
+/* helpers to get criteria depending on mode */
+function stageCriteria(stage){ // flat list for active mode
+  const out=[];
+  stage.groups.forEach(g=> g.crit.forEach(c=>{ if(MODE==='full'||c.core) out.push(c); }));
+  return out;
+}
+function allCrit(stage){ const o=[]; stage.groups.forEach(g=>g.crit.forEach(c=>o.push(c))); return o; }
+
+function zoneOf(pct){
+  if(pct===null) return {cls:'empty',pillCls:'pill-empty',label:'Не оценен',text:''};
+  if(pct<=40) return {cls:'red',pillCls:'pill-red',label:'Красная зона',text:'Критические разрывы. Требуется серьёзная доработка.'};
+  if(pct<=70) return {cls:'yellow',pillCls:'pill-yellow',label:'Жёлтая зона',text:'Базовый уровень, есть зоны роста. Запуск — только с планом улучшений.'};
+  if(pct<=90) return {cls:'green',pillCls:'pill-green',label:'Зелёная зона',text:'Хороший уровень зрелости. Можно запускать с точечными улучшениями.'};
+  return {cls:'ref',pillCls:'pill-ref',label:'Эталонная зона',text:'Сильный опыт. Решения можно фиксировать как best practice.'};
+}
+function stagePct(stage){
+  const list=stageCriteria(stage).filter(c=>!naSet.has(c.id)&&scores[c.id]!==undefined).map(c=>scores[c.id]);
+  if(!list.length) return null;
+  return Math.round((list.reduce((a,b)=>a+b,0)/list.length/3)*100);
+}
+function stageFilled(stage){
+  return stageCriteria(stage).filter(c=>naSet.has(c.id)||scores[c.id]!==undefined).length;
+}
+function stageTotal(stage){ return stageCriteria(stage).length; }
+
+/* ════════ MODE ════════ */
+function setMode(m){
+  MODE=m;
+  document.getElementById('mode-short').classList.toggle('active',m==='short');
+  document.getElementById('mode-full').classList.toggle('active',m==='full');
+  document.getElementById('mode-hint').innerHTML = m==='short'
+    ? '<b>Краткий чек-лист</b> — обязательный костяк критериев для быстрой проверки (15–20 мин). Подходит для продуктового комитета и gate перед запуском.'
+    : '<b>Расширенный чек-лист</b> — полный набор с подгруппами и сценариями срыва (1,5–3 часа). Для глубокого аудита и проектирования. Оценки из Краткого переносятся.';
+  renderOverview();
+}
+
+/* ════════ OVERVIEW ════════ */
+function renderOverview(){
+  document.getElementById('stage-grid').innerHTML=STAGES.map((s,i)=>{
+    const pct=stagePct(s),z=zoneOf(pct),filled=stageFilled(s),total=stageTotal(s);
+    return `<div class="stage-card" onclick="showStage(${i})">
+      <div class="stage-icon">${s.icon}</div>
+      <div class="stage-num">ЭТАП ${i+1}</div>
+      <div class="stage-name">${s.name}</div>
+      <div class="stage-short">${s.short}</div>
+      <div class="stage-bar"><div class="stage-bar-fill" style="width:${total?filled/total*100:0}%"></div></div>
+      <div class="stage-foot">
+        <span class="stage-progress-txt"><b>${filled}</b> / ${total}</span>
+        <span class="stage-score-pill ${z.pillCls}">${pct===null?'—':pct+'%'}</span>
+      </div></div>`;
+  }).join('');
+
+  const allPcts=STAGES.map(stagePct).filter(p=>p!==null);
+  const rf=document.getElementById('ring-fill'),rp=document.getElementById('ring-pct'),
+        ze=document.getElementById('summary-zone'),te=document.getElementById('summary-text');
+  if(!allPcts.length){
+    rf.style.strokeDashoffset=263.9;rp.textContent='—';rp.style.color='var(--text)';
+    ze.className='summary-zone zone-empty';ze.innerHTML='<span class="dot"></span>Оценка не начата';
+    te.textContent='Заполните хотя бы один этап, чтобы увидеть общий уровень зрелости и зону качества продукта.';return;
+  }
+  const overall=Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length),z=zoneOf(overall);
+  const col=z.cls==='red'?'#FF4D4F':z.cls==='yellow'?'#FF9F0A':z.cls==='ref'?'#00B5FF':'#00B956';
+  rf.style.strokeDashoffset=263.9-(263.9*overall/100);rf.setAttribute('stroke',col);
+  rp.textContent=overall+'%';rp.style.color=col;
+  ze.className='summary-zone zone-'+z.cls;ze.innerHTML=`<span class="dot"></span>${z.label}`;
+  te.textContent=`${z.text} Оценено этапов: ${allPcts.length} из ${STAGES.length}.`;
+}
+
+/* ════════ STAGE DETAIL ════════ */
+function critCardHTML(c){
+  const isNa=naSet.has(c.id), cur=scores[c.id];
+  const lvlCls=cur===undefined?'lvl-none':'lvl'+cur;
+  const curTxt=isNa?'Не применимо':(cur===undefined?'Не оценено':`${cur} · ${SCORE_LABELS[cur]}`);
+  const slVal=cur===undefined?0:cur, setCls=(cur===undefined||isNa)?'':'set';
+  const myConf=confs[c.id]||[];
+  const cm=[['analytics','📊 Аналитика'],['research','🔬 Исследования'],['hypo','💭 Гипотезы и наблюдения']];
+  const confBtns=cm.map(([k,lbl])=>`<button class="conf-btn ${myConf.includes(k)?'active':''}" onclick="toggleConf('${c.id}','${k}',this)">${lbl}</button>`).join('');
+  const edgeTag=c.edge?'<span class="crit-edge">⚠️ срыв</span>':'';
+  return `<div class="crit-card ${isNa?'na':''}" id="card-${c.id}">
+    <div class="crit-top">
+      <div class="crit-left">
+        <div class="crit-title-row"><span class="crit-title">${c.t}${edgeTag}</span><button class="tt-trigger" data-tt="${c.id}">?</button></div>
+        <div class="crit-sub">${c.q}</div>
+      </div>
+      <div class="slider-zone">
+        <div class="slider-head">
+          <span class="slider-cur ${isNa?'lvl-none':lvlCls}" id="cur-${c.id}">${curTxt}</span>
+          <label class="na-toggle"><input type="checkbox" ${isNa?'checked':''} onchange="toggleNa('${c.id}',this)">Не применимо</label>
         </div>
-
-        <div class="block-content ${bIndex===0 ? 'open' : ''}" id="content-${bIndex}">
-          <table>
-            <thead>
-              <tr>
-                <th>Критерий</th>
-                <th>Что проверяем</th>
-                <th>Оценка</th>
-                <th>Комментарий</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${block.items.map(item=>`
-                <tr>
-                  <td><strong>${item[0]}</strong></td>
-                  <td>${item[1]}</td>
-                  <td>
-                    <select onchange="calculateScore()">
-                      <option value="">—</option>
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                    </select>
-                  </td>
-                  <td>
-                    <textarea placeholder="Комментарий / рекомендация"></textarea>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+        <div class="slider-rail"><input type="range" min="0" max="3" step="1" value="${slVal}" ${isNa?'disabled':''} class="${setCls} lvl${slVal}" id="sl-${c.id}" oninput="onSlide('${c.id}',this)"></div>
+        <div class="slider-ticks">
+          <span class="slider-tick" data-v="0">Блокер</span><span class="slider-tick" data-v="1">Критично</span>
+          <span class="slider-tick" data-v="2">База</span><span class="slider-tick" data-v="3">Эталон</span>
         </div>
       </div>
-    `;
-  });
+    </div>
+    <div class="crit-bottom">
+      <div class="conf-row"><span class="conf-label">Источник оценки:</span>${confBtns}</div>
+      <textarea class="comment-field" placeholder="Комментарий, доказательство, ссылка на данные или вывод исследования…">${comments[c.id]||''}</textarea>
+    </div>
+  </div>`;
 }
 
-function toggleBlock(i){
-  const content=document.getElementById(`content-${i}`);
-  content.classList.toggle('open');
-}
+function renderStage(idx){
+  const s=STAGES[idx];
+  document.getElementById('sd-icon').textContent=s.icon;
+  document.getElementById('sd-num').textContent=`Этап ${idx+1} из ${STAGES.length}`;
+  document.getElementById('sd-mode-tag').textContent=MODE==='short'?'Краткий':'Расширенный';
+  document.getElementById('sd-title').textContent=s.name;
+  document.getElementById('sd-sub').textContent=s.short;
+  document.getElementById('sd-training').innerHTML=s.training;
+  document.getElementById('sd-total').textContent=stageTotal(s);
+  document.getElementById('sd-next').textContent=idx<STAGES.length-1?'Следующий этап →':'Завершить и к обзору ✓';
 
-function calculateScore(){
-  const selects=[...document.querySelectorAll('tbody select')];
-  const filled=selects.filter(s=>s.value!=="");
-  const total=filled.reduce((sum,s)=>sum+Number(s.value),0);
-
-  const percent=filled.length
-    ? Math.round((total/(filled.length*3))*100)
-    : 0;
-
-  document.getElementById('totalScore').textContent=percent+'%';
-  document.getElementById('progressFill').style.width=percent+'%';
-  document.getElementById('filledMeta').textContent=
-    `${filled.length} / ${selects.length} критериев`;
-
-  const zone=document.getElementById('zoneBadge');
-  zone.className='badge';
-
-  if(percent<=40){
-    zone.textContent='Красная зона';
-    zone.classList.add('zone-red');
-  }else if(percent<=70){
-    zone.textContent='Жёлтая зона';
-    zone.classList.add('zone-yellow');
-  }else if(percent<=90){
-    zone.textContent='Зелёная зона';
-    zone.classList.add('zone-green');
+  let html='';
+  if(MODE==='full'){
+    s.groups.forEach(g=>{
+      html+=`<div class="subgroup-head"><span class="subgroup-name">${g.name}</span><span class="subgroup-line"></span></div>`;
+      g.crit.forEach(c=> html+=critCardHTML(c));
+    });
   }else{
-    zone.textContent='Эталонная зона';
-    zone.classList.add('zone-platinum');
+    stageCriteria(s).forEach(c=> html+=critCardHTML(c));
   }
+  const list=document.getElementById('crit-list');
+  list.innerHTML=html;
 
-  updateBlockScores();
-}
-
-function updateBlockScores(){
-  blocks.forEach((block,index)=>{
-    const content=document.getElementById(`content-${index}`);
-    const selects=[...content.querySelectorAll('select')];
-
-    const filled=selects.filter(s=>s.value!=="");
-    const total=filled.reduce((sum,s)=>sum+Number(s.value),0);
-
-    const percent=filled.length
-      ? Math.round((total/(filled.length*3))*100)
-      : 0;
-
-    document.getElementById(`blockScore-${index}`).textContent=percent+'%';
-    document.getElementById(`blockFilled-${index}`).textContent=
-      `${filled.length} / ${selects.length}`;
+  list.querySelectorAll('.crit-card').forEach(card=>{
+    const id=card.id.replace('card-','');
+    card.querySelector('.comment-field').addEventListener('input',e=>{comments[id]=e.target.value;});
+    const trig=card.querySelector('.tt-trigger');
+    trig.addEventListener('mouseenter',()=>openTooltip(trig,id));
+    trig.addEventListener('mouseleave',scheduleClose);
+    trig.addEventListener('focus',()=>openTooltip(trig,id));
+    trig.addEventListener('blur',scheduleClose);
   });
+  updateStageProgress(idx);
+}
+function onSlide(id,el){
+  const v=parseInt(el.value,10);scores[id]=v;el.className=`set lvl${v}`;
+  const cur=document.getElementById('cur-'+id);cur.className=`slider-cur lvl${v}`;cur.textContent=`${v} · ${SCORE_LABELS[v]}`;
+  updateStageProgress(currentStageIdx);
+}
+function toggleNa(id,cb){
+  const card=document.getElementById('card-'+id),sl=document.getElementById('sl-'+id),cur=document.getElementById('cur-'+id);
+  if(cb.checked){naSet.add(id);delete scores[id];card.classList.add('na');sl.disabled=true;sl.value=0;sl.className='lvl0';cur.className='slider-cur lvl-none';cur.textContent='Не применимо';}
+  else{naSet.delete(id);card.classList.remove('na');sl.disabled=false;cur.className='slider-cur lvl-none';cur.textContent='Не оценено';}
+  updateStageProgress(currentStageIdx);
+}
+function toggleConf(id,val,btn){
+  if(!confs[id])confs[id]=[];const a=confs[id],i=a.indexOf(val);
+  if(i>=0){a.splice(i,1);btn.classList.remove('active');}else{a.push(val);btn.classList.add('active');}
+}
+function updateStageProgress(idx){
+  const s=STAGES[idx],filled=stageFilled(s),total=stageTotal(s),pct=stagePct(s);
+  document.getElementById('sd-filled').textContent=filled;
+  document.getElementById('sd-total').textContent=total;
+  document.getElementById('sd-fill').style.width=(total?filled/total*100:0)+'%';
+  document.getElementById('sd-pct').textContent=pct===null?'0%':pct+'%';
 }
 
-function resetForm(){
-  if(!confirm('Очистить форму?')) return;
-
-  document.querySelectorAll('select').forEach(s=>s.value='');
-  document.querySelectorAll('textarea').forEach(t=>t.value='');
-  document.querySelectorAll('input').forEach(i=>i.value='');
-
-  calculateScore();
+/* ════════ TOOLTIP ════════ */
+let activePopup=null,activeTrigger=null,closeTimer=null;
+function findCrit(id){for(const s of STAGES)for(const g of s.groups){const c=g.crit.find(x=>x.id===id);if(c)return c;}return null;}
+function buildPopup(id){
+  const d=findCrit(id);if(!d)return null;
+  const lad=d.l.map((txt,i)=>`<div class="tt-level"><span class="tt-level-chip chip${i}">${i} · ${SCORE_LABELS[i]}</span><span class="tt-level-text">${txt}</span></div>`).join('');
+  const p=document.createElement('div');p.className='tt-popup';
+  p.innerHTML=`<div class="tt-head"><span>💡</span><span class="tt-head-title">Как оценивать этот критерий</span></div>
+    <div class="tt-body">
+      <div><div class="tt-section-title">На что смотреть</div><div class="tt-what">${d.w}</div></div>
+      <div><div class="tt-section-title">Калибровка оценки</div><div class="tt-ladder">${lad}</div></div>
+      <div class="tt-benchmark"><span class="tt-benchmark-icon">📊</span><span class="tt-benchmark-text"><b>Бенчмарк:</b> ${d.b}</span></div>
+    </div>`;
+  p.addEventListener('mouseenter',()=>{if(closeTimer){clearTimeout(closeTimer);closeTimer=null;}});
+  p.addEventListener('mouseleave',scheduleClose);
+  return p;
 }
-
-function copySummary(){
-  const text = `
-CX / Product Review Summary
-
-Продукт: ${document.getElementById('product').value}
-Тип ревью: ${document.getElementById('reviewType').value}
-Ответственный: ${document.getElementById('owner').value}
-CX Reviewer: ${document.getElementById('reviewer').value}
-Дата: ${document.getElementById('date').value}
-
-Итоговая оценка: ${document.getElementById('totalScore').textContent}
-Зона качества: ${document.getElementById('zoneBadge').textContent}
-${document.getElementById('filledMeta').textContent}
-  `.trim();
-
-  navigator.clipboard.writeText(text);
-  alert('Итог скопирован');
+function positionPopup(p,btn){
+  const r=btn.getBoundingClientRect(),W=400,gap=8,vw=innerWidth,vh=innerHeight;
+  let left=r.left-W-gap;if(left<8)left=r.right+gap;left=Math.min(left,vw-W-8);left=Math.max(left,8);
+  let top=r.top-10;const ph=p.offsetHeight||340;if(top+ph>vh-8)top=Math.max(8,vh-ph-8);top=Math.max(top,8);
+  p.style.left=left+'px';p.style.top=top+'px';
 }
+function openTooltip(btn,id){
+  if(closeTimer){clearTimeout(closeTimer);closeTimer=null;}
+  if(activeTrigger===btn&&activePopup)return;hardClose();
+  const p=buildPopup(id);if(!p)return;
+  document.getElementById('tt-root').appendChild(p);p.style.display='block';positionPopup(p,btn);
+  requestAnimationFrame(()=>{positionPopup(p,btn);p.classList.add('visible');});
+  activePopup=p;activeTrigger=btn;btn.classList.add('active');
+}
+function scheduleClose(){if(closeTimer)clearTimeout(closeTimer);closeTimer=setTimeout(hardClose,160);}
+function hardClose(){
+  if(activePopup){const p=activePopup;p.classList.remove('visible');setTimeout(()=>p.remove(),180);activePopup=null;}
+  if(activeTrigger){activeTrigger.classList.remove('active');activeTrigger=null;}
+}
+addEventListener('scroll',()=>{if(activePopup&&activeTrigger)positionPopup(activePopup,activeTrigger);},{passive:true});
+addEventListener('resize',()=>{if(activePopup&&activeTrigger)positionPopup(activePopup,activeTrigger);});
 
-renderBlocks();
-calculateScore();
+/* ════════ NAV ════════ */
+function showStage(idx){currentStageIdx=idx;renderStage(idx);document.getElementById('view-overview').classList.remove('active');document.getElementById('view-stage').classList.add('active');scrollTo({top:0});}
+function showOverview(){hardClose();renderOverview();document.getElementById('view-stage').classList.remove('active');document.getElementById('view-overview').classList.add('active');scrollTo({top:0});}
+function nextStage(){currentStageIdx<STAGES.length-1?showStage(currentStageIdx+1):showOverview();}
+
+renderOverview();
 </script>
-
 </body>
 </html>
- 
