@@ -83,6 +83,7 @@
   .export-field select:focus{border-color:var(--green)}
   .export-copy-btn{height:44px;padding:0 24px;border:none;border-radius:12px;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
   .export-copy-btn:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
+  .export-copy-btn:active{background:var(--green-press);transform:scale(0.97);box-shadow:0 1px 4px rgba(0,185,86,.25)}
   .export-copy-btn:disabled{background:var(--border);color:var(--disabled);cursor:not-allowed;box-shadow:none}
   .export-instr{background:var(--surface);border-radius:16px;padding:16px 18px}
   .export-instr-title{font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text)}
@@ -1170,22 +1171,12 @@ function buildWikiReport(){
     zoneCls=zoneOf(overall).cls; zoneName=ZONE_NAMES[zoneCls];
   }
 
-  // panel colour by zone
-  const PANEL_BG={red:'#FFF0F0',yellow:'#FFF6E5',green:'#EAFBF1',ref:'#DDF5FF',empty:'#F2F4F7'};
-  const PANEL_BORDER={red:'#FF4D4F',yellow:'#FF9F0A',green:'#00B956',ref:'#00B5FF',empty:'#D2D5DA'};
-  const bg=PANEL_BG[zoneCls], bd=PANEL_BORDER[zoneCls];
-
   let out='';
   out+=`h1. CX / Product Review Scorecard — ${name}\n\n`;
   out+=`*Повод для ревью:* ${reason}\n`;
   out+=`*Дата оценки:* ${dateStr}\n`;
-  out+=`*Режим:* ${modeStr} чек-лист\n\n`;
-
-  // overall maturity as a coloured panel with zone badge
-  const ovTitle = overall===null ? 'Общая зрелость: оценка не начата' : `Общая зрелость: ${overall}%`;
-  out+=`{panel:title=${ovTitle}|borderColor=${bd}|borderStyle=solid|bgColor=${bg}}\n`;
-  out+=`Зона качества: ${zoneBadge(zoneCls)}\n`;
-  out+=`{panel}\n\n`;
+  out+=`*Режим:* ${modeStr} чек-лист\n`;
+  out+=`*Общая зрелость:* ${overall===null?'оценка не начата':'*'+overall+'%*'}`+(overall===null?'':`  ${zoneBadge(zoneCls)}`)+`\n\n`;
 
   // summary table by block
   out+=`h2. Сводка по блокам\n\n`;
@@ -1202,23 +1193,30 @@ function buildWikiReport(){
   });
   out+=`\n`;
 
-  // detailed table — all criteria in active mode
+  // detailed tables — one per block, with its own h3 header (no repeated Block column)
   out+=`h2. Детализация по критериям\n\n`;
-  out+=`||Блок||Подгруппа||Критерий||Оценка||Источник||Комментарий||\n`;
   STAGES.forEach((s,i)=>{
     const blockIsNa=blockNa.has(s.id);
+    // collect rows for active mode
+    const rows=[];
     s.groups.forEach(g=>{
       g.crit.forEach(c=>{
         if(MODE==='short'&&!c.core) return;
-        let scoreCell = blockIsNa ? '⚪ Н/П (блок)' : scoreCellFor(c);
-        let srcCell   = blockIsNa ? '—' : srcCellFor(c);
-        let comm      = blockIsNa ? '' : (comments[c.id]||'');
-        const edge=c.edge?'⚠️ ':'';
-        out+=`|${i+1}. ${stageIcon(s)}${wikiCell(s.name)}|${wikiCell(g.name)}|${edge}${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
+        rows.push({g:g.name,c});
       });
     });
+    if(!rows.length) return;
+    out+=`h3. ${stageIcon(s)}${i+1}. ${wikiCell(s.name)}`+(blockIsNa?'  ⚪ _блок неприменим_':'')+`\n\n`;
+    out+=`||Подгруппа||Критерий||Оценка||Источник||Комментарий||\n`;
+    rows.forEach(({g,c})=>{
+      let scoreCell = blockIsNa ? '⚪ Н/П (блок)' : scoreCellFor(c);
+      let srcCell   = blockIsNa ? '—' : srcCellFor(c);
+      let comm      = blockIsNa ? '' : (comments[c.id]||'');
+      const edge=c.edge?'⚠️ ':'';
+      out+=`|${wikiCell(g)}|${edge}${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
+    });
+    out+=`\n`;
   });
-  out+=`\n`;
 
   // critical gaps section
   const gaps=[];
