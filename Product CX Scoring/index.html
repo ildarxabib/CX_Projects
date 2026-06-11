@@ -79,6 +79,8 @@
   .export-field input{width:100%;height:44px;padding:0 14px;border:1.5px solid var(--border-dark);border-radius:12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;background:var(--card)}
   .export-field input:focus{border-color:var(--green)}
   .export-field input::placeholder{color:var(--disabled)}
+  .export-field select{width:100%;height:44px;padding:0 14px;border:1.5px solid var(--border-dark);border-radius:12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;background:var(--card);cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238F96A4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+  .export-field select:focus{border-color:var(--green)}
   .export-copy-btn{height:44px;padding:0 24px;border:none;border-radius:12px;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
   .export-copy-btn:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
   .export-copy-btn:disabled{background:var(--border);color:var(--disabled);cursor:not-allowed;box-shadow:none}
@@ -281,6 +283,15 @@
         <div class="export-field">
           <label for="product-name">Название продукта</label>
           <input type="text" id="product-name" placeholder="Например: Виртуальная АТС" oninput="syncCopyBtn()">
+        </div>
+        <div class="export-field">
+          <label for="review-reason">Повод для ревью</label>
+          <select id="review-reason">
+            <option value="Ревью перед запуском продукта">Ревью перед запуском продукта</option>
+            <option value="Квартальное ревью">Квартальное ревью</option>
+            <option value="Ревью для ЦПК">Ревью для ЦПК</option>
+            <option value="Выход на ComCom">Выход на ComCom</option>
+          </select>
         </div>
         <button class="export-copy-btn" id="copy-btn" onclick="copyReport()" disabled>
           <span>📋</span><span>Скопировать</span>
@@ -1121,11 +1132,21 @@ function syncCopyBtn(){
 // escape pipe chars so they don't break wiki table cells
 function wikiCell(t){ return (t==null?'':String(t)).replace(/\|/g,'\\|').replace(/\r?\n/g,' '); }
 
+// ── visual helpers (Confluence wiki macros + emoji) ──
+const SCORE_EMOJI=['🔴','🟠','🟢','⭐']; // 0..3
+const ZONE_STATUS={ // {status} macro colour + title
+  red:{c:'Red',t:'Красная'}, yellow:{c:'Yellow',t:'Жёлтая'},
+  green:{c:'Green',t:'Зелёная'}, ref:{c:'Blue',t:'Эталонная'}, empty:{c:'Grey',t:'—'}
+};
+function zoneBadge(cls){ const z=ZONE_STATUS[cls]||ZONE_STATUS.empty; return `{status:colour=${z.c}|title=${z.t}}`; }
+function stageIcon(s){ return s.icon? s.icon+' ' : ''; }
+function scoreLabelVisual(v){ return `${SCORE_EMOJI[v]} ${v} · ${SCORE_LABELS[v]}`; }
+
 function scoreCellFor(c){
-  if(naSet.has(c.id)) return 'Н/П';
+  if(naSet.has(c.id)) return '⚪ Н/П';
   const v=scores[c.id];
   if(v===undefined) return '—';
-  return v+' · '+SCORE_LABELS[v];
+  return scoreLabelVisual(v);
 }
 function srcCellFor(c){
   const a=confs[c.id]||[];
@@ -1135,6 +1156,7 @@ function srcCellFor(c){
 
 function buildWikiReport(){
   const name=(document.getElementById('product-name').value||'').trim()||'Без названия';
+  const reason=(document.getElementById('review-reason').value||'').trim();
   const now=new Date();
   const dd=String(now.getDate()).padStart(2,'0'), mm=String(now.getMonth()+1).padStart(2,'0');
   const dateStr=`${dd}.${mm}.${now.getFullYear()}`;
@@ -1142,17 +1164,28 @@ function buildWikiReport(){
 
   // overall
   const allPcts=STAGES.map(stagePct).filter(p=>p!==null&&p!=='na');
-  let overall=null, zoneName='—';
+  let overall=null, zoneCls='empty', zoneName='—';
   if(allPcts.length){
     overall=Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length);
-    zoneName=ZONE_NAMES[zoneOf(overall).cls];
+    zoneCls=zoneOf(overall).cls; zoneName=ZONE_NAMES[zoneCls];
   }
+
+  // panel colour by zone
+  const PANEL_BG={red:'#FFF0F0',yellow:'#FFF6E5',green:'#EAFBF1',ref:'#DDF5FF',empty:'#F2F4F7'};
+  const PANEL_BORDER={red:'#FF4D4F',yellow:'#FF9F0A',green:'#00B956',ref:'#00B5FF',empty:'#D2D5DA'};
+  const bg=PANEL_BG[zoneCls], bd=PANEL_BORDER[zoneCls];
 
   let out='';
   out+=`h1. CX / Product Review Scorecard — ${name}\n\n`;
+  out+=`*Повод для ревью:* ${reason}\n`;
   out+=`*Дата оценки:* ${dateStr}\n`;
-  out+=`*Режим:* ${modeStr} чек-лист\n`;
-  out+=`*Общая зрелость:* ${overall===null?'—':overall+'%'}`+(overall===null?'':` (${zoneName} зона)`)+`\n\n`;
+  out+=`*Режим:* ${modeStr} чек-лист\n\n`;
+
+  // overall maturity as a coloured panel with zone badge
+  const ovTitle = overall===null ? 'Общая зрелость: оценка не начата' : `Общая зрелость: ${overall}%`;
+  out+=`{panel:title=${ovTitle}|borderColor=${bd}|borderStyle=solid|bgColor=${bg}}\n`;
+  out+=`Зона качества: ${zoneBadge(zoneCls)}\n`;
+  out+=`{panel}\n\n`;
 
   // summary table by block
   out+=`h2. Сводка по блокам\n\n`;
@@ -1160,11 +1193,11 @@ function buildWikiReport(){
   STAGES.forEach((s,i)=>{
     const pct=stagePct(s);
     if(pct==='na'){
-      out+=`|${i+1}. ${wikiCell(s.name)}|Н/П|Н/П|Неприменим|\n`;
+      out+=`|${i+1}. ${stageIcon(s)}${wikiCell(s.name)}|⚪ Н/П|—|${zoneBadge('empty')} Неприменим|\n`;
     }else{
       const filled=stageFilled(s),total=stageTotal(s);
-      const z=pct===null?'—':ZONE_NAMES[zoneOf(pct).cls];
-      out+=`|${i+1}. ${wikiCell(s.name)}|${filled} / ${total}|${pct===null?'—':pct+'%'}|${z}|\n`;
+      const badge=pct===null?'—':zoneBadge(zoneOf(pct).cls);
+      out+=`|${i+1}. ${stageIcon(s)}${wikiCell(s.name)}|${filled} / ${total}|${pct===null?'—':'*'+pct+'%*'}|${badge}|\n`;
     }
   });
   out+=`\n`;
@@ -1177,10 +1210,11 @@ function buildWikiReport(){
     s.groups.forEach(g=>{
       g.crit.forEach(c=>{
         if(MODE==='short'&&!c.core) return;
-        let scoreCell = blockIsNa ? 'Н/П (блок)' : scoreCellFor(c);
+        let scoreCell = blockIsNa ? '⚪ Н/П (блок)' : scoreCellFor(c);
         let srcCell   = blockIsNa ? '—' : srcCellFor(c);
         let comm      = blockIsNa ? '' : (comments[c.id]||'');
-        out+=`|${i+1}. ${wikiCell(s.name)}|${wikiCell(g.name)}|${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
+        const edge=c.edge?'⚠️ ':'';
+        out+=`|${i+1}. ${stageIcon(s)}${wikiCell(s.name)}|${wikiCell(g.name)}|${edge}${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
       });
     });
   });
@@ -1194,16 +1228,17 @@ function buildWikiReport(){
       if(MODE==='short'&&!c.core) return;
       if(naSet.has(c.id)) return;
       const v=scores[c.id];
-      if(v===0||v===1) gaps.push({block:s.name,crit:c.t,v});
+      if(v===0||v===1) gaps.push({block:s.name,icon:s.icon,crit:c.t,v});
     }));
   });
-  out+=`h2. Критические разрывы (оценки 0–1)\n\n`;
+  out+=`h2. ⚠️ Критические разрывы (оценки 0–1)\n\n`;
   if(!gaps.length){
-    out+=`_Критических разрывов не зафиксировано._\n`;
+    out+=`{tip}Критических разрывов не зафиксировано.{tip}\n`;
   }else{
+    out+=`{warning}Найдено критических разрывов: ${gaps.length}. Эти зоны требуют первоочередного внимания.{warning}\n\n`;
     out+=`||Блок||Критерий||Оценка||\n`;
     gaps.sort((a,b)=>a.v-b.v).forEach(x=>{
-      out+=`|${wikiCell(x.block)}|${wikiCell(x.crit)}|${x.v} · ${SCORE_LABELS[x.v]}|\n`;
+      out+=`|${x.icon?x.icon+' ':''}${wikiCell(x.block)}|${wikiCell(x.crit)}|${scoreLabelVisual(x.v)}|\n`;
     });
   }
   return out;
