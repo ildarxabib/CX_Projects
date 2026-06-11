@@ -1193,52 +1193,27 @@ function buildWikiReport(){
   });
   out+=`\n`;
 
-  // detailed tables — one per block, with its own h3 header (no repeated Block column)
+  // detailed table — single table; block name shown only on first row of each block
   out+=`h2. Детализация по критериям\n\n`;
+  out+=`||Блок||Подгруппа||Критерий||Оценка||Источник||Комментарий||\n`;
   STAGES.forEach((s,i)=>{
     const blockIsNa=blockNa.has(s.id);
-    // collect rows for active mode
-    const rows=[];
+    let first=true;
     s.groups.forEach(g=>{
       g.crit.forEach(c=>{
         if(MODE==='short'&&!c.core) return;
-        rows.push({g:g.name,c});
+        const blockCell = first ? `${stageIcon(s)}${i+1}. ${wikiCell(s.name)}`+(blockIsNa?' ⚪':'') : ' ';
+        first=false;
+        let scoreCell = blockIsNa ? '⚪ Н/П (блок)' : scoreCellFor(c);
+        let srcCell   = blockIsNa ? '—' : srcCellFor(c);
+        let comm      = blockIsNa ? '' : (comments[c.id]||'');
+        const edge=c.edge?'⚠️ ':'';
+        out+=`|${blockCell}|${wikiCell(g.name)}|${edge}${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
       });
     });
-    if(!rows.length) return;
-    out+=`h3. ${stageIcon(s)}${i+1}. ${wikiCell(s.name)}`+(blockIsNa?'  ⚪ _блок неприменим_':'')+`\n\n`;
-    out+=`||Подгруппа||Критерий||Оценка||Источник||Комментарий||\n`;
-    rows.forEach(({g,c})=>{
-      let scoreCell = blockIsNa ? '⚪ Н/П (блок)' : scoreCellFor(c);
-      let srcCell   = blockIsNa ? '—' : srcCellFor(c);
-      let comm      = blockIsNa ? '' : (comments[c.id]||'');
-      const edge=c.edge?'⚠️ ':'';
-      out+=`|${wikiCell(g)}|${edge}${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
-    });
-    out+=`\n`;
   });
+  out+=`\n`;
 
-  // critical gaps section
-  const gaps=[];
-  STAGES.forEach((s,i)=>{
-    if(blockNa.has(s.id)) return;
-    s.groups.forEach(g=>g.crit.forEach(c=>{
-      if(MODE==='short'&&!c.core) return;
-      if(naSet.has(c.id)) return;
-      const v=scores[c.id];
-      if(v===0||v===1) gaps.push({block:s.name,icon:s.icon,crit:c.t,v});
-    }));
-  });
-  out+=`h2. ⚠️ Критические разрывы (оценки 0–1)\n\n`;
-  if(!gaps.length){
-    out+=`{tip}Критических разрывов не зафиксировано.{tip}\n`;
-  }else{
-    out+=`{warning}Найдено критических разрывов: ${gaps.length}. Эти зоны требуют первоочередного внимания.{warning}\n\n`;
-    out+=`||Блок||Критерий||Оценка||\n`;
-    gaps.sort((a,b)=>a.v-b.v).forEach(x=>{
-      out+=`|${x.icon?x.icon+' ':''}${wikiCell(x.block)}|${wikiCell(x.crit)}|${scoreLabelVisual(x.v)}|\n`;
-    });
-  }
   return out;
 }
 
