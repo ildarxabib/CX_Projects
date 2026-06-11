@@ -69,6 +69,42 @@
   .pill-green{background:var(--green-light);color:var(--green)}.pill-ref{background:var(--info-bg);color:var(--info)}
 
   .usage-strip{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:24px;margin-top:24px}
+  /* export block */
+  .export-strip{background:var(--card);border:1.5px solid var(--border);border-radius:24px;padding:24px;margin-top:24px}
+  .export-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .export-sub{font-size:12px;color:var(--secondary);margin-bottom:18px;line-height:1.5}
+  .export-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}
+  .export-field{flex:1;min-width:240px}
+  .export-field label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
+  .export-field input{width:100%;height:44px;padding:0 14px;border:1.5px solid var(--border-dark);border-radius:12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;background:var(--card)}
+  .export-field input:focus{border-color:var(--green)}
+  .export-field input::placeholder{color:var(--disabled)}
+  .export-copy-btn{height:44px;padding:0 24px;border:none;border-radius:12px;background:var(--green);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,box-shadow .2s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .export-copy-btn:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
+  .export-copy-btn:disabled{background:var(--border);color:var(--disabled);cursor:not-allowed;box-shadow:none}
+  .export-instr{background:var(--surface);border-radius:16px;padding:16px 18px}
+  .export-instr-title{font-size:12px;font-weight:600;margin-bottom:10px;color:var(--text)}
+  .export-instr ol{margin:0;padding-left:20px}
+  .export-instr li{font-size:12px;color:var(--secondary);line-height:1.7;margin-bottom:2px}
+  .export-instr li b{color:var(--text);font-weight:600}
+  .export-instr code{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:1px 5px;font-size:11px;color:var(--text);font-family:monospace}
+  /* fallback modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(43,45,51,.45);z-index:10000;display:none;align-items:center;justify-content:center;padding:24px}
+  .modal-overlay.open{display:flex}
+  .modal-box{background:var(--card);border-radius:20px;width:100%;max-width:680px;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.25);overflow:hidden}
+  .modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+  .modal-head-title{font-size:15px;font-weight:600;flex:1}
+  .modal-close{width:28px;height:28px;border:none;background:transparent;border-radius:8px;cursor:pointer;color:var(--secondary);font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .modal-close:hover{background:var(--bg)}
+  .modal-body{padding:18px 22px;overflow-y:auto}
+  .modal-body p{font-size:13px;color:var(--secondary);line-height:1.6;margin-bottom:12px}
+  .modal-body textarea{width:100%;min-height:280px;padding:12px 14px;border:1.5px solid var(--border-dark);border-radius:12px;font-size:12px;color:var(--text);font-family:monospace;line-height:1.5;resize:vertical;outline:none}
+  .modal-body textarea:focus{border-color:var(--green)}
+  .modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+  /* toast */
+  .toast{position:fixed;top:24px;right:24px;z-index:10001;background:var(--card);border:1.5px solid var(--green);border-radius:14px;padding:14px 18px;box-shadow:0 12px 40px rgba(0,0,0,.14);display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--text);opacity:0;transform:translateY(-12px);transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .toast .t-icon{width:22px;height:22px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
   .usage-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
   .usage-sub{font-size:12px;color:var(--secondary);margin-bottom:18px}
   .usage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
@@ -238,6 +274,30 @@
 
     <div class="stage-grid" id="stage-grid"></div>
 
+    <div class="export-strip">
+      <div class="export-title">📋 Выгрузка отчёта в Confluence</div>
+      <div class="export-sub">Сформируйте отчёт по текущей оценке и перенесите его на страницу проекта в Confluence одной вставкой.</div>
+      <div class="export-row">
+        <div class="export-field">
+          <label for="product-name">Название продукта</label>
+          <input type="text" id="product-name" placeholder="Например: Виртуальная АТС" oninput="syncCopyBtn()">
+        </div>
+        <button class="export-copy-btn" id="copy-btn" onclick="copyReport()" disabled>
+          <span>📋</span><span>Скопировать</span>
+        </button>
+      </div>
+      <div class="export-instr">
+        <div class="export-instr-title">Как перенести отчёт в Confluence</div>
+        <ol>
+          <li>Нажми <b>«Скопировать»</b></li>
+          <li>На странице своего проекта в Confluence нажми <b>«+»</b></li>
+          <li>Выбери пункт <b>«Разметка»</b> (третий сверху, символ <code>&lt;/&gt;</code>)</li>
+          <li>Выбери вставить <b>«Confluence wiki»</b></li>
+          <li>Вставь в поле скопированный результат из анкеты</li>
+        </ol>
+      </div>
+    </div>
+
     <div class="usage-strip">
       <div class="usage-title">🎓 Как пользоваться инструментом</div>
       <div class="usage-sub">Scorecard работает в нескольких контекстах — выберите свой сценарий применения</div>
@@ -282,6 +342,28 @@
     </div>
   </div>
 </div>
+
+<!-- Fallback modal for manual copy -->
+<div class="modal-overlay" id="copy-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span>📋</span>
+      <span class="modal-head-title">Отчёт в формате Confluence wiki</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Автоматическое копирование недоступно в этом окружении. Выделите текст ниже (Ctrl/Cmd+A в поле) и скопируйте вручную, затем вставьте в Confluence через «+» → «Разметка» → «Confluence wiki».</p>
+      <textarea id="modal-report" readonly onclick="this.select()"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal()">Закрыть</button>
+      <button class="btn-primary" onclick="selectModalText()">Выделить всё</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span class="t-icon">✓</span><span id="toast-text">Скопировано</span></div>
 
 <script>
 /* ════════ DATA: stages → subgroups → criteria ════════
@@ -850,7 +932,7 @@ function renderOverview(){
   if(!allPcts.length){
     rf.style.strokeDashoffset=263.9;rp.textContent='—';rp.style.color='var(--text)';
     ze.className='summary-zone zone-empty';ze.innerHTML='<span class="dot"></span>Оценка не начата';
-    te.textContent='Заполните хотя бы один этап, чтобы увидеть общий уровень зрелости и зону качества продукта.';return;
+    te.textContent='Заполните хотя бы один этап, чтобы увидеть общий уровень зрелости и зону качества продукта.';syncCopyBtn();return;
   }
   const overall=Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length),z=zoneOf(overall);
   const col=z.cls==='red'?'#FF4D4F':z.cls==='yellow'?'#FF9F0A':z.cls==='ref'?'#00B5FF':'#00B956';
@@ -859,6 +941,7 @@ function renderOverview(){
   ze.className='summary-zone zone-'+z.cls;ze.innerHTML=`<span class="dot"></span>${z.label}`;
   const naCount=STAGES.filter(s=>blockNa.has(s.id)).length;
   te.textContent=`${z.text} Оценено этапов: ${allPcts.length} из ${STAGES.length}.`+(naCount?` Неприменимо: ${naCount}.`:'');
+  syncCopyBtn();
 }
 
 /* ════════ STAGE DETAIL ════════ */
@@ -1020,6 +1103,155 @@ addEventListener('resize',()=>{if(activePopup&&activeTrigger)positionPopup(activ
 function showStage(idx){currentStageIdx=idx;renderStage(idx);document.getElementById('view-overview').classList.remove('active');document.getElementById('view-stage').classList.add('active');scrollTo({top:0});}
 function showOverview(){hardClose();renderOverview();document.getElementById('view-stage').classList.remove('active');document.getElementById('view-overview').classList.add('active');scrollTo({top:0});}
 function nextStage(){currentStageIdx<STAGES.length-1?showStage(currentStageIdx+1):showOverview();}
+
+/* ════════ CONFLUENCE EXPORT ════════ */
+const SRC_LABELS={analytics:'Аналитика',research:'Исследования',hypo:'Гипотезы и наблюдения'};
+const ZONE_NAMES={red:'Красная',yellow:'Жёлтая',green:'Зелёная',ref:'Эталонная',empty:'—'};
+
+function hasAnyData(){
+  if(Object.keys(scores).length) return true;
+  if(naSet.size) return true;
+  if(blockNa.size) return true;
+  return false;
+}
+function syncCopyBtn(){
+  const btn=document.getElementById('copy-btn');
+  btn.disabled=!hasAnyData();
+}
+// escape pipe chars so they don't break wiki table cells
+function wikiCell(t){ return (t==null?'':String(t)).replace(/\|/g,'\\|').replace(/\r?\n/g,' '); }
+
+function scoreCellFor(c){
+  if(naSet.has(c.id)) return 'Н/П';
+  const v=scores[c.id];
+  if(v===undefined) return '—';
+  return v+' · '+SCORE_LABELS[v];
+}
+function srcCellFor(c){
+  const a=confs[c.id]||[];
+  if(!a.length) return '—';
+  return a.map(k=>SRC_LABELS[k]).join(', ');
+}
+
+function buildWikiReport(){
+  const name=(document.getElementById('product-name').value||'').trim()||'Без названия';
+  const now=new Date();
+  const dd=String(now.getDate()).padStart(2,'0'), mm=String(now.getMonth()+1).padStart(2,'0');
+  const dateStr=`${dd}.${mm}.${now.getFullYear()}`;
+  const modeStr=MODE==='short'?'Краткий':'Расширенный';
+
+  // overall
+  const allPcts=STAGES.map(stagePct).filter(p=>p!==null&&p!=='na');
+  let overall=null, zoneName='—';
+  if(allPcts.length){
+    overall=Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length);
+    zoneName=ZONE_NAMES[zoneOf(overall).cls];
+  }
+
+  let out='';
+  out+=`h1. CX / Product Review Scorecard — ${name}\n\n`;
+  out+=`*Дата оценки:* ${dateStr}\n`;
+  out+=`*Режим:* ${modeStr} чек-лист\n`;
+  out+=`*Общая зрелость:* ${overall===null?'—':overall+'%'}`+(overall===null?'':` (${zoneName} зона)`)+`\n\n`;
+
+  // summary table by block
+  out+=`h2. Сводка по блокам\n\n`;
+  out+=`||Блок||Оценено||Score||Зона||\n`;
+  STAGES.forEach((s,i)=>{
+    const pct=stagePct(s);
+    if(pct==='na'){
+      out+=`|${i+1}. ${wikiCell(s.name)}|Н/П|Н/П|Неприменим|\n`;
+    }else{
+      const filled=stageFilled(s),total=stageTotal(s);
+      const z=pct===null?'—':ZONE_NAMES[zoneOf(pct).cls];
+      out+=`|${i+1}. ${wikiCell(s.name)}|${filled} / ${total}|${pct===null?'—':pct+'%'}|${z}|\n`;
+    }
+  });
+  out+=`\n`;
+
+  // detailed table — all criteria in active mode
+  out+=`h2. Детализация по критериям\n\n`;
+  out+=`||Блок||Подгруппа||Критерий||Оценка||Источник||Комментарий||\n`;
+  STAGES.forEach((s,i)=>{
+    const blockIsNa=blockNa.has(s.id);
+    s.groups.forEach(g=>{
+      g.crit.forEach(c=>{
+        if(MODE==='short'&&!c.core) return;
+        let scoreCell = blockIsNa ? 'Н/П (блок)' : scoreCellFor(c);
+        let srcCell   = blockIsNa ? '—' : srcCellFor(c);
+        let comm      = blockIsNa ? '' : (comments[c.id]||'');
+        out+=`|${i+1}. ${wikiCell(s.name)}|${wikiCell(g.name)}|${wikiCell(c.t)}|${scoreCell}|${srcCell}|${wikiCell(comm)||' '}|\n`;
+      });
+    });
+  });
+  out+=`\n`;
+
+  // critical gaps section
+  const gaps=[];
+  STAGES.forEach((s,i)=>{
+    if(blockNa.has(s.id)) return;
+    s.groups.forEach(g=>g.crit.forEach(c=>{
+      if(MODE==='short'&&!c.core) return;
+      if(naSet.has(c.id)) return;
+      const v=scores[c.id];
+      if(v===0||v===1) gaps.push({block:s.name,crit:c.t,v});
+    }));
+  });
+  out+=`h2. Критические разрывы (оценки 0–1)\n\n`;
+  if(!gaps.length){
+    out+=`_Критических разрывов не зафиксировано._\n`;
+  }else{
+    out+=`||Блок||Критерий||Оценка||\n`;
+    gaps.sort((a,b)=>a.v-b.v).forEach(x=>{
+      out+=`|${wikiCell(x.block)}|${wikiCell(x.crit)}|${x.v} · ${SCORE_LABELS[x.v]}|\n`;
+    });
+  }
+  return out;
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-text').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function openModal(report){
+  document.getElementById('modal-report').value=report;
+  document.getElementById('copy-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('copy-modal').classList.remove('open'); }
+function selectModalText(){
+  const ta=document.getElementById('modal-report');
+  ta.focus(); ta.select();
+  try{ document.execCommand('copy'); showToast('Скопировано вручную'); }catch(e){}
+}
+
+function copyReport(){
+  if(!hasAnyData()){ showToast('Сначала заполните оценку'); return; }
+  const report=buildWikiReport();
+  // try modern clipboard, then execCommand, then modal fallback
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(report).then(
+      ()=>showToast('Отчёт скопирован — вставьте в Confluence'),
+      ()=>legacyCopy(report)
+    );
+  }else{
+    legacyCopy(report);
+  }
+}
+function legacyCopy(report){
+  // try hidden textarea + execCommand
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=report; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(ok){ showToast('Отчёт скопирован — вставьте в Confluence'); return; }
+  }catch(e){}
+  openModal(report); // last resort
+}
 
 renderOverview();
 </script>
