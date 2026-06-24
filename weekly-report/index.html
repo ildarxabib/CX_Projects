@@ -202,13 +202,13 @@
 
   .increments-zone { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border-light); padding-top: 12px; }
 
-  /* Done: 3 columns */
+  /* Done: 2 columns */
   .inc-labels-done, .inc-row-done {
-    display: grid; grid-template-columns: 140px 1fr 24px; gap: 8px;
+    display: grid; grid-template-columns: 1fr 24px; gap: 8px;
   }
-  /* Plan: 4 columns with date */
+  /* Plan: 3 columns with date */
   .inc-labels-plan, .inc-row-plan {
-    display: grid; grid-template-columns: 140px 1fr 120px 24px; gap: 8px;
+    display: grid; grid-template-columns: 1fr 120px 24px; gap: 8px;
   }
   .inc-labels-done, .inc-labels-plan { margin-bottom: 4px; }
   .inc-labels-done span, .inc-labels-plan span {
@@ -216,16 +216,6 @@
     text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 5px;
   }
 
-  .inc-select {
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;
-    border: 1.5px solid var(--border-light); border-radius: 10px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 13px; font-weight: 500; padding: 7px 26px 7px 10px;
-    outline: none; cursor: pointer; -webkit-appearance: none;
-    width: 100%; height: 36px; transition: border-color .18s;
-  }
-  .inc-select:hover, .inc-select:focus { border-color: var(--green); }
-  .inc-select option { background: #fff; }
   .inc-desc {
     background: #fff; border: 1.5px solid var(--border-light); border-radius: 10px;
     color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
@@ -305,42 +295,6 @@
   }
   .btn-ghost:hover { color: var(--error-accent); }
 
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(43,45,51,.5);
-    backdrop-filter: blur(6px); z-index: 200;
-    display: flex; align-items: center; justify-content: center; padding: 24px;
-    opacity: 0; pointer-events: none; transition: opacity .25s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: #fff; border-radius: 24px; width: 100%; max-width: 700px;
-    max-height: 85vh; overflow-y: auto; transform: translateY(20px);
-    transition: transform .25s; box-shadow: 0 24px 64px rgba(0,0,0,.15);
-  }
-  .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-header {
-    padding: 24px 28px 20px; border-bottom: 1px solid var(--border-light);
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; background: #fff; border-radius: 24px 24px 0 0; z-index: 1;
-  }
-  .modal-header h2 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
-  .modal-close {
-    width: 32px; height: 32px; border-radius: 10px;
-    border: 1.5px solid var(--border-light); background: var(--surface);
-    color: var(--text-secondary); font-size: 18px; line-height: 1;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: border-color .18s, color .18s;
-  }
-  .modal-close:hover { border-color: var(--error-accent); color: var(--error-accent); }
-  .modal-body { padding: 24px 28px; }
-  .preview-text {
-    background: var(--surface); border: 1.5px solid var(--border-light);
-    border-radius: 16px; padding: 20px; font-size: 13.5px; line-height: 1.9;
-    color: var(--text-primary); white-space: pre-wrap; word-break: break-word;
-    font-family: 'Courier New', monospace; max-height: 400px; overflow-y: auto;
-  }
-  .modal-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-
   .toast {
     position: fixed; bottom: 32px; right: 32px; background: var(--text-primary);
     color: #fff; font-size: 14px; font-weight: 500; padding: 14px 20px;
@@ -354,11 +308,10 @@
   @media (max-width: 720px) {
     .meta-row { grid-template-columns: 1fr; }
     .product-top { grid-template-columns: 1fr; }
-    .inc-row-done { grid-template-columns: 1fr 1fr 24px; }
-    .inc-labels-done { grid-template-columns: 1fr 1fr 24px; }
-    .inc-row-plan { grid-template-columns: 1fr 1fr 24px; }
-    .inc-labels-plan { grid-template-columns: 1fr 1fr 24px; }
-    .inc-date { grid-column: span 2; }
+    .inc-row-done { grid-template-columns: 1fr 24px; }
+    .inc-labels-done { grid-template-columns: 1fr 24px; }
+    .inc-row-plan { grid-template-columns: 1fr 100px 24px; }
+    .inc-labels-plan { grid-template-columns: 1fr 100px 24px; }
     .topbar { padding: 0 20px; }
     .page { padding: 24px 16px 80px; }
     .card { padding: 20px; }
@@ -424,8 +377,8 @@
       </div>
       <div class="hint-body" id="hintDoneBody">
         <div class="hint-example"><span class="icon">✅</span> Спроектировал карту клиентского пути для онбординга ВАТС</div>
-        <div class="hint-example"><span class="icon">✅</span> Подготовил прототип нового чекаут-флоу</div>
-        <div class="hint-example"><span class="icon">✅</span> Провёл UX-аудит ЛК — выявил 12 friction points</div>
+        <div class="hint-example"><span class="icon">✅</span> Подготовил прототип нового сценария оформления заказа</div>
+        <div class="hint-example"><span class="icon">✅</span> Провёл UX-аудит ЛК — выявил 12 проблемных мест</div>
         <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Провёл встречу — это не инкремент</span></div>
         <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Обсудил задачу с командой — это процесс, не результат</span></div>
         <div class="hint-rule">Пишите в форме совершённого действия. Фиксируйте результат, а не процесс.</div>
@@ -463,7 +416,7 @@
       <div class="hint-body" id="hintPlanBody">
         <div class="hint-example"><span class="icon">✅</span> Подготовить CJM для сценария активации</div>
         <div class="hint-example"><span class="icon">✅</span> Финализировать прототип и передать в разработку</div>
-        <div class="hint-example"><span class="icon">✅</span> Провести UX-ревью лендинга перед запуском</div>
+        <div class="hint-example"><span class="icon">✅</span> Провести ревью посадочной страницы перед запуском</div>
         <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Созвониться с командой — это не план, а действие</span></div>
         <div class="hint-rule">Планы — это ожидаемые результаты, а не встречи и обсуждения. Укажите срок выполнения.</div>
       </div>
@@ -488,44 +441,18 @@
   </div>
 
   <div class="actions-row">
-    <button class="btn-primary" onclick="showPreview()">Сформировать отчёт</button>
-    <button class="btn-secondary" onclick="copyReport()">Скопировать текст</button>
+    <button class="btn-primary" onclick="copyReport()">Скопировать отчёт</button>
     <button class="btn-ghost" onclick="clearAll()">Очистить форму</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="if(event.target.id==='modal')closeModal()">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>Готовый отчёт</h2>
-      <button class="modal-close" onclick="closeModal()">&#215;</button>
-    </div>
-    <div class="modal-body">
-      <div class="preview-text" id="previewText"></div>
-      <div class="modal-actions">
-        <button class="btn-primary" onclick="copyFromModal()">Скопировать</button>
-        <button class="btn-secondary" onclick="mailReport()">Открыть в почте</button>
-        <button class="btn-secondary" onclick="closeModal()">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastText"></span></div>
 <span id="floatingTip" style="display:none;position:fixed;z-index:9999;pointer-events:none;"></span>
 
 <script>
 var TASK_TYPES = ['Run-задача', 'Change-задача'];
-var INCREMENTS = ['Фича', 'Артефакт', 'Выход на ПК'];
 var weekOffset = 0;
-
-var INC_GLOSSARY =
-  '<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы инкрементов</div>' +
-  '<div style="display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.45">' +
-    '<div><b style="color:#fff">Фича</b> <span style="opacity:.7">— то, что CJE предложил при проектировании</span></div>' +
-    '<div><b style="color:#fff">Артефакт</b> <span style="opacity:.7">— выпущенный материал: CJM, прототип и др.</span></div>' +
-    '<div><b style="color:#fff">Выход на ПК</b> <span style="opacity:.7">— инициатива, сопровождённая при выходе на ПК</span></div>' +
-  '</div>';
 
 var TASK_GLOSSARY =
   '<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы задач</div>' +
@@ -570,13 +497,10 @@ function toggleHint(bodyId, chevronId) {
 }
 
 function addIncRow(zone, block) {
-  var incOpts = INCREMENTS.map(function(i) { return '<option value="' + i + '">' + i + '</option>'; }).join('');
   var descPh = block === 'done' ? 'Что было сделано…' : 'Что планируется…';
   var row = document.createElement('div');
   row.className = block === 'done' ? 'inc-row-done' : 'inc-row-plan';
-  var html =
-    '<select class="inc-select">' + incOpts + '</select>' +
-    '<input type="text" class="inc-desc" placeholder="' + descPh + '">';
+  var html = '<input type="text" class="inc-desc" placeholder="' + descPh + '">';
   if (block === 'plan') html += '<input type="date" class="inc-date">';
   html += '<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">' + SVG_X + '</button>';
   row.innerHTML = html;
@@ -586,19 +510,16 @@ function addIncRow(zone, block) {
 function addProduct(block) {
   var list = document.getElementById(block + 'List');
   var taskOpts = TASK_TYPES.map(function(t) { return '<option value="' + t + '">' + t + '</option>'; }).join('');
-  var incOpts = INCREMENTS.map(function(i) { return '<option value="' + i + '">' + i + '</option>'; }).join('');
   var descPh = block === 'done' ? 'Что было сделано…' : 'Что планируется…';
   var rowClass = block === 'done' ? 'inc-row-done' : 'inc-row-plan';
   var labelsClass = block === 'done' ? 'inc-labels-done' : 'inc-labels-plan';
 
   var labelsHtml = '<div class="' + labelsClass + '">' +
-    '<span>Инкремент <span class="tip-wrap"><i class="tip-icon" data-tip="inc-glossary">?</i></span></span>' +
-    '<span>Описание</span>';
+    '<span>Описание инкремента</span>';
   if (block === 'plan') labelsHtml += '<span>Срок</span>';
   labelsHtml += '<span></span></div>';
 
   var firstRowHtml = '<div class="' + rowClass + '">' +
-    '<select class="inc-select">' + incOpts + '</select>' +
     '<input type="text" class="inc-desc" placeholder="' + descPh + '">';
   if (block === 'plan') firstRowHtml += '<input type="date" class="inc-date">';
   firstRowHtml += '<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">' + SVG_X + '</button></div>';
@@ -644,11 +565,10 @@ function getProducts(block) {
     var taskType = item.querySelector('.product-select').value;
     var incs = [];
     item.querySelectorAll('[class^="inc-row"]').forEach(function(r) {
-      var type = r.querySelector('.inc-select').value;
       var desc = r.querySelector('.inc-desc').value.trim();
       var dateEl = r.querySelector('.inc-date');
       var date = dateEl ? dateEl.value : '';
-      if (desc) incs.push({ type: type, desc: desc, date: date });
+      if (desc) incs.push({ desc: desc, date: date });
     });
     if (product || incs.length) out.push({ product: product || '—', taskType: taskType, incs: incs });
   });
@@ -672,7 +592,7 @@ function buildReport() {
   else { done.forEach(function(p, i) {
     s += '\n   ' + (i+1) + '. ' + p.product + ' (' + p.taskType + ')\n';
     p.incs.forEach(function(inc) {
-      s += '      • [' + inc.type + '] ' + inc.desc + '\n';
+      s += '      • ' + inc.desc + '\n';
     });
   }); }
 
@@ -682,7 +602,7 @@ function buildReport() {
     s += '\n   ' + (i+1) + '. ' + p.product + ' (' + p.taskType + ')\n';
     p.incs.forEach(function(inc) {
       var deadline = inc.date ? ' → ' + formatDate(inc.date) : '';
-      s += '      • [' + inc.type + '] ' + inc.desc + deadline + '\n';
+      s += '      • ' + inc.desc + deadline + '\n';
     });
   }); }
 
@@ -690,22 +610,7 @@ function buildReport() {
   return s;
 }
 
-function showPreview() {
-  document.getElementById('previewText').textContent = buildReport();
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function copyReport() { navigator.clipboard.writeText(buildReport()).then(function() { toast('Скопировано в буфер обмена'); }); }
-function copyFromModal() {
-  navigator.clipboard.writeText(document.getElementById('previewText').textContent).then(function() {
-    toast('Скопировано'); setTimeout(closeModal, 700);
-  });
-}
-function mailReport() {
-  var emp = document.getElementById('employee').value.trim() || 'Сотрудник';
-  var week = getWeekRange(weekOffset);
-  window.location.href = 'mailto:?subject=' + encodeURIComponent('Отчёт: ' + emp + ' / ' + week) + '&body=' + encodeURIComponent(buildReport());
-}
+function copyReport() { navigator.clipboard.writeText(buildReport()).then(function() { toast('Отчёт скопирован'); }); }
 function clearAll() {
   if (!confirm('Очистить всю форму?')) return;
   document.getElementById('employee').value = '';
@@ -728,8 +633,7 @@ document.addEventListener('mouseover', function(e) {
   if (!icon) return;
   var key = icon.getAttribute('data-tip');
   if (!key) return;
-  if (key === 'inc-glossary') { floatingTip.innerHTML = INC_GLOSSARY; floatingTip.style.width = '280px'; }
-  else if (key === 'task-glossary') { floatingTip.innerHTML = TASK_GLOSSARY; floatingTip.style.width = '280px'; }
+  if (key === 'task-glossary') { floatingTip.innerHTML = TASK_GLOSSARY; floatingTip.style.width = '280px'; }
   else { floatingTip.textContent = key; floatingTip.style.width = '220px'; }
   floatingTip.style.display = 'block';
   floatingTip.style.background = '#2B2D33';
