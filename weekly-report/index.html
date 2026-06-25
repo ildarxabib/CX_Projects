@@ -610,7 +610,78 @@ function buildReport() {
   return s;
 }
 
-function copyReport() { navigator.clipboard.writeText(buildReport()).then(function() { toast('Отчёт скопирован'); }); }
+function buildReportHTML() {
+  var emp = document.getElementById('employee').value.trim() || '—';
+  var week = getWeekRange(weekOffset);
+  var comments = document.getElementById('comments').value.trim();
+  var done = getProducts('done');
+  var plan = getProducts('plan');
+
+  var gray = 'color:#8F96A4';
+  var h = '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#2B2D33">';
+
+  h += '<div style="font-size:16px;font-weight:700;margin-bottom:2px">📋 Еженедельный отчёт</div>';
+  h += '<div style="' + gray + ';font-size:13px;margin-bottom:16px">Сотрудник: ' + esc(emp) + ' · ' + esc(week) + '</div>';
+  h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:0 0 16px">';
+
+  h += '<div style="font-size:15px;font-weight:700;margin-bottom:12px">✅ Что было сделано</div>';
+  if (!done.length) {
+    h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
+  } else {
+    done.forEach(function(p, i) {
+      h += '<div style="margin-bottom:12px">';
+      h += '<div style="font-weight:700">' + (i+1) + '. ' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      p.incs.forEach(function(inc) {
+        h += '<div style="padding-left:18px">• ' + esc(inc.desc) + '</div>';
+      });
+      h += '</div>';
+    });
+  }
+
+  h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
+  h += '<div style="font-size:15px;font-weight:700;margin-bottom:12px">🗓 Планы на эту неделю</div>';
+  if (!plan.length) {
+    h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
+  } else {
+    plan.forEach(function(p, i) {
+      h += '<div style="margin-bottom:12px">';
+      h += '<div style="font-weight:700">' + (i+1) + '. ' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      p.incs.forEach(function(inc) {
+        var deadline = inc.date ? ' <span style="color:#00B956;font-weight:600;font-size:12px">→ ' + formatDate(inc.date) + '</span>' : '';
+        h += '<div style="padding-left:18px">• ' + esc(inc.desc) + deadline + '</div>';
+      });
+      h += '</div>';
+    });
+  }
+
+  if (comments) {
+    h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
+    h += '<div style="font-size:15px;font-weight:700;margin-bottom:8px">💬 Комментарии и блокеры</div>';
+    h += '<div style="' + gray + '">' + esc(comments).replace(/\n/g, '<br>') + '</div>';
+  }
+
+  h += '</div>';
+  return h;
+}
+
+function esc(text) {
+  var d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+function copyReport() {
+  var plain = buildReport();
+  var html = buildReportHTML();
+  try {
+    var blob = new Blob([html], { type: 'text/html' });
+    var blobText = new Blob([plain], { type: 'text/plain' });
+    var item = new ClipboardItem({ 'text/html': blob, 'text/plain': blobText });
+    navigator.clipboard.write([item]).then(function() { toast('Отчёт скопирован'); });
+  } catch (e) {
+    navigator.clipboard.writeText(plain).then(function() { toast('Отчёт скопирован'); });
+  }
+}
 function clearAll() {
   if (!confirm('Очистить всю форму?')) return;
   document.getElementById('employee').value = '';
