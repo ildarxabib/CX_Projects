@@ -224,6 +224,16 @@
   }
   .inc-desc::placeholder { color: var(--text-disabled); }
   .inc-desc:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
+  .inc-desc.has-warning { border-color: var(--warning-accent); }
+
+  .inc-hint {
+    font-size: 12px; line-height: 1.5; color: var(--warning-accent);
+    padding: 4px 0 2px;
+    display: flex; align-items: flex-start; gap: 5px;
+    animation: fadeHint .2s ease;
+  }
+  .inc-hint .hint-icon { flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+  @keyframes fadeHint { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
   .inc-date {
     background: #fff; border: 1.5px solid var(--border-light); border-radius: 10px;
@@ -294,6 +304,61 @@
     text-decoration: underline; text-underline-offset: 3px; transition: color .18s;
   }
   .btn-ghost:hover { color: var(--error-accent); }
+
+  /* SUMMARY OVERLAY */
+  .summary-overlay {
+    position: fixed; inset: 0; background: rgba(43,45,51,.5);
+    backdrop-filter: blur(6px); z-index: 200;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .summary-overlay.open { opacity: 1; pointer-events: all; }
+  .summary-card {
+    background: #fff; border-radius: 24px; width: 100%; max-width: 420px;
+    transform: translateY(20px); transition: transform .25s;
+    box-shadow: 0 24px 64px rgba(0,0,0,.15); overflow: hidden;
+  }
+  .summary-overlay.open .summary-card { transform: translateY(0); }
+  .summary-header {
+    padding: 24px 28px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .summary-header h2 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .summary-close {
+    width: 32px; height: 32px; border-radius: 10px;
+    border: 1.5px solid var(--border-light); background: var(--surface);
+    color: var(--text-secondary); font-size: 18px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .summary-close:hover { border-color: var(--error-accent); color: var(--error-accent); }
+  .summary-body { padding: 0 28px 24px; }
+  .summary-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+  }
+  .stat-tile {
+    background: var(--surface); border-radius: 14px; padding: 14px 16px;
+  }
+  .stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+  .stat-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-top: 2px; }
+  .stat-tile.wide { grid-column: span 2; display: flex; align-items: center; justify-content: space-between; }
+  .stat-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .stat-bar {
+    width: 120px; height: 6px; background: var(--border-light);
+    border-radius: 999px; overflow: hidden;
+  }
+  .stat-bar-fill { height: 100%; border-radius: 999px; transition: width .4s ease; }
+  .stat-bar-fill.green { background: var(--green); }
+  .stat-bar-fill.blue { background: var(--info-accent); }
+  .summary-hints { display: flex; flex-direction: column; gap: 6px; }
+  .summary-hint {
+    font-size: 13px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 6px;
+    line-height: 1.5;
+  }
+  .summary-hint .icon { flex-shrink: 0; margin-top: 1px; }
+  .summary-copied {
+    text-align: center; padding: 12px 0 0;
+    font-size: 13px; font-weight: 600; color: var(--green);
+  }
 
   .toast {
     position: fixed; bottom: 32px; right: 32px; background: var(--text-primary);
@@ -447,6 +512,20 @@
 </div>
 
 
+<div class="summary-overlay" id="summaryOverlay" onclick="if(event.target.id==='summaryOverlay')closeSummary()">
+  <div class="summary-card">
+    <div class="summary-header">
+      <h2>📊 Сводка по отчёту</h2>
+      <button class="summary-close" onclick="closeSummary()">&#215;</button>
+    </div>
+    <div class="summary-body">
+      <div class="summary-stats" id="summaryStats"></div>
+      <div class="summary-hints" id="summaryHints"></div>
+      <div class="summary-copied">✓ Отчёт скопирован в буфер обмена</div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastText"></span></div>
 <span id="floatingTip" style="display:none;position:fixed;z-index:9999;pointer-events:none;"></span>
 
@@ -507,7 +586,7 @@ function addIncRow(zone, block) {
   zone.insertBefore(row, zone.querySelector('.inc-add'));
 }
 
-function addProduct(block) {
+function addProduct(block, skipFocus) {
   var list = document.getElementById(block + 'List');
   var taskOpts = TASK_TYPES.map(function(t) { return '<option value="' + t + '">' + t + '</option>'; }).join('');
   var descPh = block === 'done' ? 'Что было сделано…' : 'Что планируется…';
@@ -545,7 +624,7 @@ function addProduct(block) {
     '</div>';
 
   list.appendChild(item);
-  item.querySelector('.product-input').focus();
+  if (!skipFocus) item.querySelector('.product-input').focus();
   updateBadge(block);
 }
 
@@ -589,8 +668,8 @@ function buildReport() {
 
   s += '✅ ЧТО БЫЛО СДЕЛАНО\n';
   if (!done.length) { s += '   (не заполнено)\n'; }
-  else { done.forEach(function(p, i) {
-    s += '\n   ' + (i+1) + '. ' + p.product + ' (' + p.taskType + ')\n';
+  else { done.forEach(function(p) {
+    s += '\n   ' + p.product + ' (' + p.taskType + ')\n';
     p.incs.forEach(function(inc) {
       s += '      • ' + inc.desc + '\n';
     });
@@ -598,8 +677,8 @@ function buildReport() {
 
   s += '\n🗓 ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n';
   if (!plan.length) { s += '   (не заполнено)\n'; }
-  else { plan.forEach(function(p, i) {
-    s += '\n   ' + (i+1) + '. ' + p.product + ' (' + p.taskType + ')\n';
+  else { plan.forEach(function(p) {
+    s += '\n   ' + p.product + ' (' + p.taskType + ')\n';
     p.incs.forEach(function(inc) {
       var deadline = inc.date ? ' → ' + formatDate(inc.date) : '';
       s += '      • ' + inc.desc + deadline + '\n';
@@ -628,9 +707,9 @@ function buildReportHTML() {
   if (!done.length) {
     h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
   } else {
-    done.forEach(function(p, i) {
+    done.forEach(function(p) {
       h += '<div style="margin-bottom:12px">';
-      h += '<div style="font-weight:700">' + (i+1) + '. ' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      h += '<div style="font-weight:700">' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
       p.incs.forEach(function(inc) {
         h += '<div style="padding-left:18px">• ' + esc(inc.desc) + '</div>';
       });
@@ -643,9 +722,9 @@ function buildReportHTML() {
   if (!plan.length) {
     h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
   } else {
-    plan.forEach(function(p, i) {
+    plan.forEach(function(p) {
       h += '<div style="margin-bottom:12px">';
-      h += '<div style="font-weight:700">' + (i+1) + '. ' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      h += '<div style="font-weight:700">' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
       p.incs.forEach(function(inc) {
         var deadline = inc.date ? ' <span style="color:#00B956;font-weight:600;font-size:12px">→ ' + formatDate(inc.date) + '</span>' : '';
         h += '<div style="padding-left:18px">• ' + esc(inc.desc) + deadline + '</div>';
@@ -671,16 +750,147 @@ function esc(text) {
 }
 
 function copyReport() {
-  var plain = buildReport();
   var html = buildReportHTML();
+  var plain = buildReport();
+
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.style.position = 'fixed';
+  tmp.style.left = '-9999px';
+  tmp.style.top = '0';
+  tmp.style.opacity = '0';
+  document.body.appendChild(tmp);
+
+  var range = document.createRange();
+  range.selectNodeContents(tmp);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
   try {
-    var blob = new Blob([html], { type: 'text/html' });
-    var blobText = new Blob([plain], { type: 'text/plain' });
-    var item = new ClipboardItem({ 'text/html': blob, 'text/plain': blobText });
-    navigator.clipboard.write([item]).then(function() { toast('Отчёт скопирован'); });
+    document.execCommand('copy');
+    showSummary();
   } catch (e) {
-    navigator.clipboard.writeText(plain).then(function() { toast('Отчёт скопирован'); });
+    navigator.clipboard.writeText(plain).then(function() { showSummary(); });
   }
+
+  sel.removeAllRanges();
+  document.body.removeChild(tmp);
+}
+
+function checkFormulations(done, plan) {
+  var hints = [];
+  var totalIncs = 0;
+  done.forEach(function(p) { totalIncs += p.incs.length; });
+  plan.forEach(function(p) { totalIncs += p.incs.length; });
+
+  if (totalIncs > 0) {
+    // Check if all formulations are clean
+    var issues = 0;
+    var processWords = ['встреча','встречу','созвон','синк','обсудил','обсудить','обсуждение','обсуждали','позвонил','поговорил'];
+    done.concat(plan).forEach(function(p) {
+      p.incs.forEach(function(inc) {
+        var text = inc.desc.toLowerCase().trim();
+        if (!text) return;
+        var words = text.split(/\s+/);
+        if (words.length < 4) issues++;
+        for (var i = 0; i < processWords.length; i++) {
+          if (text.indexOf(processWords[i]) !== -1) { issues++; break; }
+        }
+      });
+    });
+    if (issues === 0) {
+      hints.push({ icon: '✅', text: 'Формулировки в порядке — конкретно и по делу' });
+    }
+  }
+
+  if (totalIncs >= 5) hints.push({ icon: '🔥', text: 'Насыщенная неделя — ' + totalIncs + ' инкрементов!' });
+
+  return hints;
+}
+
+function showSummary() {
+  var done = getProducts('done');
+  var plan = getProducts('plan');
+
+  // Count stats
+  var allProducts = {};
+  var totalIncsDone = 0;
+  var totalIncsPlan = 0;
+  var runCount = 0;
+  var changeCount = 0;
+  var plansWithDate = 0;
+  var plansTotal = 0;
+
+  done.forEach(function(p) {
+    allProducts[p.product] = true;
+    totalIncsDone += p.incs.length;
+    if (p.taskType === 'Run-задача') runCount++;
+    else changeCount++;
+  });
+
+  plan.forEach(function(p) {
+    allProducts[p.product] = true;
+    totalIncsPlan += p.incs.length;
+    if (p.taskType === 'Run-задача') runCount++;
+    else changeCount++;
+    p.incs.forEach(function(inc) {
+      plansTotal++;
+      if (inc.date) plansWithDate++;
+    });
+  });
+
+  var productCount = Object.keys(allProducts).length;
+  var totalTasks = runCount + changeCount;
+  var runPct = totalTasks > 0 ? Math.round(runCount / totalTasks * 100) : 50;
+
+  // Render stats
+  var statsHtml = '';
+  statsHtml += '<div class="stat-tile"><div class="stat-value">' + productCount + '</div><div class="stat-label">Продуктов в работе</div></div>';
+  statsHtml += '<div class="stat-tile"><div class="stat-value">' + totalIncsDone + '</div><div class="stat-label">Инкрементов за неделю</div></div>';
+
+  statsHtml += '<div class="stat-tile wide">';
+  statsHtml += '<div><div class="stat-label" style="margin-bottom:4px">Баланс задач</div>';
+  statsHtml += '<div style="font-size:13px;font-weight:600">' + runCount + ' Run · ' + changeCount + ' Change</div></div>';
+  statsHtml += '<div class="stat-bar-wrap">';
+  statsHtml += '<div class="stat-bar"><div class="stat-bar-fill green" style="width:' + runPct + '%"></div></div>';
+  statsHtml += '</div></div>';
+
+  if (plansTotal > 0) {
+    statsHtml += '<div class="stat-tile wide">';
+    statsHtml += '<div><div class="stat-label" style="margin-bottom:4px">Планы на неделю</div>';
+    statsHtml += '<div style="font-size:13px;font-weight:600">' + totalIncsPlan + ' инкрементов</div></div>';
+    statsHtml += '<div style="font-size:13px;font-weight:600;color:' + (plansWithDate === plansTotal ? 'var(--green)' : 'var(--text-secondary)') + '">' + plansWithDate + ' из ' + plansTotal + ' со сроком</div>';
+    statsHtml += '</div>';
+  }
+
+  document.getElementById('summaryStats').innerHTML = statsHtml;
+
+  // Render hints
+  var hints = [];
+  if (totalIncsDone === 0) hints.push({ icon: '💡', text: 'Блок «Что сделано» пустой — добавьте ключевые результаты недели' });
+  if (plansTotal > 0 && plansWithDate < plansTotal) {
+    var missing = plansTotal - plansWithDate;
+    hints.push({ icon: '📅', text: missing + (missing === 1 ? ' план без указанного срока' : missing < 5 ? ' плана без указанного срока' : ' планов без указанного срока') });
+  }
+  if (productCount === 1 && totalIncsDone > 0) hints.push({ icon: '📌', text: 'Только один продукт — если работали с другими, добавьте их тоже' });
+  if (totalIncsDone >= 5) hints.push({ icon: '🔥', text: 'Насыщенная неделя — ' + totalIncsDone + ' инкрементов!' });
+
+  // Formulation quality check
+  var formHints = checkFormulations(done, plan);
+  formHints.forEach(function(h) { hints.push(h); });
+
+  var hintsHtml = '';
+  hints.forEach(function(h) {
+    hintsHtml += '<div class="summary-hint"><span class="icon">' + h.icon + '</span>' + h.text + '</div>';
+  });
+  document.getElementById('summaryHints').innerHTML = hintsHtml;
+
+  document.getElementById('summaryOverlay').classList.add('open');
+}
+
+function closeSummary() {
+  document.getElementById('summaryOverlay').classList.remove('open');
 }
 function clearAll() {
   if (!confirm('Очистить всю форму?')) return;
@@ -725,9 +935,83 @@ document.addEventListener('mouseout', function(e) {
   if (e.target.closest('.tip-icon')) floatingTip.style.display = 'none';
 });
 
+// ── INLINE VALIDATION ──
+var PROCESS_WORDS = ['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','переписывался','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
+
+var PERFECTIVE_STARTS = ['спроектировал','разработал','подготовил','создал','провёл','провел','выполнил','завершил','запустил','внедрил','оформил','настроил','собрал','составил','описал','выявил','проанализировал','определил','зафиксировал','сформировал','протестировал','валидировал','согласовал','утвердил','передал','доработал','исправил','обновил','опубликовал','финализировал','реализовал','оптимизировал','автоматизировал','интегрировал','задокументировал','систематизировал','структурировал','визуализировал','сформулировал'];
+
+function validateIncField(field) {
+  var row = field.closest('[class^="inc-row"]');
+  if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
+    row.nextElementSibling.remove();
+  }
+  field.classList.remove('has-warning');
+
+  var text = field.value.trim();
+  if (!text) return;
+
+  var lower = text.toLowerCase();
+  var words = lower.split(/\s+/);
+  var message = '';
+
+  for (var i = 0; i < PROCESS_WORDS.length; i++) {
+    if (lower.indexOf(PROCESS_WORDS[i]) !== -1) {
+      message = 'Похоже на процесс, а не результат — опишите, что получилось в итоге';
+      break;
+    }
+  }
+
+  if (!message && words.length < 4) {
+    message = 'Добавьте конкретики — что именно, для какого сценария, какой результат';
+  }
+
+  if (!message) {
+    var inDone = false;
+    var blockCard = field.closest('.block-card');
+    if (blockCard) {
+      var lbl = blockCard.querySelector('.block-label');
+      if (lbl && lbl.textContent.indexOf('сделано') !== -1) inDone = true;
+    }
+    if (inDone && words.length >= 3) {
+      var firstWord = words[0].replace(/[^а-яё]/g, '');
+      var found = false;
+      for (var j = 0; j < PERFECTIVE_STARTS.length; j++) {
+        var stem = PERFECTIVE_STARTS[j];
+        if (firstWord === stem || firstWord === stem + 'а' || firstWord === stem + 'и') { found = true; break; }
+      }
+      if (!found) message = 'Начните с глагола действия: «Спроектировал…», «Подготовил…», «Провёл…»';
+    }
+  }
+
+  if (message && row && row.parentElement) {
+    field.classList.add('has-warning');
+    var hint = document.createElement('div');
+    hint.className = 'inc-hint';
+    hint.innerHTML = '<span class="hint-icon">⚠️</span>' + message;
+    row.parentElement.insertBefore(hint, row.nextSibling);
+  }
+}
+
+document.addEventListener('focusout', function(e) {
+  if (e.target.classList.contains('inc-desc')) {
+    setTimeout(function() { validateIncField(e.target); }, 100);
+  }
+});
+
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('inc-desc')) {
+    e.target.classList.remove('has-warning');
+    var row = e.target.closest('[class^="inc-row"]');
+    if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
+      row.nextElementSibling.remove();
+    }
+  }
+});
+
 updateWeek();
-addProduct('done');
-addProduct('plan');
+addProduct('done', true);
+addProduct('plan', true);
+window.scrollTo(0, 0);
 </script>
 </body>
 </html>
