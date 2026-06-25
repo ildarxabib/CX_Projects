@@ -699,17 +699,17 @@ function buildReportHTML() {
   var gray = 'color:#8F96A4';
   var h = '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#2B2D33">';
 
-  h += '<div style="font-size:16px;font-weight:700;margin-bottom:2px">📋 Еженедельный отчёт</div>';
+  h += '<div style="font-size:16px;margin-bottom:2px"><b>📋 Еженедельный отчёт</b></div>';
   h += '<div style="' + gray + ';font-size:13px;margin-bottom:16px">Сотрудник: ' + esc(emp) + ' · ' + esc(week) + '</div>';
   h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:0 0 16px">';
 
-  h += '<div style="font-size:15px;font-weight:700;margin-bottom:12px">✅ Что было сделано</div>';
+  h += '<div style="font-size:15px;margin-bottom:12px"><b>✅ Что было сделано</b></div>';
   if (!done.length) {
     h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
   } else {
     done.forEach(function(p) {
       h += '<div style="margin-bottom:12px">';
-      h += '<div style="font-weight:700">' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      h += '<div><b><u>' + esc(p.product) + '</u></b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
       p.incs.forEach(function(inc) {
         h += '<div style="padding-left:18px">• ' + esc(inc.desc) + '</div>';
       });
@@ -718,13 +718,13 @@ function buildReportHTML() {
   }
 
   h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
-  h += '<div style="font-size:15px;font-weight:700;margin-bottom:12px">🗓 Планы на эту неделю</div>';
+  h += '<div style="font-size:15px;margin-bottom:12px"><b>🗓 Планы на эту неделю</b></div>';
   if (!plan.length) {
     h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
   } else {
     plan.forEach(function(p) {
       h += '<div style="margin-bottom:12px">';
-      h += '<div style="font-weight:700">' + esc(p.product) + ' <span style="' + gray + ';font-weight:400">(' + esc(p.taskType) + ')</span></div>';
+      h += '<div><b><u>' + esc(p.product) + '</u></b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
       p.incs.forEach(function(inc) {
         var deadline = inc.date ? ' <span style="color:#00B956;font-weight:600;font-size:12px">→ ' + formatDate(inc.date) + '</span>' : '';
         h += '<div style="padding-left:18px">• ' + esc(inc.desc) + deadline + '</div>';
@@ -735,7 +735,7 @@ function buildReportHTML() {
 
   if (comments) {
     h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
-    h += '<div style="font-size:15px;font-weight:700;margin-bottom:8px">💬 Комментарии и блокеры</div>';
+    h += '<div style="font-size:15px;margin-bottom:8px"><b>💬 Комментарии и блокеры</b></div>';
     h += '<div style="' + gray + '">' + esc(comments).replace(/\n/g, '<br>') + '</div>';
   }
 
@@ -938,7 +938,7 @@ document.addEventListener('mouseout', function(e) {
 // ── INLINE VALIDATION ──
 var PROCESS_WORDS = ['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','переписывался','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
 
-var PERFECTIVE_STARTS = ['спроектировал','разработал','подготовил','создал','провёл','провел','выполнил','завершил','запустил','внедрил','оформил','настроил','собрал','составил','описал','выявил','проанализировал','определил','зафиксировал','сформировал','протестировал','валидировал','согласовал','утвердил','передал','доработал','исправил','обновил','опубликовал','финализировал','реализовал','оптимизировал','автоматизировал','интегрировал','задокументировал','систематизировал','структурировал','визуализировал','сформулировал'];
+var PERFECTIVE_CHECK = /[а-яё]л[аио]?$/; // past tense: -л, -ла, -ли, -ло
 
 function validateIncField(field) {
   var row = field.closest('[class^="inc-row"]');
@@ -974,12 +974,9 @@ function validateIncField(field) {
     }
     if (inDone && words.length >= 3) {
       var firstWord = words[0].replace(/[^а-яё]/g, '');
-      var found = false;
-      for (var j = 0; j < PERFECTIVE_STARTS.length; j++) {
-        var stem = PERFECTIVE_STARTS[j];
-        if (firstWord === stem || firstWord === stem + 'а' || firstWord === stem + 'и') { found = true; break; }
+      if (!PERFECTIVE_CHECK.test(firstWord)) {
+        message = 'Начните с глагола действия: «Спроектировал…», «Подготовил…», «Провёл…»';
       }
-      if (!found) message = 'Начните с глагола действия: «Спроектировал…», «Подготовил…», «Провёл…»';
     }
   }
 
