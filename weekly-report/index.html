@@ -8,387 +8,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green: #00B956;
-    --green-hover: #00A94F;
-    --green-pressed: #009447;
-    --bg: #F2F4F7;
-    --card: #FFFFFF;
-    --surface: #F7F8FA;
-    --border: #D2D5DA;
-    --border-light: #E6E9EE;
-    --text-primary: #2B2D33;
-    --text-secondary: #8F96A4;
-    --text-disabled: #A8AFB9;
-    --success-bg: #EAFBF1;
-    --info-bg: #DDF5FF;
-    --info-accent: #00B5FF;
-    --error-bg: #FFF0F0;
-    --error-accent: #FF4D4F;
-    --warning-bg: #FFF6E5;
-    --warning-accent: #FF9F0A;
+    --green:#00B956;--green-hover:#00A94F;--green-pressed:#009447;
+    --bg:#F2F4F7;--card:#FFFFFF;--surface:#F7F8FA;
+    --border:#D2D5DA;--border-light:#E6E9EE;
+    --text-primary:#2B2D33;--text-secondary:#8F96A4;--text-disabled:#A8AFB9;
+    --success-bg:#EAFBF1;--info-bg:#DDF5FF;--info-accent:#00B5FF;
+    --error-bg:#FFF0F0;--error-accent:#FF4D4F;
+    --warning-bg:#FFF6E5;--warning-accent:#FF9F0A;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', Arial, sans-serif;
-    background: var(--bg); color: var(--text-primary);
-    font-size: 15px; line-height: 1.5; min-height: 100vh;
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-primary);font-size:15px;line-height:1.5;min-height:100vh}
 
-  .topbar {
-    background: #fff; border-bottom: 1px solid var(--border-light);
-    height: 60px; display: flex; align-items: center;
-    padding: 0 40px; gap: 12px; position: sticky; top: 0; z-index: 50;
-  }
-  .logo-mark {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, var(--green) 0%, #00D2FF 100%);
-    border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .logo-text { font-size: 16px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
-  .topbar-divider { width: 1px; height: 20px; background: var(--border-light); margin: 0 4px; }
-  .topbar-title { font-size: 15px; font-weight: 500; color: var(--text-secondary); }
+  .topbar{background:#fff;border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;padding:0 40px;gap:12px;position:sticky;top:0;z-index:50}
+  .logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--green) 0%,#00D2FF 100%);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .logo-text{font-size:16px;font-weight:700;color:var(--text-primary);letter-spacing:-.3px}
+  .topbar-divider{width:1px;height:20px;background:var(--border-light);margin:0 4px}
+  .topbar-title{font-size:15px;font-weight:500;color:var(--text-secondary)}
 
-  .page { max-width: 960px; margin: 0 auto; padding: 40px 24px 80px; }
-  .page-header { margin-bottom: 32px; }
-  .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
-  .page-header p { font-size: 15px; color: var(--text-secondary); }
+  .page{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+  .page-header{margin-bottom:32px}
+  .page-header h1{font-size:28px;font-weight:700;color:var(--text-primary);letter-spacing:-.5px;margin-bottom:4px}
+  .page-header p{font-size:15px;color:var(--text-secondary)}
 
-  .card {
-    background: var(--card); border: 1px solid var(--border-light);
-    border-radius: 24px; padding: 28px 32px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.05); margin-bottom: 16px;
-  }
-  .card-title {
-    font-size: 17px; font-weight: 600; color: var(--text-primary);
-    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-  }
-  .icon-badge {
-    width: 32px; height: 32px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; background: var(--surface);
-  }
+  .card{background:var(--card);border:1px solid var(--border-light);border-radius:24px;padding:28px 32px;box-shadow:0 1px 4px rgba(0,0,0,.05);margin-bottom:16px}
+  .card-title{font-size:17px;font-weight:600;color:var(--text-primary);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .icon-badge{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--surface)}
 
-  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-  .field-input {
-    background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif; font-size: 15px;
-    padding: 11px 16px; outline: none; width: 100%; -webkit-appearance: none;
-    transition: border-color .18s, box-shadow .18s;
-  }
-  .field-input::placeholder { color: var(--text-disabled); }
-  .field-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.1); }
+  .meta-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field-label{font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+  .field-input{background:#fff;border:1.5px solid var(--border);border-radius:16px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:15px;padding:11px 16px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .18s,box-shadow .18s}
+  .field-input::placeholder{color:var(--text-disabled)}
+  .field-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.1)}
 
-  .week-nav { display: flex; align-items: center; gap: 6px; }
-  .week-arrow {
-    width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--border);
-    background: #fff; color: var(--text-secondary); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; line-height: 1; flex-shrink: 0; transition: border-color .18s, color .18s;
-  }
-  .week-arrow:hover { border-color: var(--green); color: var(--green); }
-  .week-value {
-    flex: 1; background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 14px; font-weight: 500; padding: 10px 14px;
-    text-align: center; white-space: nowrap; user-select: none;
-  }
+  .week-nav{display:flex;align-items:center;gap:6px}
+  .week-arrow{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;flex-shrink:0;transition:border-color .18s,color .18s}
+  .week-arrow:hover{border-color:var(--green);color:var(--green)}
+  .week-value{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:16px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:500;padding:10px 14px;text-align:center;white-space:nowrap;user-select:none}
 
-  .tip-wrap { position: relative; display: inline-flex; }
-  .tip-icon {
-    width: 16px; height: 16px; border-radius: 50%;
-    background: var(--surface); border: 1px solid var(--border-light);
-    color: var(--text-secondary); font-size: 10px;
-    display: inline-flex; align-items: center; justify-content: center;
-    cursor: default; font-style: normal; transition: border-color .18s, color .18s;
-  }
-  .tip-icon:hover { border-color: var(--green); color: var(--green); }
+  .tip-wrap{position:relative;display:inline-flex}
+  .tip-icon{width:16px;height:16px;border-radius:50%;background:var(--surface);border:1px solid var(--border-light);color:var(--text-secondary);font-size:10px;display:inline-flex;align-items:center;justify-content:center;cursor:default;font-style:normal;transition:border-color .18s,color .18s}
+  .tip-icon:hover{border-color:var(--green);color:var(--green)}
 
-  /* HINT BLOCK */
-  .hint-block {
-    margin: 16px 20px 12px; padding: 14px 16px;
-    background: var(--info-bg); border: 1px solid rgba(0,181,255,.15);
-    border-radius: 14px; font-size: 13px; line-height: 1.7; color: var(--text-primary);
-  }
-  .hint-toggle {
-    display: flex; align-items: center; justify-content: space-between;
-    cursor: pointer; user-select: none; gap: 8px;
-  }
-  .hint-toggle-left { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 12px; color: var(--info-accent); }
-  .hint-chevron {
-    width: 16px; height: 16px; transition: transform .2s;
-    color: var(--info-accent); flex-shrink: 0;
-  }
-  .hint-chevron.open { transform: rotate(180deg); }
-  .hint-body { margin-top: 10px; display: none; }
-  .hint-body.open { display: block; }
-  .hint-example {
-    display: flex; align-items: flex-start; gap: 6px;
-    margin-bottom: 4px; font-size: 12.5px; line-height: 1.6;
-  }
-  .hint-example .icon { font-size: 12px; flex-shrink: 0; margin-top: 2px; }
-  .hint-rule {
-    margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,181,255,.15);
-    font-size: 12px; color: var(--text-secondary); font-style: italic;
-  }
+  .hint-block{margin:16px 20px 12px;padding:14px 16px;background:var(--info-bg);border:1px solid rgba(0,181,255,.15);border-radius:14px;font-size:13px;line-height:1.7;color:var(--text-primary)}
+  .hint-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;gap:8px}
+  .hint-toggle-left{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;color:var(--info-accent)}
+  .hint-chevron{width:16px;height:16px;transition:transform .2s;color:var(--info-accent);flex-shrink:0}
+  .hint-chevron.open{transform:rotate(180deg)}
+  .hint-body{margin-top:10px;display:none}
+  .hint-body.open{display:block}
+  .hint-example{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;font-size:12.5px;line-height:1.6}
+  .hint-example .icon{font-size:12px;flex-shrink:0;margin-top:2px}
+  .hint-rule{margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,181,255,.15);font-size:12px;color:var(--text-secondary);font-style:italic}
 
-  .block-card {
-    background: var(--card); border: 1.5px solid var(--border-light);
-    border-radius: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.05);
-    transition: box-shadow .2s; display: flex; flex-direction: column; margin-bottom: 16px;
-  }
-  .block-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
-  .block-head {
-    padding: 20px 24px 16px; border-bottom: 1px solid var(--border-light);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .block-head-left { display: flex; align-items: center; gap: 10px; }
-  .block-label { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-  .block-badge {
-    font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 999px;
-    background: var(--surface); color: var(--text-secondary); transition: background .2s, color .2s;
-  }
-  .block-badge.done-items { background: var(--success-bg); color: var(--green); }
-  .block-badge.plan-items { background: var(--info-bg); color: var(--info-accent); }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .status-dot.green { background: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.15); }
-  .status-dot.blue { background: var(--info-accent); box-shadow: 0 0 0 3px rgba(0,181,255,.15); }
-  .items-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; min-height: 20px; }
-  .add-row { padding: 0 20px 20px; }
+  .block-card{background:var(--card);border:1.5px solid var(--border-light);border-radius:24px;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:box-shadow .2s;display:flex;flex-direction:column;margin-bottom:16px}
+  .block-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08)}
+  .block-head{padding:20px 24px 16px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
+  .block-head-left{display:flex;align-items:center;gap:10px}
+  .block-label{font-size:15px;font-weight:600;color:var(--text-primary)}
+  .block-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--text-secondary);transition:background .2s,color .2s}
+  .block-badge.done-items{background:var(--success-bg);color:var(--green)}
+  .block-badge.plan-items{background:var(--info-bg);color:var(--info-accent)}
+  .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .status-dot.green{background:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.15)}
+  .status-dot.blue{background:var(--info-accent);box-shadow:0 0 0 3px rgba(0,181,255,.15)}
+  .items-list{padding:16px 20px;display:flex;flex-direction:column;gap:14px;flex:1;min-height:20px}
+  .add-row{padding:0 20px 20px}
 
-  .product-item {
-    background: var(--surface); border: 1.5px solid var(--border-light);
-    border-radius: 16px; padding: 16px; position: relative; animation: slideIn .2s ease;
-  }
-  .product-item:hover { border-color: var(--border); }
-  @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .product-item{background:var(--surface);border:1.5px solid var(--border-light);border-radius:16px;padding:16px;position:relative;animation:slideIn .2s ease}
+  .product-item:hover{border-color:var(--border)}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
-  .product-del {
-    position: absolute; top: 12px; right: 12px;
-    width: 24px; height: 24px; border-radius: 6px;
-    border: 1.5px solid transparent; background: transparent;
-    color: var(--text-disabled); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .15s, border-color .15s, color .15s;
-  }
-  .product-del:hover { background: var(--error-bg); border-color: rgba(255,77,79,.2); color: var(--error-accent); }
+  .product-del{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:6px;border:1.5px solid transparent;background:transparent;color:var(--text-disabled);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,color .15s}
+  .product-del:hover{background:var(--error-bg);border-color:rgba(255,77,79,.2);color:var(--error-accent)}
 
-  .product-top { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-right: 32px; margin-bottom: 12px; }
-  .product-col { display: flex; flex-direction: column; gap: 4px; }
-  .product-label {
-    font-size: 11px; font-weight: 600; color: var(--text-secondary);
-    text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 5px;
-  }
-  .product-input {
-    background: #fff; border: 1.5px solid var(--border-light); border-radius: 10px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 13px; font-weight: 500; padding: 7px 12px;
-    outline: none; width: 100%; height: 36px; transition: border-color .18s;
-  }
-  .product-input::placeholder { color: var(--text-disabled); }
-  .product-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
-  .product-select {
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;
-    border: 1.5px solid var(--border-light); border-radius: 10px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 13px; font-weight: 500; padding: 7px 30px 7px 12px;
-    outline: none; cursor: pointer; -webkit-appearance: none;
-    width: 100%; height: 36px; transition: border-color .18s;
-  }
-  .product-select:hover { border-color: var(--green); }
-  .product-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
-  .product-select option { background: #fff; color: var(--text-primary); }
+  .product-top{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-right:32px;margin-bottom:12px}
+  .product-col{display:flex;flex-direction:column;gap:4px}
+  .product-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:5px}
+  .product-input{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:7px 12px;outline:none;width:100%;height:36px;transition:border-color .18s}
+  .product-input::placeholder{color:var(--text-disabled)}
+  .product-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
+  .product-select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:7px 30px 7px 12px;outline:none;cursor:pointer;-webkit-appearance:none;width:100%;height:36px;transition:border-color .18s}
+  .product-select:hover{border-color:var(--green)}
+  .product-select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
+  .product-select option{background:#fff;color:var(--text-primary)}
 
-  .increments-zone { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border-light); padding-top: 12px; }
+  .increments-zone{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-light);padding-top:12px}
+  .inc-labels-done,.inc-row-done{display:grid;grid-template-columns:1fr 24px;gap:8px}
+  .inc-labels-plan,.inc-row-plan{display:grid;grid-template-columns:1fr 120px 24px;gap:8px}
+  .inc-labels-done,.inc-labels-plan{margin-bottom:4px}
+  .inc-labels-done span,.inc-labels-plan span{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:5px}
 
-  /* Done: 2 columns */
-  .inc-labels-done, .inc-row-done {
-    display: grid; grid-template-columns: 1fr 24px; gap: 8px;
-  }
-  /* Plan: 3 columns with date */
-  .inc-labels-plan, .inc-row-plan {
-    display: grid; grid-template-columns: 1fr 120px 24px; gap: 8px;
-  }
-  .inc-labels-done, .inc-labels-plan { margin-bottom: 4px; }
-  .inc-labels-done span, .inc-labels-plan span {
-    font-size: 11px; font-weight: 600; color: var(--text-secondary);
-    text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 5px;
-  }
+  .inc-desc{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:7px 10px;outline:none;height:36px;resize:none;overflow:hidden;width:100%;transition:border-color .18s}
+  .inc-desc::placeholder{color:var(--text-disabled)}
+  .inc-desc:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
+  .inc-desc.has-warning{border-color:var(--warning-accent)}
 
-  .inc-desc {
-    background: #fff; border: 1.5px solid var(--border-light); border-radius: 10px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 13px; padding: 7px 10px; outline: none;
-    height: 36px; resize: none; overflow: hidden; width: 100%; transition: border-color .18s;
-  }
-  .inc-desc::placeholder { color: var(--text-disabled); }
-  .inc-desc:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
-  .inc-desc.has-warning { border-color: var(--warning-accent); }
+  .inc-hint{font-size:12px;line-height:1.5;color:var(--warning-accent);padding:4px 0 2px;display:flex;align-items:flex-start;gap:5px;animation:fadeHint .2s ease}
+  .inc-hint .hint-icon{flex-shrink:0;font-size:11px;margin-top:1px}
+  @keyframes fadeHint{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
-  .inc-hint {
-    font-size: 12px; line-height: 1.5; color: var(--warning-accent);
-    padding: 4px 0 2px;
-    display: flex; align-items: flex-start; gap: 5px;
-    animation: fadeHint .2s ease;
-  }
-  .inc-hint .hint-icon { flex-shrink: 0; font-size: 11px; margin-top: 1px; }
-  @keyframes fadeHint { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  .inc-date{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:7px 10px;outline:none;height:36px;width:100%;transition:border-color .18s;-webkit-appearance:none}
+  .inc-date:invalid{color:var(--text-disabled)}
+  .inc-date:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
+  .inc-date::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.5}
+  .inc-date.empty-warning{border-color:var(--warning-accent);background:var(--warning-bg)}
 
-  .inc-date {
-    background: #fff; border: 1.5px solid var(--border-light); border-radius: 10px;
-    color: var(--text-primary); font-family: 'Inter', Arial, sans-serif;
-    font-size: 13px; padding: 7px 10px; outline: none;
-    height: 36px; width: 100%; transition: border-color .18s;
-    -webkit-appearance: none;
-  }
-  .inc-date:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); }
-  .inc-date::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .5; }
+  .inc-del{width:24px;height:24px;border-radius:6px;border:1.5px solid transparent;background:transparent;color:var(--text-disabled);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:5px;transition:background .15s,color .15s}
+  .inc-del:hover{background:var(--error-bg);color:var(--error-accent)}
+  .inc-add{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--green);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;cursor:pointer;padding:4px 0;transition:opacity .18s}
+  .inc-add:hover{opacity:.7}
 
-  .inc-del {
-    width: 24px; height: 24px; border-radius: 6px;
-    border: 1.5px solid transparent; background: transparent;
-    color: var(--text-disabled); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    margin-top: 5px; transition: background .15s, color .15s;
-  }
-  .inc-del:hover { background: var(--error-bg); color: var(--error-accent); }
-  .inc-add {
-    display: flex; align-items: center; gap: 6px;
-    background: transparent; border: none; color: var(--green);
-    font-family: 'Inter', Arial, sans-serif; font-size: 13px; font-weight: 500;
-    cursor: pointer; padding: 4px 0; transition: opacity .18s;
-  }
-  .inc-add:hover { opacity: .7; }
+  .add-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:14px;color:var(--text-secondary);font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:500;padding:10px 16px;cursor:pointer;transition:border-color .18s,color .18s,background .18s}
+  .add-btn:hover{border-color:var(--green);color:var(--green);background:var(--success-bg)}
 
-  .add-btn {
-    display: flex; align-items: center; gap: 8px; width: 100%;
-    background: transparent; border: 1.5px dashed var(--border);
-    border-radius: 14px; color: var(--text-secondary);
-    font-family: 'Inter', Arial, sans-serif; font-size: 14px; font-weight: 500;
-    padding: 10px 16px; cursor: pointer;
-    transition: border-color .18s, color .18s, background .18s;
-  }
-  .add-btn:hover { border-color: var(--green); color: var(--green); background: var(--success-bg); }
+  .comments-textarea{width:100%;background:var(--surface);border:1.5px solid var(--border-light);border-radius:16px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:14px;padding:12px 16px;outline:none;height:80px;resize:none;transition:border-color .18s}
+  .comments-textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08);background:#fff}
+  .comments-textarea::placeholder{color:var(--text-disabled)}
 
-  .comments-textarea {
-    width: 100%; background: var(--surface); border: 1.5px solid var(--border-light);
-    border-radius: 16px; color: var(--text-primary);
-    font-family: 'Inter', Arial, sans-serif; font-size: 14px;
-    padding: 12px 16px; outline: none; height: 80px; resize: none; transition: border-color .18s;
-  }
-  .comments-textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,185,86,.08); background: #fff; }
-  .comments-textarea::placeholder { color: var(--text-disabled); }
-
-  .actions-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--green); color: #fff; border: none; border-radius: 14px;
-    font-family: 'Inter', Arial, sans-serif; font-size: 15px; font-weight: 600;
-    padding: 12px 28px; cursor: pointer;
-    transition: background .18s, box-shadow .18s, transform .1s;
-    box-shadow: 0 4px 12px rgba(0,185,86,.25);
-  }
-  .btn-primary:hover { background: var(--green-hover); box-shadow: 0 6px 18px rgba(0,185,86,.35); transform: translateY(-1px); }
-  .btn-primary:active { background: var(--green-pressed); transform: translateY(0); box-shadow: none; }
-  .btn-secondary {
-    background: #fff; color: var(--text-primary); border: 1.5px solid var(--border);
-    border-radius: 14px; font-family: 'Inter', Arial, sans-serif;
-    font-size: 15px; font-weight: 500; padding: 11px 24px; cursor: pointer;
-    transition: border-color .18s, color .18s;
-  }
-  .btn-secondary:hover { border-color: var(--green); color: var(--green); }
-  .btn-ghost {
-    background: transparent; border: none; color: var(--text-secondary);
-    font-family: 'Inter', Arial, sans-serif; font-size: 14px;
-    padding: 8px 4px; cursor: pointer;
-    text-decoration: underline; text-underline-offset: 3px; transition: color .18s;
-  }
-  .btn-ghost:hover { color: var(--error-accent); }
+  .actions-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .btn-primary{background:var(--green);color:#fff;border:none;border-radius:14px;font-family:'Inter',Arial,sans-serif;font-size:15px;font-weight:600;padding:12px 28px;cursor:pointer;transition:background .18s,box-shadow .18s,transform .1s;box-shadow:0 4px 12px rgba(0,185,86,.25)}
+  .btn-primary:hover{background:var(--green-hover);box-shadow:0 6px 18px rgba(0,185,86,.35);transform:translateY(-1px)}
+  .btn-primary:active{background:var(--green-pressed);transform:translateY(0);box-shadow:none}
+  .btn-ghost{background:transparent;border:none;color:var(--text-secondary);font-family:'Inter',Arial,sans-serif;font-size:14px;padding:8px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color .18s}
+  .btn-ghost:hover{color:var(--error-accent)}
 
   /* SUMMARY OVERLAY */
-  .summary-overlay {
-    position: fixed; inset: 0; background: rgba(43,45,51,.5);
-    backdrop-filter: blur(6px); z-index: 200;
-    display: flex; align-items: center; justify-content: center; padding: 24px;
-    opacity: 0; pointer-events: none; transition: opacity .25s;
-  }
-  .summary-overlay.open { opacity: 1; pointer-events: all; }
-  .summary-card {
-    background: #fff; border-radius: 24px; width: 100%; max-width: 420px;
-    transform: translateY(20px); transition: transform .25s;
-    box-shadow: 0 24px 64px rgba(0,0,0,.15); overflow: hidden;
-  }
-  .summary-overlay.open .summary-card { transform: translateY(0); }
-  .summary-header {
-    padding: 24px 28px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .summary-header h2 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .summary-close {
-    width: 32px; height: 32px; border-radius: 10px;
-    border: 1.5px solid var(--border-light); background: var(--surface);
-    color: var(--text-secondary); font-size: 18px; line-height: 1;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-  }
-  .summary-close:hover { border-color: var(--error-accent); color: var(--error-accent); }
-  .summary-body { padding: 0 28px 24px; }
-  .summary-stats {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
-  }
-  .stat-tile {
-    background: var(--surface); border-radius: 14px; padding: 14px 16px;
-  }
-  .stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); }
-  .stat-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-top: 2px; }
-  .stat-tile.wide { grid-column: span 2; display: flex; align-items: center; justify-content: space-between; }
-  .stat-bar-wrap { display: flex; align-items: center; gap: 10px; }
-  .stat-bar {
-    width: 120px; height: 6px; background: var(--border-light);
-    border-radius: 999px; overflow: hidden;
-  }
-  .stat-bar-fill { height: 100%; border-radius: 999px; transition: width .4s ease; }
-  .stat-bar-fill.green { background: var(--green); }
-  .stat-bar-fill.blue { background: var(--info-accent); }
-  .summary-hints { display: flex; flex-direction: column; gap: 6px; }
-  .summary-hint {
-    font-size: 13px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 6px;
-    line-height: 1.5;
-  }
-  .summary-hint .icon { flex-shrink: 0; margin-top: 1px; }
-  .summary-copied {
-    text-align: center; padding: 12px 0 0;
-    font-size: 13px; font-weight: 600; color: var(--green);
-  }
+  .summary-overlay{position:fixed;inset:0;background:rgba(43,45,51,.5);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+  .summary-overlay.open{opacity:1;pointer-events:all}
+  .summary-card{background:#fff;border-radius:24px;width:100%;max-width:440px;transform:translateY(20px);transition:transform .25s;box-shadow:0 24px 64px rgba(0,0,0,.15);overflow:hidden}
+  .summary-overlay.open .summary-card{transform:translateY(0)}
+  .summary-header{padding:24px 28px 16px;display:flex;align-items:center;justify-content:space-between}
+  .summary-header h2{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .summary-close{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--border-light);background:var(--surface);color:var(--text-secondary);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .summary-close:hover{border-color:var(--error-accent);color:var(--error-accent)}
+  .summary-body{padding:0 28px 24px}
+  .summary-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .stat-tile{background:var(--surface);border-radius:14px;padding:14px 16px}
+  .stat-value{font-size:24px;font-weight:700;color:var(--text-primary)}
+  .stat-label{font-size:12px;font-weight:500;color:var(--text-secondary);margin-top:2px}
+  .stat-tile.wide{grid-column:span 2;display:flex;align-items:center;justify-content:space-between}
+  .stat-bar-wrap{display:flex;align-items:center;gap:10px}
+  .stat-bar{width:120px;height:6px;background:var(--border-light);border-radius:999px;overflow:hidden}
+  .stat-bar-fill{height:100%;border-radius:999px;transition:width .4s ease}
+  .stat-bar-fill.green{background:var(--green)}
+  .summary-feedback{margin-bottom:16px;padding:14px 16px;border-radius:14px;font-size:13px;line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+  .summary-feedback .fb-emoji{font-size:22px;flex-shrink:0;line-height:1.2}
+  .summary-feedback .fb-text{flex:1}
+  .summary-feedback .fb-title{font-weight:600;margin-bottom:2px}
+  .summary-feedback.positive{background:var(--success-bg);color:var(--text-primary)}
+  .summary-feedback.neutral{background:var(--surface);color:var(--text-primary)}
+  .summary-feedback.nudge{background:var(--warning-bg);color:var(--text-primary)}
+  .summary-hints{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .summary-hint{font-size:13px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:6px;line-height:1.5}
+  .summary-hint .icon{flex-shrink:0;margin-top:1px}
+  .summary-actions{display:flex;gap:10px}
+  .summary-actions .btn-primary{flex:1}
+  .btn-outline{flex:1;background:#fff;color:var(--text-primary);border:1.5px solid var(--border);border-radius:14px;font-family:'Inter',Arial,sans-serif;font-size:15px;font-weight:500;padding:11px 20px;cursor:pointer;transition:border-color .18s,color .18s;text-align:center}
+  .btn-outline:hover{border-color:var(--green);color:var(--green)}
 
-  .toast {
-    position: fixed; bottom: 32px; right: 32px; background: var(--text-primary);
-    color: #fff; font-size: 14px; font-weight: 500; padding: 14px 20px;
-    border-radius: 14px; z-index: 300; transform: translateY(16px); opacity: 0;
-    transition: all .25s; pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,.2);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .toast{position:fixed;bottom:32px;right:32px;background:var(--text-primary);color:#fff;font-size:14px;font-weight:500;padding:14px 20px;border-radius:14px;z-index:300;transform:translateY(16px);opacity:0;transition:all .25s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px}
+  .toast.show{transform:translateY(0);opacity:1}
+  .toast-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
 
-  @media (max-width: 720px) {
-    .meta-row { grid-template-columns: 1fr; }
-    .product-top { grid-template-columns: 1fr; }
-    .inc-row-done { grid-template-columns: 1fr 24px; }
-    .inc-labels-done { grid-template-columns: 1fr 24px; }
-    .inc-row-plan { grid-template-columns: 1fr 100px 24px; }
-    .inc-labels-plan { grid-template-columns: 1fr 100px 24px; }
-    .topbar { padding: 0 20px; }
-    .page { padding: 24px 16px 80px; }
-    .card { padding: 20px; }
+  @media(max-width:720px){
+    .meta-row{grid-template-columns:1fr}
+    .product-top{grid-template-columns:1fr}
+    .inc-row-done{grid-template-columns:1fr 24px}
+    .inc-labels-done{grid-template-columns:1fr 24px}
+    .inc-row-plan{grid-template-columns:1fr 100px 24px}
+    .inc-labels-plan{grid-template-columns:1fr 100px 24px}
+    .topbar{padding:0 20px}
+    .page{padding:24px 16px 80px}
+    .card{padding:20px}
   }
 </style>
 </head>
 <body>
 
 <nav class="topbar">
-  <div class="logo-mark">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-  </div>
+  <div class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
   <span class="logo-text">МегаФон</span>
   <div class="topbar-divider"></div>
   <span class="topbar-title">Еженедельный отчёт</span>
@@ -407,11 +206,11 @@
     </div>
     <div class="meta-row">
       <div class="field">
-        <label class="field-label">Сотрудник <span class="tip-wrap"><i class="tip-icon" data-tip="Имя и фамилия сотрудника, составляющего отчёт">?</i></span></label>
+        <label class="field-label">Сотрудник</label>
         <input class="field-input" id="employee" oninput="updateTitle()">
       </div>
       <div class="field">
-        <label class="field-label">Неделя <span class="tip-wrap"><i class="tip-icon" data-tip="Рабочая неделя отчёта. Используйте стрелки для навигации">?</i></span></label>
+        <label class="field-label">Неделя</label>
         <div class="week-nav">
           <button class="week-arrow" onclick="changeWeek(-1)">&#8249;</button>
           <div class="week-value" id="weekVal"></div>
@@ -422,96 +221,73 @@
   </div>
 
   <!-- DONE -->
-  <div class="block-card">
+  <div class="block-card" data-block="done">
     <div class="block-head">
       <div class="block-head-left">
         <div class="status-dot green"></div>
         <span class="block-label">Что было сделано</span>
-        <span class="tip-wrap"><i class="tip-icon" data-tip="Завершённые задачи, фичи, артефакты и результаты за прошедшую неделю">?</i></span>
       </div>
       <span class="block-badge" id="doneBadge">0 продуктов</span>
     </div>
-
-    <div class="hint-block" id="hintDone">
+    <div class="hint-block">
       <div class="hint-toggle" onclick="toggleHint('hintDoneBody','hintDoneChevron')">
-        <span class="hint-toggle-left">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          Как формулировать
-        </span>
+        <span class="hint-toggle-left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Как формулировать</span>
         <svg class="hint-chevron" id="hintDoneChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="hint-body" id="hintDoneBody">
         <div class="hint-example"><span class="icon">✅</span> Спроектировал карту клиентского пути для онбординга ВАТС</div>
         <div class="hint-example"><span class="icon">✅</span> Подготовил прототип нового сценария оформления заказа</div>
         <div class="hint-example"><span class="icon">✅</span> Провёл UX-аудит ЛК — выявил 12 проблемных мест</div>
-        <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Провёл встречу — это не инкремент</span></div>
-        <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Обсудил задачу с командой — это процесс, не результат</span></div>
+        <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Провёл встречу — это не инкремент</span></div>
+        <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Обсудил задачу с командой — это процесс, не результат</span></div>
         <div class="hint-rule">Пишите в форме совершённого действия. Фиксируйте результат, а не процесс.</div>
       </div>
     </div>
-
     <div class="items-list" id="doneList"></div>
-    <div class="add-row">
-      <button class="add-btn" onclick="addProduct('done')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Добавить продукт
-      </button>
-    </div>
+    <div class="add-row"><button class="add-btn" onclick="addProduct('done')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить продукт</button></div>
   </div>
 
   <!-- PLAN -->
-  <div class="block-card">
+  <div class="block-card" data-block="plan">
     <div class="block-head">
       <div class="block-head-left">
         <div class="status-dot blue"></div>
         <span class="block-label">Планы на эту неделю</span>
-        <span class="tip-wrap"><i class="tip-icon" data-tip="Задачи и цели на текущую неделю">?</i></span>
       </div>
       <span class="block-badge" id="planBadge">0 продуктов</span>
     </div>
-
-    <div class="hint-block" id="hintPlan" style="background:var(--info-bg);">
+    <div class="hint-block">
       <div class="hint-toggle" onclick="toggleHint('hintPlanBody','hintPlanChevron')">
-        <span class="hint-toggle-left">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          Как формулировать
-        </span>
+        <span class="hint-toggle-left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Как формулировать</span>
         <svg class="hint-chevron" id="hintPlanChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="hint-body" id="hintPlanBody">
         <div class="hint-example"><span class="icon">✅</span> Подготовить CJM для сценария активации</div>
         <div class="hint-example"><span class="icon">✅</span> Финализировать прототип и передать в разработку</div>
         <div class="hint-example"><span class="icon">✅</span> Провести ревью посадочной страницы перед запуском</div>
-        <div class="hint-example"><span class="icon">❌</span> <span style="color:var(--text-secondary)">Созвониться с командой — это не план, а действие</span></div>
+        <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Созвониться с командой — это не план, а действие</span></div>
         <div class="hint-rule">Планы — это ожидаемые результаты, а не встречи и обсуждения. Укажите срок выполнения.</div>
       </div>
     </div>
-
     <div class="items-list" id="planList"></div>
-    <div class="add-row">
-      <button class="add-btn" onclick="addProduct('plan')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Добавить продукт
-      </button>
-    </div>
+    <div class="add-row"><button class="add-btn" onclick="addProduct('plan')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить продукт</button></div>
   </div>
 
   <div class="card">
     <div class="card-title">
       <div class="icon-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       Комментарии и блокеры
-      <span class="tip-wrap"><i class="tip-icon" data-tip="Важный контекст, риски, зависимости от других команд">?</i></span>
     </div>
     <textarea class="comments-textarea" id="comments" placeholder="Опишите блокеры, зависимости или дополнительный контекст…"></textarea>
   </div>
 
   <div class="actions-row">
-    <button class="btn-primary" onclick="copyReport()">Скопировать отчёт</button>
+    <button class="btn-primary" onclick="openSummary()">Посмотреть сводку</button>
     <button class="btn-ghost" onclick="clearAll()">Очистить форму</button>
   </div>
 </div>
 
-
+<!-- SUMMARY -->
 <div class="summary-overlay" id="summaryOverlay" onclick="if(event.target.id==='summaryOverlay')closeSummary()">
   <div class="summary-card">
     <div class="summary-header">
@@ -519,9 +295,13 @@
       <button class="summary-close" onclick="closeSummary()">&#215;</button>
     </div>
     <div class="summary-body">
+      <div id="summaryFeedback"></div>
       <div class="summary-stats" id="summaryStats"></div>
       <div class="summary-hints" id="summaryHints"></div>
-      <div class="summary-copied">✓ Отчёт скопирован в буфер обмена</div>
+      <div class="summary-actions">
+        <button class="btn-primary" onclick="copyReport()">Скопировать отчёт</button>
+        <button class="btn-outline" onclick="closeSummary()">Доработать</button>
+      </div>
     </div>
   </div>
 </div>
@@ -543,6 +323,9 @@ var TASK_GLOSSARY =
 var SVG_PLUS = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 var SVG_X = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
 
+var PROCESS_WORDS = ['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','переписывался','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
+var PERFECTIVE_CHECK = /[а-яё]л[аио]?$/;
+
 function getWeekRange(offset) {
   var now = new Date(), day = now.getDay() || 7;
   var mon = new Date(now); mon.setDate(now.getDate() - day + 1 + offset * 7);
@@ -561,18 +344,23 @@ function updateTitle() {
   document.getElementById('pageTitle').textContent = v ? 'Отчёт: ' + v : 'Новый отчёт';
 }
 function plural(n) { return n === 1 ? '1 продукт' : n >= 2 && n <= 4 ? n + ' продукта' : n + ' продуктов'; }
+function decline(n, one, few, many) {
+  var abs = Math.abs(n) % 100;
+  var last = abs % 10;
+  if (abs >= 11 && abs <= 19) return n + ' ' + many;
+  if (last === 1) return n + ' ' + one;
+  if (last >= 2 && last <= 4) return n + ' ' + few;
+  return n + ' ' + many;
+}
 function updateBadge(block) {
   var n = document.getElementById(block + 'List').querySelectorAll('.product-item').length;
   var el = document.getElementById(block + 'Badge');
   el.textContent = plural(n);
   el.className = 'block-badge' + (n > 0 ? (block === 'done' ? ' done-items' : ' plan-items') : '');
 }
-
 function toggleHint(bodyId, chevronId) {
-  var body = document.getElementById(bodyId);
-  var chevron = document.getElementById(chevronId);
-  body.classList.toggle('open');
-  chevron.classList.toggle('open');
+  document.getElementById(bodyId).classList.toggle('open');
+  document.getElementById(chevronId).classList.toggle('open');
 }
 
 function addIncRow(zone, block) {
@@ -593,13 +381,11 @@ function addProduct(block, skipFocus) {
   var rowClass = block === 'done' ? 'inc-row-done' : 'inc-row-plan';
   var labelsClass = block === 'done' ? 'inc-labels-done' : 'inc-labels-plan';
 
-  var labelsHtml = '<div class="' + labelsClass + '">' +
-    '<span>Описание инкремента</span>';
+  var labelsHtml = '<div class="' + labelsClass + '"><span>Описание инкремента</span>';
   if (block === 'plan') labelsHtml += '<span>Срок</span>';
   labelsHtml += '<span></span></div>';
 
-  var firstRowHtml = '<div class="' + rowClass + '">' +
-    '<input type="text" class="inc-desc" placeholder="' + descPh + '">';
+  var firstRowHtml = '<div class="' + rowClass + '"><input type="text" class="inc-desc" placeholder="' + descPh + '">';
   if (block === 'plan') firstRowHtml += '<input type="date" class="inc-date">';
   firstRowHtml += '<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">' + SVG_X + '</button></div>';
 
@@ -608,18 +394,10 @@ function addProduct(block, skipFocus) {
   item.innerHTML =
     '<button class="product-del" onclick="delProduct(this,\'' + block + '\')" title="Удалить продукт">' + SVG_X + '</button>' +
     '<div class="product-top">' +
-      '<div class="product-col">' +
-        '<div class="product-label">Продукт</div>' +
-        '<input type="text" class="product-input">' +
-      '</div>' +
-      '<div class="product-col">' +
-        '<div class="product-label">Тип задачи <span class="tip-wrap"><i class="tip-icon" data-tip="task-glossary">?</i></span></div>' +
-        '<select class="product-select">' + taskOpts + '</select>' +
-      '</div>' +
+      '<div class="product-col"><div class="product-label">Продукт</div><input type="text" class="product-input"></div>' +
+      '<div class="product-col"><div class="product-label">Тип задачи <span class="tip-wrap"><i class="tip-icon" data-tip="task-glossary">?</i></span></div><select class="product-select">' + taskOpts + '</select></div>' +
     '</div>' +
-    '<div class="increments-zone">' +
-      labelsHtml +
-      firstRowHtml +
+    '<div class="increments-zone">' + labelsHtml + firstRowHtml +
       '<button class="inc-add" onclick="addIncRow(this.closest(\'.increments-zone\'),\'' + block + '\')">' + SVG_PLUS + ' Ещё инкремент</button>' +
     '</div>';
 
@@ -654,6 +432,7 @@ function getProducts(block) {
   return out;
 }
 
+// ── REPORT BUILDERS ──
 function buildReport() {
   var emp = document.getElementById('employee').value.trim() || '—';
   var week = getWeekRange(weekOffset);
@@ -666,28 +445,30 @@ function buildReport() {
   s += 'Период    : ' + week + '\n';
   s += '─────────────────────────────────────\n\n';
 
-  s += '✅ ЧТО БЫЛО СДЕЛАНО\n';
+  s += '✅ ЧТО БЫЛО СДЕЛАНО\n\n';
   if (!done.length) { s += '   (не заполнено)\n'; }
   else { done.forEach(function(p) {
-    s += '\n   ' + p.product + ' (' + p.taskType + ')\n';
-    p.incs.forEach(function(inc) {
-      s += '      • ' + inc.desc + '\n';
-    });
+    s += '   ' + p.product + ' (' + p.taskType + ')\n';
+    p.incs.forEach(function(inc) { s += '      • ' + inc.desc + '\n'; });
+    s += '\n';
   }); }
 
-  s += '\n🗓 ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n';
+  s += '🗓 ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n\n';
   if (!plan.length) { s += '   (не заполнено)\n'; }
   else { plan.forEach(function(p) {
-    s += '\n   ' + p.product + ' (' + p.taskType + ')\n';
+    s += '   ' + p.product + ' (' + p.taskType + ')\n';
     p.incs.forEach(function(inc) {
       var deadline = inc.date ? ' → ' + formatDate(inc.date) : '';
       s += '      • ' + inc.desc + deadline + '\n';
     });
+    s += '\n';
   }); }
 
-  if (comments) { s += '\n💬 КОММЕНТАРИИ И БЛОКЕРЫ\n   ' + comments.split('\n').join('\n   ') + '\n'; }
+  if (comments) { s += '💬 КОММЕНТАРИИ И БЛОКЕРЫ\n   ' + comments.split('\n').join('\n   ') + '\n'; }
   return s;
 }
+
+function esc(text) { var d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
 function buildReportHTML() {
   var emp = document.getElementById('employee').value.trim() || '—';
@@ -695,7 +476,6 @@ function buildReportHTML() {
   var comments = document.getElementById('comments').value.trim();
   var done = getProducts('done');
   var plan = getProducts('plan');
-
   var gray = 'color:#8F96A4';
   var h = '<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#2B2D33">';
 
@@ -704,194 +484,183 @@ function buildReportHTML() {
   h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:0 0 16px">';
 
   h += '<div style="font-size:15px;margin-bottom:12px"><b>✅ Что было сделано</b></div>';
-  if (!done.length) {
-    h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
-  } else {
-    done.forEach(function(p) {
-      h += '<div style="margin-bottom:12px">';
-      h += '<div><b><u>' + esc(p.product) + '</u></b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
-      p.incs.forEach(function(inc) {
-        h += '<div style="padding-left:18px">• ' + esc(inc.desc) + '</div>';
-      });
-      h += '</div>';
-    });
-  }
+  if (!done.length) { h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>'; }
+  else { done.forEach(function(p) {
+    h += '<div style="margin-bottom:14px">';
+    h += '<div style="margin-bottom:4px"><b>' + esc(p.product) + '</b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
+    p.incs.forEach(function(inc) { h += '<div style="padding-left:16px">• ' + esc(inc.desc) + '</div>'; });
+    h += '</div>';
+  }); }
 
   h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
   h += '<div style="font-size:15px;margin-bottom:12px"><b>🗓 Планы на эту неделю</b></div>';
-  if (!plan.length) {
-    h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>';
-  } else {
-    plan.forEach(function(p) {
-      h += '<div style="margin-bottom:12px">';
-      h += '<div><b><u>' + esc(p.product) + '</u></b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
-      p.incs.forEach(function(inc) {
-        var deadline = inc.date ? ' <span style="color:#00B956;font-weight:600;font-size:12px">→ ' + formatDate(inc.date) + '</span>' : '';
-        h += '<div style="padding-left:18px">• ' + esc(inc.desc) + deadline + '</div>';
-      });
-      h += '</div>';
+  if (!plan.length) { h += '<div style="' + gray + ';margin-bottom:16px">(не заполнено)</div>'; }
+  else { plan.forEach(function(p) {
+    h += '<div style="margin-bottom:14px">';
+    h += '<div style="margin-bottom:4px"><b>' + esc(p.product) + '</b> <span style="' + gray + '">(' + esc(p.taskType) + ')</span></div>';
+    p.incs.forEach(function(inc) {
+      var deadline = inc.date ? ' <span style="color:#00B956;font-weight:600;font-size:12px">→ ' + formatDate(inc.date) + '</span>' : '';
+      h += '<div style="padding-left:16px">• ' + esc(inc.desc) + deadline + '</div>';
     });
-  }
+    h += '</div>';
+  }); }
 
   if (comments) {
     h += '<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
     h += '<div style="font-size:15px;margin-bottom:8px"><b>💬 Комментарии и блокеры</b></div>';
     h += '<div style="' + gray + '">' + esc(comments).replace(/\n/g, '<br>') + '</div>';
   }
-
   h += '</div>';
   return h;
 }
 
-function esc(text) {
-  var d = document.createElement('div');
-  d.textContent = text;
-  return d.innerHTML;
-}
-
+// ── COPY ──
 function copyReport() {
   var html = buildReportHTML();
   var plain = buildReport();
-
   var tmp = document.createElement('div');
   tmp.innerHTML = html;
-  tmp.style.position = 'fixed';
-  tmp.style.left = '-9999px';
-  tmp.style.top = '0';
-  tmp.style.opacity = '0';
+  tmp.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
   document.body.appendChild(tmp);
-
   var range = document.createRange();
   range.selectNodeContents(tmp);
   var sel = window.getSelection();
   sel.removeAllRanges();
   sel.addRange(range);
-
-  try {
-    document.execCommand('copy');
-    showSummary();
-  } catch (e) {
-    navigator.clipboard.writeText(plain).then(function() { showSummary(); });
-  }
-
+  try { document.execCommand('copy'); toast('Отчёт скопирован в буфер обмена'); }
+  catch (e) { navigator.clipboard.writeText(plain).then(function() { toast('Отчёт скопирован'); }); }
   sel.removeAllRanges();
   document.body.removeChild(tmp);
 }
 
-function checkFormulations(done, plan) {
-  var hints = [];
-  var totalIncs = 0;
-  done.forEach(function(p) { totalIncs += p.incs.length; });
-  plan.forEach(function(p) { totalIncs += p.incs.length; });
+// ── SUMMARY ──
+function openSummary() {
+  // Highlight empty dates
+  document.querySelectorAll('.inc-date').forEach(function(el) {
+    var row = el.closest('[class^="inc-row"]');
+    var desc = row ? row.querySelector('.inc-desc') : null;
+    if (desc && desc.value.trim() && !el.value) el.classList.add('empty-warning');
+    else el.classList.remove('empty-warning');
+  });
 
-  if (totalIncs > 0) {
-    // Check if all formulations are clean
-    var issues = 0;
-    var processWords = ['встреча','встречу','созвон','синк','обсудил','обсудить','обсуждение','обсуждали','позвонил','поговорил'];
-    done.concat(plan).forEach(function(p) {
-      p.incs.forEach(function(inc) {
-        var text = inc.desc.toLowerCase().trim();
-        if (!text) return;
-        var words = text.split(/\s+/);
-        if (words.length < 4) issues++;
-        for (var i = 0; i < processWords.length; i++) {
-          if (text.indexOf(processWords[i]) !== -1) { issues++; break; }
-        }
-      });
-    });
-    if (issues === 0) {
-      hints.push({ icon: '✅', text: 'Формулировки в порядке — конкретно и по делу' });
-    }
-  }
-
-  if (totalIncs >= 5) hints.push({ icon: '🔥', text: 'Насыщенная неделя — ' + totalIncs + ' инкрементов!' });
-
-  return hints;
-}
-
-function showSummary() {
   var done = getProducts('done');
   var plan = getProducts('plan');
 
-  // Count stats
   var allProducts = {};
-  var totalIncsDone = 0;
-  var totalIncsPlan = 0;
-  var runCount = 0;
-  var changeCount = 0;
-  var plansWithDate = 0;
-  var plansTotal = 0;
+  var totalDone = 0, totalPlan = 0, runCount = 0, changeCount = 0;
+  var plansWithDate = 0, plansTotal = 0;
 
-  done.forEach(function(p) {
-    allProducts[p.product] = true;
-    totalIncsDone += p.incs.length;
-    if (p.taskType === 'Run-задача') runCount++;
-    else changeCount++;
-  });
-
+  done.forEach(function(p) { allProducts[p.product] = true; totalDone += p.incs.length; if (p.taskType === 'Run-задача') runCount++; else changeCount++; });
   plan.forEach(function(p) {
-    allProducts[p.product] = true;
-    totalIncsPlan += p.incs.length;
-    if (p.taskType === 'Run-задача') runCount++;
-    else changeCount++;
-    p.incs.forEach(function(inc) {
-      plansTotal++;
-      if (inc.date) plansWithDate++;
-    });
+    allProducts[p.product] = true; totalPlan += p.incs.length;
+    if (p.taskType === 'Run-задача') runCount++; else changeCount++;
+    p.incs.forEach(function(inc) { plansTotal++; if (inc.date) plansWithDate++; });
   });
 
   var productCount = Object.keys(allProducts).length;
-  var totalTasks = runCount + changeCount;
-  var runPct = totalTasks > 0 ? Math.round(runCount / totalTasks * 100) : 50;
+  var totalTasks = totalDone + totalPlan;
+  var totalTaskTypes = runCount + changeCount;
+  var runPct = totalTaskTypes > 0 ? Math.round(runCount / totalTaskTypes * 100) : 50;
 
-  // Render stats
+  // Feedback
+  var fb = getFeedback(totalDone, totalPlan, plansTotal, plansWithDate, productCount);
+  document.getElementById('summaryFeedback').innerHTML =
+    '<div class="summary-feedback ' + fb.tone + '">' +
+      '<div class="fb-emoji">' + fb.emoji + '</div>' +
+      '<div class="fb-text"><div class="fb-title">' + fb.title + '</div>' + fb.text + '</div>' +
+    '</div>';
+
+  // Stats
   var statsHtml = '';
-  statsHtml += '<div class="stat-tile"><div class="stat-value">' + productCount + '</div><div class="stat-label">Продуктов в работе</div></div>';
-  statsHtml += '<div class="stat-tile"><div class="stat-value">' + totalIncsDone + '</div><div class="stat-label">Инкрементов за неделю</div></div>';
+  statsHtml += '<div class="stat-tile"><div class="stat-value">' + productCount + '</div><div class="stat-label">' + decline(productCount, 'продукт в работе', 'продукта в работе', 'продуктов в работе').replace(/^\d+ /, '') + '</div></div>';
+  statsHtml += '<div class="stat-tile"><div class="stat-value">' + totalTasks + '</div><div class="stat-label">' + decline(totalTasks, 'задача на неделю', 'задачи на неделю', 'задач на неделю').replace(/^\d+ /, '') + '</div></div>';
 
   statsHtml += '<div class="stat-tile wide">';
   statsHtml += '<div><div class="stat-label" style="margin-bottom:4px">Баланс задач</div>';
   statsHtml += '<div style="font-size:13px;font-weight:600">' + runCount + ' Run · ' + changeCount + ' Change</div></div>';
-  statsHtml += '<div class="stat-bar-wrap">';
-  statsHtml += '<div class="stat-bar"><div class="stat-bar-fill green" style="width:' + runPct + '%"></div></div>';
-  statsHtml += '</div></div>';
+  statsHtml += '<div class="stat-bar-wrap"><div class="stat-bar"><div class="stat-bar-fill green" style="width:' + runPct + '%"></div></div></div></div>';
 
   if (plansTotal > 0) {
     statsHtml += '<div class="stat-tile wide">';
     statsHtml += '<div><div class="stat-label" style="margin-bottom:4px">Планы на неделю</div>';
-    statsHtml += '<div style="font-size:13px;font-weight:600">' + totalIncsPlan + ' инкрементов</div></div>';
-    statsHtml += '<div style="font-size:13px;font-weight:600;color:' + (plansWithDate === plansTotal ? 'var(--green)' : 'var(--text-secondary)') + '">' + plansWithDate + ' из ' + plansTotal + ' со сроком</div>';
+    statsHtml += '<div style="font-size:13px;font-weight:600">' + decline(totalPlan, 'задача', 'задачи', 'задач') + '</div></div>';
+    var dateColor = plansWithDate === plansTotal ? 'var(--green)' : 'var(--warning-accent)';
+    statsHtml += '<div style="font-size:13px;font-weight:600;color:' + dateColor + '">' + plansWithDate + ' из ' + plansTotal + ' со сроком</div>';
     statsHtml += '</div>';
   }
-
   document.getElementById('summaryStats').innerHTML = statsHtml;
 
-  // Render hints
+  // Hints
   var hints = [];
-  if (totalIncsDone === 0) hints.push({ icon: '💡', text: 'Блок «Что сделано» пустой — добавьте ключевые результаты недели' });
   if (plansTotal > 0 && plansWithDate < plansTotal) {
-    var missing = plansTotal - plansWithDate;
-    hints.push({ icon: '📅', text: missing + (missing === 1 ? ' план без указанного срока' : missing < 5 ? ' плана без указанного срока' : ' планов без указанного срока') });
+    var m = plansTotal - plansWithDate;
+    hints.push({ icon: '📅', text: m + (m === 1 ? ' план без срока' : m < 5 ? ' плана без срока' : ' планов без срока') + ' — укажите дедлайны' });
   }
-  if (productCount === 1 && totalIncsDone > 0) hints.push({ icon: '📌', text: 'Только один продукт — если работали с другими, добавьте их тоже' });
-  if (totalIncsDone >= 5) hints.push({ icon: '🔥', text: 'Насыщенная неделя — ' + totalIncsDone + ' инкрементов!' });
+  if (productCount === 1 && totalDone > 0) hints.push({ icon: '📌', text: 'Только один продукт — если работали с другими, добавьте их' });
 
-  // Formulation quality check
-  var formHints = checkFormulations(done, plan);
-  formHints.forEach(function(h) { hints.push(h); });
+  // Formulation check (positive only)
+  var hasIssues = false;
+  done.concat(plan).forEach(function(p) { p.incs.forEach(function(inc) {
+    var lower = inc.desc.toLowerCase();
+    if (lower.split(/\s+/).length < 4) hasIssues = true;
+    for (var i = 0; i < PROCESS_WORDS.length; i++) { if (lower.indexOf(PROCESS_WORDS[i]) !== -1) { hasIssues = true; break; } }
+  }); });
+  if (!hasIssues && totalTasks > 0) hints.push({ icon: '✅', text: 'Формулировки в порядке — конкретно и по делу' });
 
   var hintsHtml = '';
-  hints.forEach(function(h) {
-    hintsHtml += '<div class="summary-hint"><span class="icon">' + h.icon + '</span>' + h.text + '</div>';
-  });
+  hints.forEach(function(h) { hintsHtml += '<div class="summary-hint"><span class="icon">' + h.icon + '</span>' + h.text + '</div>'; });
   document.getElementById('summaryHints').innerHTML = hintsHtml;
 
   document.getElementById('summaryOverlay').classList.add('open');
 }
 
-function closeSummary() {
-  document.getElementById('summaryOverlay').classList.remove('open');
+function getFeedback(totalDone, totalPlan, plansTotal, plansWithDate, productCount) {
+  var total = totalDone + totalPlan;
+
+  if (total === 0) return {
+    emoji: '📭', tone: 'nudge',
+    title: 'Пока пусто',
+    text: 'Добавьте результаты и планы — без них отчёт не информативен'
+  };
+  if (totalDone === 0 && totalPlan > 0) return {
+    emoji: '🤔', tone: 'nudge',
+    title: 'Только планы',
+    text: 'Блок «Что сделано» пустой — вспомните ключевые результаты недели'
+  };
+  if (totalDone > 0 && totalPlan === 0) return {
+    emoji: '📝', tone: 'nudge',
+    title: 'Без планов',
+    text: 'Добавьте хотя бы ключевые задачи на следующую неделю'
+  };
+  if (total <= 2) return {
+    emoji: '🧐', tone: 'nudge',
+    title: 'Что-то маловато',
+    text: 'Всего ' + decline(total, 'задача', 'задачи', 'задач') + ' — возможно, стоит вспомнить, что ещё было сделано'
+  };
+  if (total >= 8 && plansWithDate === plansTotal && productCount >= 3) return {
+    emoji: '🚀', tone: 'positive',
+    title: 'Отличный отчёт!',
+    text: 'Много задач, несколько продуктов, все сроки указаны — всё на месте'
+  };
+  if (total >= 6) return {
+    emoji: '💪', tone: 'positive',
+    title: 'Насыщенная неделя',
+    text: decline(productCount, 'продукт', 'продукта', 'продуктов') + ', ' + decline(total, 'задача', 'задачи', 'задач') + ' — хороший темп'
+  };
+  if (plansWithDate === plansTotal && plansTotal > 0) return {
+    emoji: '👍', tone: 'positive',
+    title: 'Всё по плану',
+    text: 'Задачи есть, сроки указаны — отчёт готов к отправке'
+  };
+  return {
+    emoji: '📋', tone: 'neutral',
+    title: 'Отчёт заполнен',
+    text: 'Проверьте, что указали все ключевые результаты и планы'
+  };
 }
+
+function closeSummary() { document.getElementById('summaryOverlay').classList.remove('open'); }
+
 function clearAll() {
   if (!confirm('Очистить всю форму?')) return;
   document.getElementById('employee').value = '';
@@ -901,6 +670,7 @@ function clearAll() {
   updateBadge('done'); updateBadge('plan');
   weekOffset = 0; updateWeek(); updateTitle();
 }
+
 function toast(msg) {
   document.getElementById('toastText').textContent = msg;
   var t = document.getElementById('toast');
@@ -908,6 +678,102 @@ function toast(msg) {
   setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
+// ── INLINE VALIDATION ──
+function validateIncField(field) {
+  var row = field.closest('[class^="inc-row"]');
+  if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
+    row.nextElementSibling.remove();
+  }
+  field.classList.remove('has-warning');
+
+  var text = field.value.trim();
+  if (!text) return;
+
+  var lower = text.toLowerCase();
+  var words = lower.split(/\s+/);
+  var message = '';
+
+  // Check which block
+  var inDone = false;
+  var blockCard = field.closest('.block-card') || field.closest('[data-block]');
+  if (blockCard) {
+    var db = blockCard.getAttribute('data-block');
+    if (db === 'done') inDone = true;
+    if (!db) {
+      var lbl = blockCard.querySelector('.block-label');
+      if (lbl && lbl.textContent.indexOf('сделано') !== -1) inDone = true;
+    }
+  }
+
+  // Process words
+  for (var i = 0; i < PROCESS_WORDS.length; i++) {
+    if (lower.indexOf(PROCESS_WORDS[i]) !== -1) {
+      message = inDone
+        ? 'Похоже на процесс, а не результат — опишите, что получилось в итоге'
+        : 'Похоже на процесс, а не результат — опишите, какой будет результат';
+      break;
+    }
+  }
+
+  // Too short
+  if (!message && words.length < 4) {
+    message = 'Добавьте конкретики — что именно, для какого сценария, какой результат';
+  }
+
+  // Perfective verb check (only for done)
+  if (!message && inDone && words.length >= 3) {
+    var firstWord = words[0].replace(/[^а-яё]/g, '');
+    if (!PERFECTIVE_CHECK.test(firstWord)) {
+      message = 'Начните с глагола действия: «Спроектировал…», «Подготовил…», «Провёл…»';
+    }
+  }
+
+  if (message && row && row.parentElement) {
+    field.classList.add('has-warning');
+    var hint = document.createElement('div');
+    hint.className = 'inc-hint';
+    hint.innerHTML = '<span class="hint-icon">⚠️</span>' + message;
+    row.parentElement.insertBefore(hint, row.nextSibling);
+  }
+}
+
+document.addEventListener('focusout', function(e) {
+  if (e.target.classList.contains('inc-desc')) {
+    setTimeout(function() { validateIncField(e.target); }, 100);
+    // Also check sibling date field
+    var row = e.target.closest('[class^="inc-row"]');
+    if (row) {
+      var dateEl = row.querySelector('.inc-date');
+      if (dateEl && e.target.value.trim() && !dateEl.value) {
+        dateEl.classList.add('empty-warning');
+      }
+    }
+  }
+  if (e.target.classList.contains('inc-date')) {
+    var row = e.target.closest('[class^="inc-row"]');
+    var desc = row ? row.querySelector('.inc-desc') : null;
+    if (desc && desc.value.trim() && !e.target.value) {
+      e.target.classList.add('empty-warning');
+    } else {
+      e.target.classList.remove('empty-warning');
+    }
+  }
+});
+
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('inc-desc')) {
+    e.target.classList.remove('has-warning');
+    var row = e.target.closest('[class^="inc-row"]');
+    if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
+      row.nextElementSibling.remove();
+    }
+  }
+  if (e.target.classList.contains('inc-date')) {
+    e.target.classList.remove('empty-warning');
+  }
+});
+
+// ── TOOLTIP ──
 var floatingTip = document.getElementById('floatingTip');
 document.addEventListener('mouseover', function(e) {
   var icon = e.target.closest('.tip-icon');
@@ -935,76 +801,7 @@ document.addEventListener('mouseout', function(e) {
   if (e.target.closest('.tip-icon')) floatingTip.style.display = 'none';
 });
 
-// ── INLINE VALIDATION ──
-var PROCESS_WORDS = ['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','переписывался','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
-
-var PERFECTIVE_CHECK = /[а-яё]л[аио]?$/; // past tense: -л, -ла, -ли, -ло
-
-function validateIncField(field) {
-  var row = field.closest('[class^="inc-row"]');
-  if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
-    row.nextElementSibling.remove();
-  }
-  field.classList.remove('has-warning');
-
-  var text = field.value.trim();
-  if (!text) return;
-
-  var lower = text.toLowerCase();
-  var words = lower.split(/\s+/);
-  var message = '';
-
-  for (var i = 0; i < PROCESS_WORDS.length; i++) {
-    if (lower.indexOf(PROCESS_WORDS[i]) !== -1) {
-      message = 'Похоже на процесс, а не результат — опишите, что получилось в итоге';
-      break;
-    }
-  }
-
-  if (!message && words.length < 4) {
-    message = 'Добавьте конкретики — что именно, для какого сценария, какой результат';
-  }
-
-  if (!message) {
-    var inDone = false;
-    var blockCard = field.closest('.block-card');
-    if (blockCard) {
-      var lbl = blockCard.querySelector('.block-label');
-      if (lbl && lbl.textContent.indexOf('сделано') !== -1) inDone = true;
-    }
-    if (inDone && words.length >= 3) {
-      var firstWord = words[0].replace(/[^а-яё]/g, '');
-      if (!PERFECTIVE_CHECK.test(firstWord)) {
-        message = 'Начните с глагола действия: «Спроектировал…», «Подготовил…», «Провёл…»';
-      }
-    }
-  }
-
-  if (message && row && row.parentElement) {
-    field.classList.add('has-warning');
-    var hint = document.createElement('div');
-    hint.className = 'inc-hint';
-    hint.innerHTML = '<span class="hint-icon">⚠️</span>' + message;
-    row.parentElement.insertBefore(hint, row.nextSibling);
-  }
-}
-
-document.addEventListener('focusout', function(e) {
-  if (e.target.classList.contains('inc-desc')) {
-    setTimeout(function() { validateIncField(e.target); }, 100);
-  }
-});
-
-document.addEventListener('input', function(e) {
-  if (e.target.classList.contains('inc-desc')) {
-    e.target.classList.remove('has-warning');
-    var row = e.target.closest('[class^="inc-row"]');
-    if (row && row.nextElementSibling && row.nextElementSibling.classList.contains('inc-hint')) {
-      row.nextElementSibling.remove();
-    }
-  }
-});
-
+// ── INIT ──
 updateWeek();
 addProduct('done', true);
 addProduct('plan', true);
