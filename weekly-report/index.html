@@ -111,8 +111,9 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .ef-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
 .ef-opt-tag{font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-disabled);background:var(--bg);padding:1px 7px;border-radius:999px}
 .ef-hint{font-size:12px;color:var(--text-secondary);font-style:italic;line-height:1.5;margin-top:-2px}
-.ef-input{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:8px 12px;outline:none;width:100%;transition:border-color .18s;height:36px}
+.ef-input{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:8px 12px;outline:none;width:100%;transition:border-color .18s,height .18s,background .18s;height:36px}
 .ef-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
+.ef-input.required-missing{border-color:var(--warning-accent);box-shadow:0 0 0 3px rgba(255,159,10,.1);background:var(--warning-bg)}
 textarea.ef-input{height:64px;resize:none;padding-top:8px}
 .ef-select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:8px 34px 8px 12px;outline:none;cursor:pointer;-webkit-appearance:none;width:100%;height:40px;transition:border-color .18s}
 .ef-select:hover,.ef-select:focus{border-color:var(--green)}
@@ -191,7 +192,7 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
   <span class="topbar-title">Еженедельный отчёт</span>
 </nav>
 <div class="page">
-  <div class="page-header"><h1 id="pageTitle">Новый отчёт</h1><p>Заполните форму — готовый отчёт можно скопировать или отправить по почте</p></div>
+  <div class="page-header"><h1 id="pageTitle">Новый отчёт</h1><p>Заполните форму — готовый отчёт можно скопировать в буфер обмена</p></div>
   <div class="card">
     <div class="card-title"><div class="icon-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>Параметры отчёта</div>
     <div class="meta-row">
@@ -206,7 +207,7 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
         <div class="hint-example"><span class="icon">✅</span> Спроектировали карту клиентского пути для онбординга ВАТС</div>
         <div class="hint-example"><span class="icon">✅</span> Провели UX-аудит ЛК — выявили 12 проблемных мест</div>
         <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Провели встречу — это процесс, не результат</span></div>
-        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на структурированный блок эффекта с типом, описанием, масштабом и оцифровкой.</div>
+        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.</div>
       </div>
     </div>
     <div class="items-list" id="doneList"></div>
@@ -219,7 +220,7 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
         <div class="hint-example"><span class="icon">✅</span> Подготовить CJM для сценария активации</div>
         <div class="hint-example"><span class="icon">✅</span> Финализировать прототип и передать в разработку</div>
         <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Созвониться с командой — это процесс, не план</span></div>
-        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на блок ожидаемого эффекта: тип, описание, масштаб и ожидаемая оцифровка.</div>
+        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.</div>
       </div>
     </div>
     <div class="items-list" id="planList"></div>
@@ -255,7 +256,7 @@ var SVG_X='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="c
 var PROCESS_WORDS=['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
 var PERFECTIVE_CHECK=/[а-яё]л[аио]?$/;
 var TASK_GLOSSARY='<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы задач</div><div style="display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.45"><div><b style="color:#fff">Run-задача</b> <span style="opacity:.7">— поддержка и развитие текущих процессов</span></div><div><b style="color:#fff">Change-задача</b> <span style="opacity:.7">— новая инициатива или изменение</span></div></div>';
-var KEY_TIP='Включите — инкременты заменятся на структурированный блок эффекта: тип, описание, масштаб, оцифровка.';
+var KEY_TIP='Включите — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.';
 
 /* === EFFECT CONFIG === */
 var EF_TYPES=[
@@ -266,27 +267,24 @@ var EF_TYPES=[
   {id:'result',icon:'\u{1F4C8}',done:'Получили результат',plan:'Ожидаем результат'},
   {id:'influence',icon:'\u{1F3AF}',done:'Повлияли на решение',plan:'Планируем повлиять на решение'}
 ];
-var EF_HINTS_DONE={
-  problem:'Сколько проблем нашли, какой критичности, в каком сценарии',
-  design:'Что создали, сколько шагов/сценариев покрыли или оптимизировали',
-  insight:'Что узнали, какую гипотезу подтвердили или опровергли',
-  prevented:'Что нашли до запуска, скольких клиентов потенциально затрагивало',
-  result:'Какая метрика изменилась, было \u2192 стало, на каком объёме',
-  influence:'Чьё решение изменили, что именно сдвинулось, какой масштаб'
+var EF_DESC_PLACEHOLDERS={
+  done:{
+    problem:'Опишите, что именно обнаружили и в каком сценарии',
+    design:'Опишите, что именно спроектировали и для какого сценария',
+    insight:'Опишите, какой вывод получили и как он влияет на решение',
+    prevented:'Опишите, какую ошибку удалось предотвратить',
+    result:'Опишите, какой результат получили',
+    influence:'Опишите, на какое решение удалось повлиять'
+  },
+  plan:{
+    problem:'Опишите, какую проблему хотите выявить и где именно',
+    design:'Опишите, что планируете спроектировать',
+    insight:'Опишите, какой вывод хотите получить',
+    prevented:'Опишите, что хотите проверить до запуска',
+    result:'Опишите, какого результата хотите добиться',
+    influence:'Опишите, на какое решение планируете повлиять'
+  }
 };
-var EF_HINTS_PLAN={
-  problem:'Какие сценарии планируете проверить, где ожидаете проблемы',
-  design:'Что планируете спроектировать, какие сценарии покрыть',
-  insight:'Какую гипотезу хотите проверить, что планируете исследовать',
-  prevented:'Какие запуски планируете проревьюить, что проверить',
-  result:'Какую метрику ожидаете улучшить, целевое значение',
-  influence:'На какое решение планируете повлиять, какой результат ожидаете'
-};
-var SCALE_OPTIONS=[
-  {value:'point',label:'Точечный — один сценарий или touchpoint'},
-  {value:'product',label:'Продуктовый — весь продукт или сегмент'},
-  {value:'cross',label:'Кросс-продуктовый — несколько продуктов или платформа'}
-];
 
 /* === HELPERS === */
 function getMonday(o){var n=new Date(),d=n.getDay()||7;var m=new Date(n);m.setDate(n.getDate()-d+1+o*7);return m}
@@ -300,6 +298,22 @@ function updateBadge(bl){var n=document.getElementById(bl+'List').querySelectorA
 function toggleHint(b,c){document.getElementById(b).classList.toggle('open');document.getElementById(c).classList.toggle('open')}
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
 function formatDate(ds){if(!ds)return'';var d=new Date(ds);return'до '+d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}
+function getDescPlaceholder(block,cat){var map=EF_DESC_PLACEHOLDERS[block]||{};return map[cat]||'Кратко опишите результат ключевой задачи'}
+function getMissingKeyQuantInputs(){
+  var out=[];
+  document.querySelectorAll('.product-item .ef-quant-input').forEach(function(input){
+    var item=input.closest('.product-item');
+    if(item&&item.classList.contains('is-key')&&!input.value.trim())out.push(input);
+  });
+  return out;
+}
+function updateKeyQuantWarnings(){
+  document.querySelectorAll('.product-item .ef-quant-input').forEach(function(input){
+    var item=input.closest('.product-item');
+    var missing=item&&item.classList.contains('is-key')&&!input.value.trim();
+    input.classList.toggle('required-missing',!!missing);
+  });
+}
 
 /* === TOGGLE KEY === */
 function toggleKey(cb,block){
@@ -321,6 +335,7 @@ function toggleKey(cb,block){
     item.querySelector('.key-label').classList.remove('active');
     incZone.classList.remove('hidden');
     efZone.classList.remove('open');
+    item.querySelector('.ef-quant-input').classList.remove('required-missing');
   }
 }
 
@@ -328,29 +343,10 @@ function toggleKey(cb,block){
 function onEffectTypeChange(sel){
   var zone=sel.closest('.effect-zone');
   var block=sel.closest('[data-block]');
-  var isDone=block&&block.getAttribute('data-block')==='done';
-  var cat=sel.value;
-  var descGroup=zone.querySelector('.ef-desc-group');
   var descInput=zone.querySelector('.ef-desc-input');
-  var descHint=zone.querySelector('.ef-desc-hint');
-  var scaleGroup=zone.querySelector('.ef-scale-group');
-  var quantGroup=zone.querySelector('.ef-quant-group');
-  if(!cat){descGroup.classList.add('hidden');scaleGroup.classList.add('hidden');quantGroup.classList.add('hidden');return}
-  var hints=isDone?EF_HINTS_DONE:EF_HINTS_PLAN;
-  descInput.placeholder=hints[cat]||'';
-  descHint.textContent=hints[cat]||'';
-  descGroup.classList.remove('hidden');
+  var blockName=block?block.getAttribute('data-block'):'done';
+  descInput.placeholder=getDescPlaceholder(blockName,sel.value);
   descInput.focus();
-  scaleGroup.classList.add('hidden');
-  quantGroup.classList.add('hidden');
-}
-
-/* === PROGRESSIVE REVEAL === */
-function revealNext(input,nextSelector){
-  var zone=input.closest('.effect-zone');
-  if(!zone)return;
-  var next=zone.querySelector(nextSelector);
-  if(next&&input.value.trim())next.classList.remove('hidden');
 }
 
 /* === INCREMENTS === */
@@ -379,13 +375,11 @@ function addProduct(block,skip){
   if(block==='plan')rowHtml+='<input type="date" class="inc-date">';
   rowHtml+='<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">'+SVG_X+'</button></div>';
 
-  var efLabel=block==='done'?'Тип эффекта':'Ожидаемый эффект';
-  var efOpts='<option value="">Выберите тип эффекта…</option>';
+  var efLabel='Тип результата';
+  var efOpts='<option value="">Выберите тип результата…</option>';
   EF_TYPES.forEach(function(t){efOpts+='<option value="'+t.id+'">'+t.icon+' '+(block==='done'?t.done:t.plan)+'</option>'});
-  var scaleOpts='<option value="">Не указан</option>';
-  SCALE_OPTIONS.forEach(function(s){scaleOpts+='<option value="'+s.value+'">'+s.label+'</option>'});
-  var quantPh=block==='done'?'Например: «12 проблем», «с 7 до 4 шагов», «конверсия +6%»':'Например: «охват ~5 000 клиентов», «цель: конверсия 18%»';
-  var quantHint=block==='done'?'Любые цифры, которые показывают масштаб или результат':'Цифры, которые покажут ожидаемый результат';
+  var descPh='Кратко опишите результат ключевой задачи';
+  var quantPh=block==='done'?'Например: «12 проблем», «с 7 до 4 шагов», «конверсия +6%»':'Например: «охват 5 000 клиентов», «цель: сократить путь с 7 до 4 шагов»';
 
   var item=document.createElement('div');
   item.className='product-item';
@@ -396,9 +390,8 @@ function addProduct(block,skip){
     '<div class="increments-zone">'+lblHtml+rowHtml+'<button class="inc-add" onclick="addIncRow(this.closest(\'.increments-zone\'),\''+block+'\')">'+SVG_PLUS+' Ещё инкремент</button></div>'+
     '<div class="effect-zone">'+
       '<div class="ef-group"><div class="ef-label">'+efLabel+'</div><select class="ef-select ef-type-select" onchange="onEffectTypeChange(this)">'+efOpts+'</select></div>'+
-      '<div class="ef-group ef-desc-group hidden"><div class="ef-label">Описание эффекта</div><div class="ef-hint ef-desc-hint"></div><textarea class="ef-input ef-desc-input" onblur="revealNext(this,\'.ef-scale-group\')"></textarea></div>'+
-      '<div class="ef-group ef-scale-group hidden"><div class="ef-label">Масштаб <span class="ef-opt-tag">необязательно</span></div><div class="ef-hint">Помогает оценить вес эффекта при агрегации (по модели Verizon)</div><select class="ef-select ef-scale-select" onchange="revealNext(this,\'.ef-quant-group\')">'+scaleOpts+'</select></div>'+
-      '<div class="ef-group ef-quant-group hidden"><div class="ef-label">Оцифровка <span class="ef-opt-tag">необязательно</span></div><div class="ef-hint">'+quantHint+'</div><input type="text" class="ef-input ef-quant-input" placeholder="'+quantPh+'"></div>'+
+      '<div class="ef-group ef-desc-group"><div class="ef-label">Описание результата</div><textarea class="ef-input ef-desc-input" placeholder="'+descPh+'"></textarea></div>'+
+      '<div class="ef-group ef-quant-group"><div class="ef-label">Оцифровка эффекта <span class="ef-opt-tag">обязательно</span></div><input type="text" class="ef-input ef-quant-input" placeholder="'+quantPh+'"></div>'+
     '</div>';
 
   list.appendChild(item);
@@ -420,15 +413,16 @@ function getProducts(block){
     if(isKey){
       var zone=item.querySelector('.effect-zone');
       var cat=zone.querySelector('.ef-type-select').value;
-      if(cat){
-        var typeObj=EF_TYPES.find(function(t){return t.id===cat});
+      var desc=zone.querySelector('.ef-desc-input').value.trim();
+      var quant=zone.querySelector('.ef-quant-input').value.trim();
+      if(cat||desc||quant){
+        var typeObj=cat?EF_TYPES.find(function(t){return t.id===cat}):null;
         effectData={
           cat:cat,
           icon:typeObj?typeObj.icon:'',
           label:typeObj?(block==='done'?typeObj.done:typeObj.plan):'',
-          desc:zone.querySelector('.ef-desc-input').value.trim(),
-          scale:zone.querySelector('.ef-scale-select').value,
-          quant:zone.querySelector('.ef-quant-input').value.trim()
+          desc:desc,
+          quant:quant
         };
       }
     }
@@ -446,7 +440,6 @@ function getProducts(block){
   return out;
 }
 function getKeyTask(ps){for(var i=0;i<ps.length;i++){if(ps[i].isKey)return ps[i]}return null}
-function scaleLabel(v){var m={point:'Точечный',product:'Продуктовый',cross:'Кросс-продуктовый'};return m[v]||''}
 
 /* === BUILD REPORT TEXT === */
 function buildReport(){
@@ -457,9 +450,9 @@ function buildReport(){
   var keyDone=getKeyTask(done),keyPlan=getKeyTask(plan);
   var s='📋 ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ\n─────────────────────────────────────\nСотрудник : '+emp+'\nДата      : '+date+'\n─────────────────────────────────────\n\n';
   function fmtEffect(ed,prefix){
-    var r=prefix+ed.icon+' '+ed.label+'\n';
+    var head=(ed.icon?(ed.icon+' '):'')+(ed.label||'');
+    var r=head.trim()?prefix+head.trim()+'\n':'';
     if(ed.desc)r+=prefix+'   '+ed.desc+'\n';
-    if(ed.scale)r+=prefix+'   Масштаб: '+scaleLabel(ed.scale)+'\n';
     if(ed.quant)r+=prefix+'   📊 '+ed.quant+'\n';
     return r;
   }
@@ -507,9 +500,8 @@ function buildReportHTML(){
   h+='<hr style="border:none;border-top:1px solid #E6E9EE;margin:0 0 16px">';
   function fmtEffectHTML(ed){
     var r='<div style="margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:8px;font-size:13px">';
-    r+='<b>'+ed.icon+' '+esc(ed.label)+'</b>';
+    if(ed.icon||ed.label)r+='<b>'+(ed.icon?ed.icon+' ':'')+esc(ed.label||'')+'</b>';
     if(ed.desc)r+='<div style="margin-top:4px">'+esc(ed.desc)+'</div>';
-    if(ed.scale)r+='<div style="'+g+';font-size:12px;margin-top:2px">Масштаб: '+esc(scaleLabel(ed.scale))+'</div>';
     if(ed.quant)r+='<div style="color:#00B956;font-weight:600;font-size:12px;margin-top:3px">📊 '+esc(ed.quant)+'</div>';
     r+='</div>';return r;
   }
@@ -536,6 +528,14 @@ function buildReportHTML(){
 
 /* === COPY === */
 function copyReport(){
+  updateKeyQuantWarnings();
+  var missing=getMissingKeyQuantInputs();
+  if(missing.length){
+    closeSummary();
+    setTimeout(function(){missing[0].focus()},80);
+    toast('Заполните оцифровку у ключевых задач');
+    return;
+  }
   var html=buildReportHTML(),plain=buildReport();
   var tmp=document.createElement('div');tmp.innerHTML=html;tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
   document.body.appendChild(tmp);
@@ -548,6 +548,7 @@ function copyReport(){
 /* === SUMMARY === */
 function openSummary(){
   document.querySelectorAll('.inc-date').forEach(function(el){var row=el.closest('[class^="inc-row"]');var desc=row?row.querySelector('.inc-desc'):null;if(desc&&desc.value.trim()&&!el.value)el.classList.add('empty-warning');else el.classList.remove('empty-warning')});
+  updateKeyQuantWarnings();
   var done=getProducts('done'),plan=getProducts('plan');
   var allP={},totalDone=0,totalPlan=0,runC=0,changeC=0,plansDate=0,plansTotal=0;
   done.forEach(function(p){allP[p.product]=true;totalDone+=p.incs.length;if(p.isKey)totalDone++;if(p.taskType==='Run-задача')runC++;else changeC++});
@@ -561,14 +562,12 @@ function openSummary(){
     fbH+='<div class="summary-key-card"><div class="summary-key-label">⭐ Ключевая задача</div><div class="summary-key-title">'+esc(keyDone.product)+'</div><div class="summary-key-sub">'+esc(keyDone.taskType)+'</div>';
     if(keyDone.effectData){
       var ed=keyDone.effectData;
-      fbH+='<div class="summary-key-effect">'+ed.icon+' '+esc(ed.label);
-      if(ed.desc)fbH+=': '+esc(ed.desc);
-      if(ed.scale)fbH+=' <span style="color:var(--text-secondary);font-size:11px">('+esc(scaleLabel(ed.scale))+')</span>';
-      fbH+='</div>';
+      if(ed.label||ed.desc)fbH+='<div class="summary-key-effect">'+(ed.label?(ed.icon?ed.icon+' ':'')+esc(ed.label):'Тип результата не выбран')+(ed.desc?': '+esc(ed.desc):'')+'</div>';
       if(ed.quant)fbH+='<div class="summary-key-quant">📊 '+esc(ed.quant)+'</div>';
-      if(!ed.quant)fbH+='<div class="summary-soft-warn">💡 Добавьте цифры к эффекту — это усилит видимость результата</div>';
+      if(!ed.label)fbH+='<div class="summary-soft-warn">⚠️ Выберите тип результата для ключевой задачи</div>';
+      if(!ed.quant)fbH+='<div class="summary-soft-warn">⚠️ Оцифровка обязательна для ключевой задачи</div>';
     }else{
-      fbH+='<div class="summary-soft-warn">⚠️ Тип эффекта не выбран — укажите, какую ценность создала ключевая задача</div>';
+      fbH+='<div class="summary-soft-warn">⚠️ Заполните тип результата и оцифровку для ключевой задачи</div>';
     }
     fbH+='</div>';
   }else if(done.length>0){fbH+='<div class="summary-warn"><span style="font-size:18px">⚠️</span>Отметьте ключевую задачу в блоке «Сделано»</div>'}
@@ -576,12 +575,12 @@ function openSummary(){
     fbH+='<div class="summary-key-card"><div class="summary-key-label">⭐ Ключевой план</div><div class="summary-key-title">'+esc(keyPlan.product)+'</div><div class="summary-key-sub">'+esc(keyPlan.taskType)+'</div>';
     if(keyPlan.effectData){
       var ep=keyPlan.effectData;
-      fbH+='<div class="summary-key-effect">'+ep.icon+' '+esc(ep.label);
-      if(ep.desc)fbH+=': '+esc(ep.desc);
-      fbH+='</div>';
+      if(ep.label||ep.desc)fbH+='<div class="summary-key-effect">'+(ep.label?(ep.icon?ep.icon+' ':'')+esc(ep.label):'Тип результата не выбран')+(ep.desc?': '+esc(ep.desc):'')+'</div>';
       if(ep.quant)fbH+='<div class="summary-key-quant">📊 '+esc(ep.quant)+'</div>';
+      if(!ep.label)fbH+='<div class="summary-soft-warn">⚠️ Выберите тип результата для ключевого плана</div>';
+      if(!ep.quant)fbH+='<div class="summary-soft-warn">⚠️ Оцифровка обязательна для ключевого плана</div>';
     }else{
-      fbH+='<div class="summary-soft-warn">⚠️ Укажите ожидаемый эффект для ключевого плана</div>';
+      fbH+='<div class="summary-soft-warn">⚠️ Заполните тип результата и оцифровку для ключевого плана</div>';
     }
     fbH+='</div>';
   }else if(plan.length>0){fbH+='<div class="summary-warn"><span style="font-size:18px">⚠️</span>Отметьте ключевую задачу в блоке «Планы»</div>'}
@@ -593,6 +592,7 @@ function openSummary(){
   document.getElementById('summaryStats').innerHTML=sH;
   var hints=[];
   if(plansTotal>0&&plansDate<plansTotal){var m2=plansTotal-plansDate;hints.push({icon:'📅',text:decline(m2,'план без срока','плана без срока','планов без срока')+' — укажите дедлайны'})}
+  if(getMissingKeyQuantInputs().length>0)hints.push({icon:'📊',text:'Для ключевых задач обязательна оцифровка результата'});
   if(pCount===1&&totalDone>0)hints.push({icon:'📌',text:'Только один продукт — если работали с другими, добавьте их'});
   var hasIssues=false;
   done.concat(plan).forEach(function(p){p.incs.forEach(function(i){var lo=i.desc.toLowerCase();if(lo.split(/\s+/).length<4)hasIssues=true;for(var j=0;j<PROCESS_WORDS.length;j++){if(lo.indexOf(PROCESS_WORDS[j])!==-1){hasIssues=true;break}}})});
@@ -621,15 +621,11 @@ function toast(msg){document.getElementById('toastText').textContent=msg;var t=d
 document.addEventListener('focusout',function(e){
   if(e.target.classList.contains('inc-desc')){setTimeout(function(){validateIncField(e.target)},100);var row=e.target.closest('[class^="inc-row"]');if(row){var dt=row.querySelector('.inc-date');if(dt&&e.target.value.trim()&&!dt.value)dt.classList.add('empty-warning')}}
   if(e.target.classList.contains('inc-date')){var r2=e.target.closest('[class^="inc-row"]');var d2=r2?r2.querySelector('.inc-desc'):null;if(d2&&d2.value.trim()&&!e.target.value)e.target.classList.add('empty-warning');else e.target.classList.remove('empty-warning')}
-  /* progressive reveal for effect fields */
-  if(e.target.classList.contains('ef-desc-input')){setTimeout(function(){revealNext(e.target,'.ef-scale-group')},80)}
 });
 document.addEventListener('input',function(e){
   if(e.target.classList.contains('inc-desc')){e.target.classList.remove('has-warning');var row=e.target.closest('[class^="inc-row"]');if(row&&row.nextElementSibling&&row.nextElementSibling.classList.contains('inc-hint'))row.nextElementSibling.remove()}
   if(e.target.classList.contains('inc-date'))e.target.classList.remove('empty-warning');
-});
-document.addEventListener('change',function(e){
-  if(e.target.classList.contains('ef-scale-select')){setTimeout(function(){revealNext(e.target,'.ef-quant-group')},80)}
+  if(e.target.classList.contains('ef-quant-input'))e.target.classList.remove('required-missing');
 });
 function validateIncField(f){
   var row=f.closest('[class^="inc-row"]');
