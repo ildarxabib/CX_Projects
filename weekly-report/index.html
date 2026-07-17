@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--green:#00B956;--green-hover:#00A94F;--green-pressed:#009447;--bg:#F2F4F7;--card:#FFFFFF;--surface:#F7F8FA;--border:#D2D5DA;--border-light:#E6E9EE;--text-primary:#2B2D33;--text-secondary:#8F96A4;--text-disabled:#A8AFB9;--success-bg:#EAFBF1;--info-bg:#DDF5FF;--info-accent:#00B5FF;--error-bg:#FFF0F0;--error-accent:#FF4D4F;--warning-bg:#FFF6E5;--warning-accent:#FF9F0A;--key-bg:#FFFBEA;--key-border:rgba(255,193,7,.4)}
+:root{--green:#00B956;--green-hover:#00A94F;--green-pressed:#009447;--bg:#F2F4F7;--card:#FFFFFF;--surface:#F7F8FA;--border:#D2D5DA;--border-light:#E6E9EE;--text-primary:#2B2D33;--text-secondary:#8F96A4;--text-disabled:#A8AFB9;--placeholder:#BEC5CF;--success-bg:#EAFBF1;--info-bg:#DDF5FF;--info-accent:#00B5FF;--error-bg:#FFF0F0;--error-accent:#FF4D4F;--warning-bg:#FFF6E5;--warning-accent:#FF9F0A;--key-bg:#FFFBEA;--key-border:rgba(255,193,7,.4)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-primary);font-size:15px;line-height:1.5;min-height:100vh}
 .topbar{background:#fff;border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;padding:0 40px;gap:12px;position:sticky;top:0;z-index:50}
@@ -26,12 +26,11 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .field{display:flex;flex-direction:column;gap:6px}
 .field-label{font-size:13px;font-weight:500;color:var(--text-secondary)}
 .field-input{background:#fff;border:1.5px solid var(--border);border-radius:16px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:15px;padding:11px 16px;outline:none;width:100%;transition:border-color .18s,box-shadow .18s}
-.field-input::placeholder{color:var(--text-disabled)}
+.field-input::placeholder{color:var(--placeholder)}
 .field-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.1)}
-.week-nav{display:flex;align-items:center;gap:6px}
-.week-arrow{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;flex-shrink:0;transition:border-color .18s,color .18s}
-.week-arrow:hover{border-color:var(--green);color:var(--green)}
-.week-value{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:16px;font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:500;padding:10px 14px;text-align:center;white-space:nowrap;user-select:none}
+.week-nav{display:flex}
+.week-date-input{padding-right:44px;-webkit-appearance:none}
+.week-date-input::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.5}
 .hint-block{margin:16px 20px 12px;padding:14px 16px;background:var(--info-bg);border:1px solid rgba(0,181,255,.15);border-radius:14px;font-size:13px;line-height:1.7}
 .hint-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;gap:8px}
 .hint-toggle-left{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;color:var(--info-accent)}
@@ -41,12 +40,17 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .hint-body.open{display:block}
 .hint-example{display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;font-size:12.5px;line-height:1.6}
 .hint-example .icon{font-size:12px;flex-shrink:0;margin-top:2px}
-.hint-rule{margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,181,255,.15);font-size:12px;color:var(--text-secondary);font-style:italic}
+.hint-example.positive .icon{color:var(--green)}
+.hint-example.negative{color:var(--text-secondary)}
+.hint-example.negative .icon{color:var(--error-accent)}
+.hint-footer{margin-top:10px;padding-top:12px;border-top:1px solid rgba(0,181,255,.18);font-size:13px;line-height:1.55;color:var(--text-secondary);font-style:italic}
 .block-card{background:var(--card);border:1.5px solid var(--border-light);border-radius:24px;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:box-shadow .2s;display:flex;flex-direction:column;margin-bottom:16px}
 .block-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08)}
 .block-head{padding:20px 24px 16px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
 .block-head-left{display:flex;align-items:center;gap:10px}
+.block-head-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .block-label{font-size:15px;font-weight:600}
+.block-meta{font-size:12px;font-weight:500;color:var(--text-secondary)}
 .block-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--text-secondary)}
 .block-badge.done-items{background:var(--success-bg);color:var(--green)}
 .block-badge.plan-items{background:var(--info-bg);color:var(--info-accent)}
@@ -57,7 +61,7 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .add-row{padding:0 20px 20px}
 .product-item{background:var(--surface);border:1.5px solid var(--border-light);border-radius:16px;padding:16px;position:relative;animation:slideIn .2s ease;transition:border-color .2s,background .2s}
 .product-item:hover{border-color:var(--border)}
-.product-item.is-key{border-color:var(--key-border);background:var(--key-bg)}
+.product-item.is-key{border-color:rgba(0,185,86,.28);box-shadow:inset 0 0 0 1px rgba(0,185,86,.08)}
 @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .product-del{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:6px;border:1.5px solid transparent;background:transparent;color:var(--text-disabled);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,color .15s}
 .product-del:hover{background:var(--error-bg);border-color:rgba(255,77,79,.2);color:var(--error-accent)}
@@ -65,37 +69,38 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .product-col{display:flex;flex-direction:column;gap:4px}
 .product-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:5px}
 .product-input{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:7px 12px;outline:none;width:100%;height:36px;transition:border-color .18s}
-.product-input::placeholder{color:var(--text-disabled)}
+.product-input::placeholder{color:var(--placeholder)}
 .product-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
 .product-select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:7px 30px 7px 12px;outline:none;cursor:pointer;-webkit-appearance:none;width:100%;height:36px;transition:border-color .18s}
 .product-select:hover,.product-select:focus{border-color:var(--green)}
-.key-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.key-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .key-switch{position:relative;width:36px;height:20px;flex-shrink:0;cursor:pointer}
 .key-switch input{opacity:0;width:0;height:0;position:absolute}
 .key-slider{position:absolute;inset:0;background:var(--border);border-radius:999px;transition:background .2s}
 .key-slider::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.15)}
-.key-switch input:checked+.key-slider{background:#F5C518}
+.key-switch input:checked+.key-slider{background:rgba(0,185,86,.45)}
 .key-switch input:checked+.key-slider::after{transform:translateX(16px)}
 .key-label{font-size:12px;font-weight:600;color:var(--text-secondary);display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;transition:color .18s}
 .key-label.active{color:var(--text-primary)}
-.key-label .star{font-size:14px;transition:opacity .18s;opacity:.4}
-.key-label.active .star{opacity:1}
+.key-label .star{font-size:14px;transition:opacity .18s;opacity:.55}
+.key-label.active .star{opacity:1;color:var(--green)}
 /* INCREMENTS — standard mode */
 .increments-zone{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--border-light);padding-top:12px}
 .increments-zone.hidden{display:none}
+.product-item.is-key .increments-zone{display:none}
 .inc-labels-done,.inc-row-done{display:grid;grid-template-columns:1fr 24px;gap:8px}
 .inc-labels-plan,.inc-row-plan{display:grid;grid-template-columns:1fr 110px 24px;gap:8px}
 .inc-labels-done,.inc-labels-plan{margin-bottom:4px}
 .inc-labels-done span,.inc-labels-plan span{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px}
 .inc-desc{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:7px 10px;outline:none;height:36px;resize:none;overflow:hidden;width:100%;transition:border-color .18s}
-.inc-desc::placeholder{color:var(--text-disabled)}
+.inc-desc::placeholder{color:var(--placeholder)}
 .inc-desc:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
 .inc-desc.has-warning{border-color:var(--warning-accent)}
 .inc-hint{font-size:12px;line-height:1.5;color:var(--warning-accent);padding:4px 0 2px;display:flex;align-items:flex-start;gap:5px;animation:fadeHint .2s ease}
 .inc-hint .hint-icon{flex-shrink:0;font-size:11px;margin-top:1px}
 @keyframes fadeHint{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 .inc-date{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:7px 10px;outline:none;height:36px;width:100%;transition:border-color .18s;-webkit-appearance:none}
-.inc-date:invalid{color:var(--text-disabled)}
+.inc-date:invalid{color:var(--placeholder)}
 .inc-date:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
 .inc-date::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.5}
 .inc-date.empty-warning{border-color:var(--warning-accent);background:var(--warning-bg)}
@@ -104,24 +109,50 @@ body{font-family:'Inter',Arial,sans-serif;background:var(--bg);color:var(--text-
 .inc-add{display:flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--green);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;cursor:pointer;padding:4px 0;transition:opacity .18s}
 .inc-add:hover{opacity:.7}
 /* EFFECT ZONE — key task mode */
-.effect-zone{display:none;border-top:1px dashed var(--key-border);padding-top:14px;margin-top:4px;animation:slideIn .2s ease}
-.effect-zone.open{display:flex;flex-direction:column;gap:14px}
-.ef-group{display:flex;flex-direction:column;gap:5px}
+.effect-zone{display:none;border-top:1px solid var(--border-light);padding-top:14px;margin-top:2px;animation:slideIn .2s ease}
+.effect-zone.open{display:flex;flex-direction:column;gap:20px}
+.ef-group{display:flex;flex-direction:column;gap:8px}
 .ef-group.hidden{display:none}
-.ef-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.ef-label{font-size:12px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:6px}
 .ef-opt-tag{font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-disabled);background:var(--bg);padding:1px 7px;border-radius:999px}
-.ef-hint{font-size:12px;color:var(--text-secondary);font-style:italic;line-height:1.5;margin-top:-2px}
+.ef-hint{font-size:12px;color:var(--text-secondary);line-height:1.45}
+.ef-block{background:#fff;border:1px solid var(--border-light);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.ef-block-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.ef-block-copy{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:14px}
 .ef-input{background:#fff;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;padding:8px 12px;outline:none;width:100%;transition:border-color .18s,height .18s,background .18s;height:36px}
+.ef-input::placeholder{color:var(--placeholder)}
 .ef-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08)}
 .ef-input.required-missing{border-color:var(--warning-accent);box-shadow:0 0 0 3px rgba(255,159,10,.1);background:var(--warning-bg)}
 textarea.ef-input{height:64px;resize:none;padding-top:8px}
-.ef-select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238F96A4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1.5px solid var(--border-light);border-radius:10px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:13px;font-weight:500;padding:8px 34px 8px 12px;outline:none;cursor:pointer;-webkit-appearance:none;width:100%;height:40px;transition:border-color .18s}
-.ef-select:hover,.ef-select:focus{border-color:var(--green)}
+.key-results-list{display:flex;flex-direction:column;gap:16px}
+.key-result-item{display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid var(--border-light)}
+.key-result-item:first-child{padding-top:0;border-top:none}
+.key-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.key-result-title{font-size:12px;font-weight:600;color:var(--text-primary)}
+.key-result-remove{border:none;background:transparent;color:var(--text-secondary);font-family:'Inter',Arial,sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.key-result-remove:hover{color:var(--error-accent)}
+.key-result-add{align-self:flex-start;margin-top:-4px}
+.key-result-meta{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.key-result-date-group{max-width:180px}
+.feedback-line{font-size:12px;line-height:1.45;border-radius:10px;padding:8px 10px;display:none;align-items:flex-start;gap:6px;margin-top:-4px}
+.feedback-line.show{display:flex}
+.feedback-line.warn{background:var(--warning-bg);color:var(--warning-accent)}
+.feedback-line.good{background:var(--success-bg);color:var(--green)}
+.feedback-line.neutral{background:var(--surface);color:var(--text-secondary)}
+.summary-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.summary-project-card{background:#fff;border:1px solid var(--border-light);border-radius:14px;padding:12px 14px}
+.summary-project-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.summary-project-type{font-size:12px;color:var(--text-secondary);margin-bottom:6px}
+.summary-project-text{font-size:13px;line-height:1.55}
+.summary-project-metrics{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.summary-project-metric{font-size:12px;color:var(--text-primary);padding-left:12px;position:relative}
+.summary-project-metric::before{content:'•';position:absolute;left:0;color:var(--text-secondary)}
+.summary-section-label{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:2px 0 8px}
 .add-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:1.5px dashed var(--border);border-radius:14px;color:var(--text-secondary);font-family:'Inter',Arial,sans-serif;font-size:14px;font-weight:500;padding:10px 16px;cursor:pointer;transition:border-color .18s,color .18s,background .18s}
 .add-btn:hover{border-color:var(--green);color:var(--green);background:var(--success-bg)}
 .comments-textarea{width:100%;background:var(--surface);border:1.5px solid var(--border-light);border-radius:16px;color:var(--text-primary);font-family:'Inter',Arial,sans-serif;font-size:14px;padding:12px 16px;outline:none;height:80px;resize:none;transition:border-color .18s}
 .comments-textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,185,86,.08);background:#fff}
-.comments-textarea::placeholder{color:var(--text-disabled)}
+.comments-textarea::placeholder{color:var(--placeholder)}
 .actions-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .btn-primary{background:var(--green);color:#fff;border:none;border-radius:14px;font-family:'Inter',Arial,sans-serif;font-size:15px;font-weight:600;padding:12px 28px;cursor:pointer;transition:background .18s,box-shadow .18s,transform .1s;box-shadow:0 4px 12px rgba(0,185,86,.25)}
 .btn-primary:hover{background:var(--green-hover);box-shadow:0 6px 18px rgba(0,185,86,.35);transform:translateY(-1px)}
@@ -172,15 +203,19 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
 .tip-wrap{position:relative;display:inline-flex}
-.tip-icon{width:16px;height:16px;border-radius:50%;background:var(--surface);border:1px solid var(--border-light);color:var(--text-secondary);font-size:10px;display:inline-flex;align-items:center;justify-content:center;cursor:default;font-style:normal;transition:border-color .18s,color .18s}
+.tip-icon{width:16px;height:16px;border-radius:50%;background:var(--surface);border:1px solid var(--border-light);color:var(--text-secondary);font-size:10px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-style:normal;transition:border-color .18s,color .18s}
 .tip-icon:hover{border-color:var(--green);color:var(--green)}
 @media(max-width:720px){
   .meta-row{grid-template-columns:1fr}
   .product-top{grid-template-columns:1fr}
   .inc-row-plan,.inc-labels-plan{grid-template-columns:1fr 100px 24px}
+  .key-result-head{align-items:flex-start;flex-direction:column}
+  .key-result-meta{grid-template-columns:1fr}
   .topbar{padding:0 20px}
   .page{padding:24px 16px 80px}
   .card{padding:20px}
+  .block-head{align-items:flex-start;gap:10px}
+  .block-head-meta{justify-content:flex-start}
 }
 </style>
 </head>
@@ -197,34 +232,37 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
     <div class="card-title"><div class="icon-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>Параметры отчёта</div>
     <div class="meta-row">
       <div class="field"><label class="field-label">Сотрудник</label><input class="field-input" id="employee" oninput="updateTitle()"></div>
-      <div class="field"><label class="field-label">День отчёта</label><div class="week-nav"><button class="week-arrow" onclick="changeWeek(-1)">&#8249;</button><div class="week-value" id="weekVal"></div><button class="week-arrow" onclick="changeWeek(1)">&#8250;</button></div></div>
+      <div class="field"><label class="field-label">День отчёта</label><div class="week-nav"><input type="date" class="field-input week-date-input" id="reportDay" onchange="setReportDay(this.value)"></div></div>
     </div>
   </div>
   <div class="block-card" data-block="done">
-    <div class="block-head"><div class="block-head-left"><div class="status-dot green"></div><span class="block-label">Что было сделано</span></div><span class="block-badge" id="doneBadge">0 продуктов</span></div>
+    <div class="block-head"><div class="block-head-left"><div class="status-dot green"></div><span class="block-label">Что было сделано</span></div><div class="block-head-meta"><span class="block-meta" id="doneKeyCounter">Ключевые проекты: 0 из 2</span><span class="block-badge" id="doneBadge">0 проектов</span></div></div>
     <div class="hint-block"><div class="hint-toggle" onclick="toggleHint('hintDoneBody','hintDoneChevron')"><span class="hint-toggle-left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Как формулировать</span><svg class="hint-chevron" id="hintDoneChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
       <div class="hint-body" id="hintDoneBody">
-        <div class="hint-example"><span class="icon">✅</span> Спроектировали карту клиентского пути для онбординга ВАТС</div>
-        <div class="hint-example"><span class="icon">✅</span> Провели UX-аудит ЛК — выявили 12 проблемных мест</div>
-        <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Провели встречу — это процесс, не результат</span></div>
-        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Спроектировали карту клиентского пути для онбординга ВАТС</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Подготовили прототип нового сценария оформления заказа</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Провели UX-аудит ЛК — выявили 12 проблемных мест</div>
+        <div class="hint-example negative"><span class="icon">❌</span>Провели встречу — это не инкремент</div>
+        <div class="hint-example negative"><span class="icon">❌</span>Обсудили задачу с командой — это процесс, не результат</div>
+        <div class="hint-footer">Пишите в форме совершённого действия во множественном числе. Фиксируйте результат, а не процесс.</div>
       </div>
     </div>
     <div class="items-list" id="doneList"></div>
-    <div class="add-row"><button class="add-btn" onclick="addProduct('done')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить продукт</button></div>
+    <div class="add-row"><button class="add-btn" onclick="addProduct('done')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить проект</button></div>
   </div>
   <div class="block-card" data-block="plan">
-    <div class="block-head"><div class="block-head-left"><div class="status-dot blue"></div><span class="block-label">Планы на эту неделю</span></div><span class="block-badge" id="planBadge">0 продуктов</span></div>
+    <div class="block-head"><div class="block-head-left"><div class="status-dot blue"></div><span class="block-label">Планы на эту неделю</span></div><span class="block-badge" id="planBadge">0 проектов</span></div>
     <div class="hint-block"><div class="hint-toggle" onclick="toggleHint('hintPlanBody','hintPlanChevron')"><span class="hint-toggle-left"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Как формулировать</span><svg class="hint-chevron" id="hintPlanChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div>
       <div class="hint-body" id="hintPlanBody">
-        <div class="hint-example"><span class="icon">✅</span> Подготовить CJM для сценария активации</div>
-        <div class="hint-example"><span class="icon">✅</span> Финализировать прототип и передать в разработку</div>
-        <div class="hint-example"><span class="icon">❌</span><span style="color:var(--text-secondary)">Созвониться с командой — это процесс, не план</span></div>
-        <div class="hint-rule">Для ключевых задач включите тоггл ⭐ — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Подготовить CJM для сценария активации</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Финализировать прототип и передать в разработку</div>
+        <div class="hint-example positive"><span class="icon">✅</span>Провести ревью посадочной страницы перед запуском</div>
+        <div class="hint-example negative"><span class="icon">❌</span>Созвониться с командой — это не план, а действие</div>
+        <div class="hint-footer">Планы — это ожидаемые результаты, а не встречи и обсуждения. Укажите срок выполнения.</div>
       </div>
     </div>
     <div class="items-list" id="planList"></div>
-    <div class="add-row"><button class="add-btn" onclick="addProduct('plan')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить продукт</button></div>
+    <div class="add-row"><button class="add-btn" onclick="addProduct('plan')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Добавить проект</button></div>
   </div>
   <div class="card">
     <div class="card-title"><div class="icon-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8F96A4" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Комментарии и блокеры</div>
@@ -240,6 +278,7 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
     <div class="summary-header"><h2>📊 Сводка по отчёту</h2><button class="summary-close" onclick="closeSummary()">&#215;</button></div>
     <div class="summary-body">
       <div id="summaryFeedback"></div>
+      <div id="summarySections"></div>
       <div class="summary-stats" id="summaryStats"></div>
       <div class="summary-hints" id="summaryHints"></div>
       <div class="summary-actions"><button class="btn-primary" onclick="copyReport()">Скопировать отчёт</button><button class="btn-outline" onclick="closeSummary()">Доработать</button></div>
@@ -250,413 +289,584 @@ textarea.ef-input{height:64px;resize:none;padding-top:8px}
 <span id="floatingTip" style="display:none;position:fixed;z-index:9999;pointer-events:none;"></span>
 <script>
 var TASK_TYPES=['Run-задача','Change-задача'];
-var weekOffset=-1;
+var PROCESS_WORDS=['провели','обсудили','созвонились','встретились','участвовали','работали над','занимались','продолжили','синхронизировались','прорабатывали','встреча','созвон'];
+var ACTIVITY_EFFECT_TERMS=['встреч','созвон','письм','слайд','документ','комментари','сообщени','час','рабочих час','рабочие час','обсуждени','интервью'];
+var RESULT_EFFECT_TERMS=['выяв','устран','согласова','закрыт','готовност','охват','сокращ','снижен','рост','увелич','дополнительн','выручк','эффект','заверш','измен','достиг','решени','проблем','разрыв','зависим','сценари','клиент','этап','риск','эконом','потенциальн'];
+var TASK_GLOSSARY='<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы задач</div><div style="display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.45"><div><b style="color:#fff">Run-задача</b> <span style="opacity:.7">— поддержка и развитие текущих процессов</span></div><div><b style="color:#fff">Change-задача</b> <span style="opacity:.7">— новая инициатива или изменение</span></div></div>';
+var KEY_TIP='Можно выбрать не более двух ключевых проектов недели. По каждому нужен понятный результат и его цифровое подтверждение.';
+var RESULT_FIELD_TIP='<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;line-height:1.45"><div style="font-weight:600">Опишите, что изменилось благодаря работе.</div><div>• Согласован TO BE-сценарий подключения услуги</div><div>• Устранены 4 клиентских разрыва</div><div>• Завершено проектирование основного сценария</div></div>';
+var PLAN_FIELD_TIP='<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;line-height:1.45"><div style="font-weight:600">Формулируйте план как ожидаемый результат недели.</div><div>• Согласовать сценарий активации и передать в разработку</div><div>• Снять 4 ключевые зависимости</div><div>• Завершить проектирование этапа</div></div>';
+var DIGITAL_EFFECT_TIP='<div style="display:flex;flex-direction:column;gap:8px"><div style="font-weight:600;font-size:12px">Покажите результат через конкретные цифры.</div><div style="display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:1.45"><div>• готовность этапа — 70%</div><div>• проработано 7 сценариев</div><div>• выявлено 16 проблем</div><div>• устранено 4 клиентских разрыва</div><div>• согласовано 11 решений</div><div>• охват изменений — 12 000 клиентов</div><div>• срок обработки сокращён на 2 дня</div><div>• потенциальный эффект — 5 млн руб.</div></div></div>';
 var SVG_PLUS='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 var SVG_X='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-var PROCESS_WORDS=['встреча','встречу','встречи','созвон','созвонил','созвониться','синк','статус','обсудил','обсудить','обсуждение','обсуждали','переписка','написал письмо','отправил письмо','позвонил','звонил','общался','поговорил','поговорить','разговор'];
-var PERFECTIVE_CHECK=/[а-яё]л[аио]?$/;
-var TASK_GLOSSARY='<div style="margin-bottom:6px;font-weight:600;font-size:12px;opacity:.7">Типы задач</div><div style="display:flex;flex-direction:column;gap:5px;font-size:12px;line-height:1.45"><div><b style="color:#fff">Run-задача</b> <span style="opacity:.7">— поддержка и развитие текущих процессов</span></div><div><b style="color:#fff">Change-задача</b> <span style="opacity:.7">— новая инициатива или изменение</span></div></div>';
-var KEY_TIP='Включите — инкременты заменятся на блок результата с типом, описанием и обязательной оцифровкой.';
+var KEY_LIMIT=2;
+var reportDayValue='';
+var feedbackDelay=400;
+var floatingTip=document.getElementById('floatingTip');
+var lockedTipIcon=null;
 
-/* === EFFECT CONFIG === */
-var EF_TYPES=[
-  {id:'problem',icon:'\u{1F50D}',done:'Выявили проблему',plan:'Планируем выявить проблему'},
-  {id:'design',icon:'\u{1F6E0}',done:'Спроектировали решение',plan:'Планируем спроектировать решение'},
-  {id:'insight',icon:'\u{1F4A1}',done:'Получили инсайт',plan:'Планируем получить инсайт'},
-  {id:'prevented',icon:'\u{1F6E1}',done:'Предотвратили ошибку',plan:'Планируем предотвратить ошибку'},
-  {id:'result',icon:'\u{1F4C8}',done:'Получили результат',plan:'Ожидаем результат'},
-  {id:'influence',icon:'\u{1F3AF}',done:'Повлияли на решение',plan:'Планируем повлиять на решение'}
-];
-var EF_DESC_PLACEHOLDERS={
-  done:{
-    problem:'Опишите, что именно обнаружили и в каком сценарии',
-    design:'Опишите, что именно спроектировали и для какого сценария',
-    insight:'Опишите, какой вывод получили и как он влияет на решение',
-    prevented:'Опишите, какую ошибку удалось предотвратить',
-    result:'Опишите, какой результат получили',
-    influence:'Опишите, на какое решение удалось повлиять'
-  },
-  plan:{
-    problem:'Опишите, какую проблему хотите выявить и где именно',
-    design:'Опишите, что планируете спроектировать',
-    insight:'Опишите, какой вывод хотите получить',
-    prevented:'Опишите, что хотите проверить до запуска',
-    result:'Опишите, какого результата хотите добиться',
-    influence:'Опишите, на какое решение планируете повлиять'
-  }
-};
-
-/* === HELPERS === */
-function getMonday(o){var n=new Date(),d=n.getDay()||7;var m=new Date(n);m.setDate(n.getDate()-d+1+o*7);return m}
-function formatReportDate(o){return getMonday(o).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}
-function updateWeek(){document.getElementById('weekVal').textContent=getMonday(weekOffset).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'})}
-function changeWeek(d){weekOffset+=d;updateWeek()}
-function updateTitle(){var v=document.getElementById('employee').value.trim();document.getElementById('pageTitle').textContent=v?'Отчёт: '+v:'Новый отчёт'}
+function cloneDate(date){return new Date(date.getTime())}
+function pad(n){return String(n).padStart(2,'0')}
+function getWeekStart(date){var value=cloneDate(date),day=value.getDay()||7;value.setHours(0,0,0,0);value.setDate(value.getDate()-day+1);return value}
+function toISODate(date){return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate())}
+function parseISODate(value){if(!value)return null;var parts=value.split('-').map(Number);if(parts.length!==3||parts.some(isNaN))return null;return new Date(parts[0],parts[1]-1,parts[2])}
+function getDefaultReportDay(){var monday=getWeekStart(new Date());monday.setDate(monday.getDate()-3);return toISODate(monday)}
+function formatReportDate(value){var selected=parseISODate(value)||parseISODate(getDefaultReportDay());var start=getWeekStart(selected),end=cloneDate(start);end.setDate(start.getDate()+4);return start.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})+' - '+end.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}
+function updateWeek(){var input=document.getElementById('reportDay');if(input)input.value=reportDayValue}
+function setReportDay(value){reportDayValue=value||getDefaultReportDay();updateWeek()}
+function updateTitle(){var value=document.getElementById('employee').value.trim();document.getElementById('pageTitle').textContent=value?'Отчёт: '+value:'Новый отчёт'}
 function decline(n,a,b,c){var x=Math.abs(n)%100,l=x%10;if(x>=11&&x<=19)return n+' '+c;if(l===1)return n+' '+a;if(l>=2&&l<=4)return n+' '+b;return n+' '+c}
-function plural(n){return decline(n,'продукт','продукта','продуктов')}
-function updateBadge(bl){var n=document.getElementById(bl+'List').querySelectorAll('.product-item').length;var el=document.getElementById(bl+'Badge');el.textContent=plural(n);el.className='block-badge'+(n>0?(bl==='done'?' done-items':' plan-items'):'')}
-function toggleHint(b,c){document.getElementById(b).classList.toggle('open');document.getElementById(c).classList.toggle('open')}
+function projectPlural(n){return decline(n,'проект','проекта','проектов')}
 function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function formatDate(ds){if(!ds)return'';var d=new Date(ds);return'до '+d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}
-function getDescPlaceholder(block,cat){var map=EF_DESC_PLACEHOLDERS[block]||{};return map[cat]||'Кратко опишите результат ключевой задачи'}
-function getMissingKeyQuantInputs(){
-  var out=[];
-  document.querySelectorAll('.product-item .ef-quant-input').forEach(function(input){
-    var item=input.closest('.product-item');
-    if(item&&item.classList.contains('is-key')&&!input.value.trim())out.push(input);
-  });
-  return out;
+function normalize(v){return(v||'').toString().trim().toLowerCase()}
+function formatDate(ds){if(!ds)return'';var d=new Date(ds);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}
+function toggleHint(bodyId,chevronId){document.getElementById(bodyId).classList.toggle('open');document.getElementById(chevronId).classList.toggle('open')}
+function toast(msg){document.getElementById('toastText').textContent=msg;var t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2600)}
+function hasTerm(text,terms){var lo=normalize(text);for(var i=0;i<terms.length;i++){if(lo.indexOf(terms[i])!==-1)return true}return false}
+function containsNumber(text){return/\d/.test((text||'').toString())}
+function isProcessText(text){return hasTerm(text,PROCESS_WORDS)}
+function isActivityOnlyEffect(text){var value=normalize(text);if(!value||!containsNumber(value))return false;return hasTerm(value,ACTIVITY_EFFECT_TERMS)&&!hasTerm(value,RESULT_EFFECT_TERMS)}
+function ensureSentence(text){var value=(text||'').trim();if(!value)return'';return/[.!?…]$/.test(value)?value:value+'.'}
+function scheduleFeedback(el,fn){clearTimeout(el._fbTimer);el._fbTimer=setTimeout(function(){fn(el)},feedbackDelay)}
+function showInlineFeedback(node,tone,text){node.className='feedback-line show '+tone;node.innerHTML='<span>'+(tone==='good'?'✓':'⚠️')+'</span><span>'+esc(text)+'</span>'}
+function hideInlineFeedback(node){node.className='feedback-line';node.innerHTML=''}
+function getResultProcessFeedback(block){return block==='plan'?'Сейчас указано действие, а не ожидаемый результат. Уточните, что должно быть сделано.':'Добавьте, что изменилось благодаря работе.'}
+function getResultProcessIssue(block,label){return block==='plan'?'уточнить ожидаемый результат в «'+label+'»':'уточнить, что изменилось в «'+label+'»'}
+function countKeyProjects(){return document.querySelectorAll('#doneList .product-item.is-key').length}
+function updateBadge(block){
+  var count=document.getElementById(block+'List').querySelectorAll('.product-item').length;
+  var el=document.getElementById(block+'Badge');
+  el.textContent=projectPlural(count);
+  el.className='block-badge'+(count>0?(block==='done'?' done-items':' plan-items'):'');
+  if(block==='done')document.getElementById('doneKeyCounter').textContent='Ключевые проекты: '+countKeyProjects()+' из '+KEY_LIMIT;
 }
-function updateKeyQuantWarnings(){
-  document.querySelectorAll('.product-item .ef-quant-input').forEach(function(input){
-    var item=input.closest('.product-item');
-    var missing=item&&item.classList.contains('is-key')&&!input.value.trim();
-    input.classList.toggle('required-missing',!!missing);
-  });
+function validatePlanDates(){document.querySelectorAll('#planList .inc-date').forEach(function(el){var row=el.closest('.inc-row-plan');var desc=row?row.querySelector('.inc-desc'):null;if(desc&&desc.value.trim()&&!el.value)el.classList.add('empty-warning');else el.classList.remove('empty-warning')})}
+function buildTaskOptions(){return TASK_TYPES.map(function(t){return'<option value="'+esc(t)+'">'+esc(t)+'</option>'}).join('')}
+function isKeyableBlock(block){return block==='done'||block==='plan'}
+function getKeyResultLabel(){return'Ключевой результат'}
+function getKeyResultPlaceholder(block){return block==='plan'?'Что планируем создать, изменить, завершить, согласовать или устранить?':'Что было создано, изменено, завершено, согласовано или устранено?'}
+function getKeyDigitalEffectPlaceholder(block){return block==='plan'?'Релиз 2 новых фич, устранение 3 проблем':'Например: выявлено 16 проблем, по 11 согласованы решения'}
+function buildKeyResultTitleHTML(block,index,total){
+  var tipKey=block==='plan'?'plan-field':'result-field';
+  var label=total===1?getKeyResultLabel():getKeyResultLabel()+' '+(index+1);
+  return label+' <span class="tip-wrap"><i class="tip-icon" data-tip="'+tipKey+'">?</i></span>';
 }
-
-/* === TOGGLE KEY === */
-function toggleKey(cb,block){
-  var item=cb.closest('.product-item');
-  var list=document.getElementById(block+'List');
-  var incZone=item.querySelector('.increments-zone');
-  var efZone=item.querySelector('.effect-zone');
-  if(cb.checked){
-    list.querySelectorAll('.product-item').forEach(function(p){
-      if(p!==item){var c2=p.querySelector('.key-switch input');if(c2&&c2.checked){c2.checked=false;p.classList.remove('is-key');p.querySelector('.increments-zone').classList.remove('hidden');p.querySelector('.effect-zone').classList.remove('open');p.querySelector('.key-label').classList.remove('active')}}
-    });
-    item.classList.add('is-key');
-    item.querySelector('.key-label').classList.add('active');
-    incZone.classList.add('hidden');
-    efZone.classList.add('open');
-    var sel=efZone.querySelector('.ef-type-select');if(sel)setTimeout(function(){sel.focus()},80);
-  }else{
-    item.classList.remove('is-key');
-    item.querySelector('.key-label').classList.remove('active');
-    incZone.classList.remove('hidden');
-    efZone.classList.remove('open');
-    item.querySelector('.ef-quant-input').classList.remove('required-missing');
-  }
+function getIncrementLabel(item,block){
+  return block==='done'?'Результат':'План';
 }
-
-/* === EFFECT TYPE CHANGE === */
-function onEffectTypeChange(sel){
-  var zone=sel.closest('.effect-zone');
-  var block=sel.closest('[data-block]');
-  var descInput=zone.querySelector('.ef-desc-input');
-  var blockName=block?block.getAttribute('data-block'):'done';
-  descInput.placeholder=getDescPlaceholder(blockName,sel.value);
-  descInput.focus();
+function buildIncrementLabelHTML(item,block){
+  var tipKey=block==='done'?'result-field':'plan-field';
+  return getIncrementLabel(item,block)+' <span class="tip-wrap"><i class="tip-icon" data-tip="'+tipKey+'">?</i></span>';
+}
+function getIncrementPlaceholder(item,block){
+  return block==='done'?'Что изменилось по проекту...':'Что планируется по проекту...';
 }
 
-/* === INCREMENTS === */
-function addIncRow(zone,block){
-  var ph=block==='done'?'Что было сделано…':'Что планируется…';
+function addIncRow(zone,block,values){
+  var item=zone.closest('.product-item');
+  var ph=getIncrementPlaceholder(item,block);
   var row=document.createElement('div');
   row.className=block==='done'?'inc-row-done':'inc-row-plan';
-  var h='<input type="text" class="inc-desc" placeholder="'+ph+'">';
-  if(block==='plan')h+='<input type="date" class="inc-date">';
-  h+='<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">'+SVG_X+'</button>';
-  row.innerHTML=h;
+  row.innerHTML='<input type="text" class="inc-desc" placeholder="'+ph+'" value="'+esc(values&&values.desc||'')+'">'+(block==='plan'?'<input type="date" class="inc-date" value="'+esc(values&&values.date||'')+'">':'')+'<button class="inc-del" type="button" onclick="removeIncRow(this)" title="Удалить">'+SVG_X+'</button>';
   zone.insertBefore(row,zone.querySelector('.inc-add'));
 }
+function removeIncRow(btn){var zone=btn.closest('.increments-zone');var row=btn.closest('.inc-row-done,.inc-row-plan');var hint=row.nextElementSibling;if(hint&&hint.classList.contains('inc-hint'))hint.remove();row.remove();if(zone)validateAllIncrementFeedback(zone.closest('.product-item'))}
+function syncIncrementSection(item,block){
+  if(!item)return;
+  var zone=item.querySelector('.increments-zone');
+  if(!zone)return;
+  zone.classList.toggle('secondary-mode',item.classList.contains('is-key'));
+  zone.classList.toggle('hidden',item.classList.contains('is-key'));
+  var label=zone.querySelector('.inc-primary-label');
+  if(label)label.innerHTML=buildIncrementLabelHTML(item,block);
+  zone.querySelectorAll('.inc-desc').forEach(function(input){if(!input.value.trim())input.placeholder=getIncrementPlaceholder(item,block)});
+}
+function collectKeyResultsFromZone(zone){
+  var block=zone.closest('.product-item').getAttribute('data-project-block');
+  return Array.prototype.slice.call(zone.querySelectorAll('.key-result-item')).map(function(row){
+    return{
+      result:row.querySelector('.key-result-desc').value.trim(),
+      digitalEffect:row.querySelector('.key-digital-effect').value.trim(),
+      deadline:block==='plan'&&row.querySelector('.key-result-date')?row.querySelector('.key-result-date').value:''
+    };
+  });
+}
+function updateKeyResultRows(zone){
+  var block=zone.closest('.product-item').getAttribute('data-project-block');
+  var rows=Array.prototype.slice.call(zone.querySelectorAll('.key-result-item'));
+  rows.forEach(function(row,index){
+    var title=row.querySelector('.key-result-title');
+    var remove=row.querySelector('.key-result-remove');
+    if(title)title.innerHTML=buildKeyResultTitleHTML(block,index,rows.length);
+    if(remove)remove.style.display=rows.length>1?'inline':'none';
+  });
+}
+function addKeyResultRow(zone,preset){
+  var block=zone.closest('.product-item').getAttribute('data-project-block');
+  var list=zone.querySelector('.key-results-list');
+  var row=document.createElement('div');
+  row.className='key-result-item';
+  row.innerHTML='<div class="key-result-head"><div class="key-result-title">'+buildKeyResultTitleHTML(block,0,1)+'</div><button class="key-result-remove" type="button" onclick="removeKeyResultRow(this)">Удалить</button></div>'+
+    '<textarea class="ef-input key-result-desc" placeholder="'+esc(getKeyResultPlaceholder(block))+'">'+esc(preset&&preset.result||'')+'</textarea>'+
+    '<div class="key-result-meta"><div class="ef-group key-result-effect-group"><div class="ef-label">Цифровой эффект <span class="tip-wrap"><i class="tip-icon" data-tip="digital-effect">?</i></span></div><input class="ef-input key-digital-effect" placeholder="'+esc(getKeyDigitalEffectPlaceholder(block))+'" value="'+esc(preset&&preset.digitalEffect||'')+'"></div>'+(block==='plan'?'<div class="ef-group key-result-date-group"><div class="ef-label">Срок результата</div><input type="date" class="ef-input key-result-date" value="'+esc(preset&&preset.deadline||'')+'"></div>':'')+'</div>';
+  list.appendChild(row);
+  updateKeyResultRows(zone);
+  updateKeyProjectState(zone.closest('.product-item'));
+  return row;
+}
+function removeKeyResultRow(btn){
+  var zone=btn.closest('.effect-zone');
+  btn.closest('.key-result-item').remove();
+  if(!zone.querySelector('.key-result-item'))addKeyResultRow(zone);
+  updateKeyResultRows(zone);
+  updateKeyProjectState(zone.closest('.product-item'));
+}
+function dedupeIncrementRowsFromKey(item,block){
+  var zone=item.querySelector('.increments-zone');
+  var effectZone=item.querySelector('.effect-zone');
+  if(!zone||!effectZone)return;
+  var keyResults=collectKeyResultsFromZone(effectZone).map(function(entry){return entry.result;}).filter(Boolean);
+  if(!keyResults.length)return;
+  var selector=block==='done'?'.inc-row-done':'.inc-row-plan';
+  var rows=Array.prototype.slice.call(zone.querySelectorAll(selector));
+  keyResults.forEach(function(result){
+    var match=rows.find(function(row){return row.querySelector('.inc-desc').value.trim()===result;});
+    if(match){
+      var hint=match.nextElementSibling;
+      if(hint&&hint.classList.contains('inc-hint'))hint.remove();
+      match.remove();
+      rows=rows.filter(function(row){return row!==match;});
+    }
+  });
+}
+function transferPrimaryResultToKey(item,block){
+  var zone=item.querySelector('.increments-zone');
+  var effectZone=item.querySelector('.effect-zone');
+  if(!zone||!effectZone)return;
+  if(!effectZone.querySelector('.key-result-item'))addKeyResultRow(effectZone);
+  dedupeIncrementRowsFromKey(item,block);
+  var currentKeyResults=collectKeyResultsFromZone(effectZone);
+  var firstKey=currentKeyResults[0];
+  if(firstKey&&firstKey.result)return;
+  var selector=block==='done'?'.inc-row-done':'.inc-row-plan';
+  var rows=Array.prototype.slice.call(zone.querySelectorAll(selector));
+  if(!rows.length)return;
+  var firstRow=rows[0];
+  var descInput=firstRow.querySelector('.inc-desc');
+  var value=descInput?descInput.value.trim():'';
+  if(value){
+    var keyRow=effectZone.querySelector('.key-result-item');
+    keyRow.querySelector('.key-result-desc').value=value;
+    if(block==='plan'&&keyRow.querySelector('.key-result-date')&&firstRow.querySelector('.inc-date'))keyRow.querySelector('.key-result-date').value=firstRow.querySelector('.inc-date').value;
+    var hint=firstRow.nextElementSibling;
+    if(hint&&hint.classList.contains('inc-hint'))hint.remove();
+    firstRow.remove();
+  }
+}
+function restoreKeyResultsToStandard(item,block){
+  var zone=item.querySelector('.increments-zone');
+  var effectZone=item.querySelector('.effect-zone');
+  if(!zone||!effectZone)return;
+  var selector=block==='done'?'.inc-row-done':'.inc-row-plan';
+  var rows=Array.prototype.slice.call(zone.querySelectorAll(selector));
+  var existing=rows.map(function(row){return row.querySelector('.inc-desc').value.trim();});
+  collectKeyResultsFromZone(effectZone).forEach(function(entry){
+    if(!entry.result||existing.indexOf(entry.result)!==-1)return;
+    addIncRow(zone,block,{desc:entry.result,date:entry.deadline||''});
+    existing.push(entry.result);
+  });
+}
 
-/* === ADD PRODUCT === */
 function addProduct(block,skip){
   var list=document.getElementById(block+'List');
-  var taskOpts=TASK_TYPES.map(function(t){return'<option value="'+t+'">'+t+'</option>'}).join('');
-  var ph=block==='done'?'Что было сделано…':'Что планируется…';
-  var rowCls=block==='done'?'inc-row-done':'inc-row-plan';
-  var lblCls=block==='done'?'inc-labels-done':'inc-labels-plan';
-  var lblHtml='<div class="'+lblCls+'"><span>Описание инкремента</span>';
-  if(block==='plan')lblHtml+='<span>Срок</span>';
-  lblHtml+='<span></span></div>';
-  var rowHtml='<div class="'+rowCls+'"><input type="text" class="inc-desc" placeholder="'+ph+'">';
-  if(block==='plan')rowHtml+='<input type="date" class="inc-date">';
-  rowHtml+='<button class="inc-del" onclick="this.closest(\'[class^=inc-row]\').remove()" title="Удалить">'+SVG_X+'</button></div>';
-
-  var efLabel='Тип результата';
-  var efOpts='<option value="">Выберите тип результата…</option>';
-  EF_TYPES.forEach(function(t){efOpts+='<option value="'+t.id+'">'+t.icon+' '+(block==='done'?t.done:t.plan)+'</option>'});
-  var descPh='Кратко опишите результат ключевой задачи';
-  var quantPh=block==='done'?'Например: «12 проблем», «с 7 до 4 шагов», «конверсия +6%»':'Например: «охват 5 000 клиентов», «цель: сократить путь с 7 до 4 шагов»';
-
   var item=document.createElement('div');
   item.className='product-item';
-  item.innerHTML=
-    '<button class="product-del" onclick="delProduct(this,\''+block+'\')" title="Удалить продукт">'+SVG_X+'</button>'+
-    '<div class="product-top"><div class="product-col"><div class="product-label">Продукт</div><input type="text" class="product-input"></div><div class="product-col"><div class="product-label">Тип задачи <span class="tip-wrap"><i class="tip-icon" data-tip="task-glossary">?</i></span></div><select class="product-select">'+taskOpts+'</select></div></div>'+
-    '<div class="key-toggle-row"><label class="key-switch"><input type="checkbox" onchange="toggleKey(this,\''+block+'\')"><span class="key-slider"></span></label><span class="key-label"><span class="star">⭐</span> Ключевая задача <span class="tip-wrap"><i class="tip-icon" data-tip="'+KEY_TIP+'">?</i></span></span></div>'+
-    '<div class="increments-zone">'+lblHtml+rowHtml+'<button class="inc-add" onclick="addIncRow(this.closest(\'.increments-zone\'),\''+block+'\')">'+SVG_PLUS+' Ещё инкремент</button></div>'+
-    '<div class="effect-zone">'+
-      '<div class="ef-group"><div class="ef-label">'+efLabel+'</div><select class="ef-select ef-type-select" onchange="onEffectTypeChange(this)">'+efOpts+'</select></div>'+
-      '<div class="ef-group ef-desc-group"><div class="ef-label">Описание результата</div><textarea class="ef-input ef-desc-input" placeholder="'+descPh+'"></textarea></div>'+
-      '<div class="ef-group ef-quant-group"><div class="ef-label">Оцифровка эффекта <span class="ef-opt-tag">обязательно</span></div><input type="text" class="ef-input ef-quant-input" placeholder="'+quantPh+'"></div>'+
-    '</div>';
-
+  item.setAttribute('data-project-block',block);
+  var taskOptions=buildTaskOptions();
+  var base='<button class="product-del" type="button" onclick="delProject(this,\''+block+'\')" title="Удалить проект">'+SVG_X+'</button>'+
+    '<div class="product-top"><div class="product-col"><div class="product-label">Проект</div><input type="text" class="product-input" placeholder="Укажите проект, продукт или направление"></div><div class="product-col"><div class="product-label">Тип задачи <span class="tip-wrap"><i class="tip-icon" data-tip="task-glossary">?</i></span></div><select class="product-select">'+taskOptions+'</select></div></div>';
+  var keyHtml='';
+  if(isKeyableBlock(block)){
+    keyHtml='<div class="key-toggle-row"><label class="key-switch"><input type="checkbox" onchange="toggleKey(this,\''+block+'\')"><span class="key-slider"></span></label><span class="key-label"><span class="star">⭐</span> Ключевой проект недели <span class="tip-wrap"><i class="tip-icon" data-tip="key-project">?</i></span></span></div>'+
+      '<div class="effect-zone"><div class="ef-block">'+
+      '<div class="key-results-list"></div>'+
+      '<button class="inc-add key-result-add" type="button" onclick="addKeyResultRow(this.closest(\'.effect-zone\'))">+ Ещё ключевой результат</button>'+
+      '<div class="feedback-line key-result-feedback"></div>'+
+      '</div></div>';
+  }
+  var incLabels=block==='done'?'<div class="inc-labels-done"><span class="inc-primary-label">Результат <span class="tip-wrap"><i class="tip-icon" data-tip="result-field">?</i></span></span><span></span></div>':'<div class="inc-labels-plan"><span class="inc-primary-label">План <span class="tip-wrap"><i class="tip-icon" data-tip="plan-field">?</i></span></span><span>Срок</span><span></span></div>';
+  var incZone='<div class="increments-zone">'+incLabels+'<button class="inc-add" type="button" onclick="addIncRow(this.closest(\'.increments-zone\'),\''+block+'\')">'+SVG_PLUS+(block==='done'?' Ещё результат':' Ещё план')+'</button></div>';
+  item.innerHTML=base+keyHtml+incZone;
   list.appendChild(item);
+  addIncRow(item.querySelector('.increments-zone'),block);
+  if(isKeyableBlock(block)){
+    addKeyResultRow(item.querySelector('.effect-zone'));
+    syncIncrementSection(item,block);
+    updateKeyProjectState(item);
+  }
   if(!skip)item.querySelector('.product-input').focus();
   updateBadge(block);
 }
 
-function delProduct(btn,bl){btn.closest('.product-item').remove();updateBadge(bl)}
-
-/* === DATA COLLECTION === */
-function getProducts(block){
-  var items=document.getElementById(block+'List').querySelectorAll('.product-item');
-  var out=[];
-  items.forEach(function(item){
-    var product=item.querySelector('.product-input').value.trim();
-    var taskType=item.querySelector('.product-select').value;
-    var isKey=item.classList.contains('is-key');
-    var effectData=null;
-    if(isKey){
-      var zone=item.querySelector('.effect-zone');
-      var cat=zone.querySelector('.ef-type-select').value;
-      var desc=zone.querySelector('.ef-desc-input').value.trim();
-      var quant=zone.querySelector('.ef-quant-input').value.trim();
-      if(cat||desc||quant){
-        var typeObj=cat?EF_TYPES.find(function(t){return t.id===cat}):null;
-        effectData={
-          cat:cat,
-          icon:typeObj?typeObj.icon:'',
-          label:typeObj?(block==='done'?typeObj.done:typeObj.plan):'',
-          desc:desc,
-          quant:quant
-        };
-      }
-    }
-    var incs=[];
-    if(!isKey){
-      item.querySelectorAll('[class^="inc-row"]').forEach(function(r){
-        var desc=r.querySelector('.inc-desc').value.trim();
-        var dateEl=r.querySelector('.inc-date');
-        var date=dateEl?dateEl.value:'';
-        if(desc)incs.push({desc:desc,date:date});
-      });
-    }
-    if(product||incs.length||effectData)out.push({product:product||'\u2014',taskType:taskType,isKey:isKey,effectData:effectData,incs:incs});
-  });
-  return out;
-}
-function getKeyTask(ps){for(var i=0;i<ps.length;i++){if(ps[i].isKey)return ps[i]}return null}
-
-/* === BUILD REPORT TEXT === */
-function buildReport(){
-  var emp=document.getElementById('employee').value.trim()||'\u2014';
-  var date=formatReportDate(weekOffset);
-  var comments=document.getElementById('comments').value.trim();
-  var done=getProducts('done'),plan=getProducts('plan');
-  var keyDone=getKeyTask(done),keyPlan=getKeyTask(plan);
-  var s='📋 ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ\n─────────────────────────────────────\nСотрудник : '+emp+'\nДата      : '+date+'\n─────────────────────────────────────\n\n';
-  function fmtEffect(ed,prefix){
-    var head=(ed.icon?(ed.icon+' '):'')+(ed.label||'');
-    var r=head.trim()?prefix+head.trim()+'\n':'';
-    if(ed.desc)r+=prefix+'   '+ed.desc+'\n';
-    if(ed.quant)r+=prefix+'   📊 '+ed.quant+'\n';
-    return r;
-  }
-  if(keyDone){
-    s+='⭐ КЛЮЧЕВАЯ ЗАДАЧА\n   '+keyDone.product+' ('+keyDone.taskType+')\n';
-    if(keyDone.effectData)s+=fmtEffect(keyDone.effectData,'   ');
-    s+='\n';
-  }
-  s+='✅ ЧТО БЫЛО СДЕЛАНО\n\n';
-  if(!done.length){s+='   (не заполнено)\n'}
-  else{done.forEach(function(p){
-    var m=p.isKey?'⭐ ':'';
-    s+='   '+m+p.product+' ('+p.taskType+')\n';
-    p.incs.forEach(function(i){s+='      • '+i.desc+'\n'});
-    s+='\n';
-  })}
-  if(keyPlan){
-    s+='⭐ КЛЮЧЕВОЙ ПЛАН\n   '+keyPlan.product+' ('+keyPlan.taskType+')\n';
-    if(keyPlan.effectData)s+=fmtEffect(keyPlan.effectData,'   ');
-    s+='\n';
-  }
-  s+='▶️ ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n\n';
-  if(!plan.length){s+='   (не заполнено)\n'}
-  else{plan.forEach(function(p){
-    var m=p.isKey?'⭐ ':'';
-    s+='   '+m+p.product+' ('+p.taskType+')\n';
-    p.incs.forEach(function(i){var dl=i.date?' → '+formatDate(i.date):'';s+='      • '+i.desc+dl+'\n'});
-    s+='\n';
-  })}
-  if(comments){s+='💬 КОММЕНТАРИИ И БЛОКЕРЫ\n   '+comments.split('\n').join('\n   ')+'\n'}
-  return s;
-}
-
-/* === BUILD REPORT HTML === */
-function buildReportHTML(){
-  var emp=document.getElementById('employee').value.trim()||'\u2014';
-  var date=formatReportDate(weekOffset);
-  var comments=document.getElementById('comments').value.trim();
-  var done=getProducts('done'),plan=getProducts('plan');
-  var keyDone=getKeyTask(done),keyPlan=getKeyTask(plan);
-  var g='color:#8F96A4';
-  var h='<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.7;color:#2B2D33">';
-  h+='<div style="font-size:16px;margin-bottom:2px"><b>📋 Еженедельный отчёт</b></div>';
-  h+='<div style="'+g+';font-size:13px;margin-bottom:16px">Сотрудник: '+esc(emp)+' · '+esc(date)+'</div>';
-  h+='<hr style="border:none;border-top:1px solid #E6E9EE;margin:0 0 16px">';
-  function fmtEffectHTML(ed){
-    var r='<div style="margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:8px;font-size:13px">';
-    if(ed.icon||ed.label)r+='<b>'+(ed.icon?ed.icon+' ':'')+esc(ed.label||'')+'</b>';
-    if(ed.desc)r+='<div style="margin-top:4px">'+esc(ed.desc)+'</div>';
-    if(ed.quant)r+='<div style="color:#00B956;font-weight:600;font-size:12px;margin-top:3px">📊 '+esc(ed.quant)+'</div>';
-    r+='</div>';return r;
-  }
-  function fmtKeyCard(label,p){
-    var r='<div style="background:#FFFBEA;border:1.5px solid rgba(255,193,7,.3);border-radius:12px;padding:14px 16px;margin-bottom:16px">';
-    r+='<div style="font-size:12px;font-weight:600;'+g+';text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">'+label+'</div>';
-    r+='<div style="font-weight:700;font-size:14px">'+esc(p.product)+' <span style="'+g+';font-weight:400">('+esc(p.taskType)+')</span></div>';
-    if(p.effectData)r+=fmtEffectHTML(p.effectData);
-    p.incs.forEach(function(i){var dl=i.date?' <span style="color:#00B956;font-weight:600;font-size:12px">→ '+formatDate(i.date)+'</span>':'';r+='<div style="padding-left:16px;font-size:13px">• '+esc(i.desc)+dl+'</div>'});
-    r+='</div>';return r;
-  }
-  if(keyDone)h+=fmtKeyCard('⭐ Ключевая задача',keyDone);
-  h+='<div style="font-size:15px;margin-bottom:12px"><b><u>✅ Что было сделано</u></b></div>';
-  if(!done.length){h+='<div style="'+g+';margin-bottom:16px">(не заполнено)</div>'}
-  else{done.forEach(function(p){h+='<div style="margin-bottom:14px"><div style="margin-bottom:4px">'+(p.isKey?'⭐ ':'')+'<b>'+esc(p.product)+'</b> <span style="'+g+'">('+esc(p.taskType)+')</span></div>';p.incs.forEach(function(i){h+='<div style="padding-left:16px">• '+esc(i.desc)+'</div>'});h+='</div>'})}
-  h+='<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px">';
-  if(keyPlan)h+=fmtKeyCard('⭐ Ключевой план',keyPlan);
-  h+='<div style="font-size:15px;margin-bottom:12px"><b><u>▶️ Планы на эту неделю</u></b></div>';
-  if(!plan.length){h+='<div style="'+g+';margin-bottom:16px">(не заполнено)</div>'}
-  else{plan.forEach(function(p){h+='<div style="margin-bottom:14px"><div style="margin-bottom:4px">'+(p.isKey?'⭐ ':'')+'<b>'+esc(p.product)+'</b> <span style="'+g+'">('+esc(p.taskType)+')</span></div>';p.incs.forEach(function(i){var dl=i.date?' <span style="color:#00B956;font-weight:600;font-size:12px">→ '+formatDate(i.date)+'</span>':'';h+='<div style="padding-left:16px">• '+esc(i.desc)+dl+'</div>'});h+='</div>'})}
-  if(comments){h+='<hr style="border:none;border-top:1px solid #E6E9EE;margin:4px 0 16px"><div style="font-size:15px;margin-bottom:8px"><b>💬 Комментарии и блокеры</b></div><div style="'+g+'">'+esc(comments).replace(/\n/g,'<br>')+'</div>'}
-  h+='</div>';return h;
-}
-
-/* === COPY === */
-function copyReport(){
-  updateKeyQuantWarnings();
-  var missing=getMissingKeyQuantInputs();
-  if(missing.length){
-    closeSummary();
-    setTimeout(function(){missing[0].focus()},80);
-    toast('Заполните оцифровку у ключевых задач');
+function delProject(btn,block){btn.closest('.product-item').remove();updateBadge(block)}
+function toggleKey(cb,block){
+  if(!isKeyableBlock(block))return;
+  var item=cb.closest('.product-item');
+  var zone=item.querySelector('.effect-zone');
+  if(block==='done'&&cb.checked&&countKeyProjects()>=KEY_LIMIT&&!item.classList.contains('is-key')){
+    cb.checked=false;
+    toast('Уже выбрано два ключевых проекта недели. Снимите отметку с одного из них, чтобы выбрать другой.');
     return;
   }
-  var html=buildReportHTML(),plain=buildReport();
-  var tmp=document.createElement('div');tmp.innerHTML=html;tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
+  item.classList.toggle('is-key',cb.checked);
+  item.querySelector('.key-label').classList.toggle('active',cb.checked);
+  if(cb.checked)transferPrimaryResultToKey(item,block);else restoreKeyResultsToStandard(item,block);
+  zone.classList.toggle('open',cb.checked);
+  syncIncrementSection(item,block);
+  if(block==='done')updateBadge('done');
+  updateKeyProjectState(item);
+}
+
+function getIncrementFeedback(text,isDone){
+  var value=(text||'').trim();
+  if(!value)return null;
+  if(hasTerm(value,PROCESS_WORDS))return{tone:'warn',text:isDone?'Сейчас указано действие, но не результат. Добавьте, что было создано, изменено, завершено, согласовано или устранено.':'Сейчас указано действие, а не ожидаемый результат. Уточните, что должно быть сделано.'};
+  if(value.split(/\s+/).length<4)return{tone:'neutral',text:'Добавьте конкретики: что изменилось, для какого проекта и какой результат ожидается.'};
+  return{tone:'good',text:'Формулировка выглядит результатной.'};
+}
+function validateIncField(input){
+  var row=input.closest('.inc-row-done,.inc-row-plan');
+  if(!row)return;
+  var next=row.nextElementSibling;
+  if(next&&next.classList.contains('inc-hint'))next.remove();
+  input.classList.remove('has-warning');
+  var feedback=getIncrementFeedback(input.value,!!row.closest('#doneList'));
+  if(!feedback)return;
+  var hint=document.createElement('div');
+  hint.className='inc-hint';
+  hint.innerHTML='<span class="hint-icon">'+(feedback.tone==='good'?'✓':'⚠️')+'</span>'+esc(feedback.text);
+  if(feedback.tone!=='good')input.classList.add('has-warning');
+  row.parentElement.insertBefore(hint,row.nextSibling);
+}
+function validateAllIncrementFeedback(item){item.querySelectorAll('.inc-desc').forEach(function(input){validateIncField(input)})}
+
+function collectProjects(block){
+  return Array.prototype.slice.call(document.getElementById(block+'List').querySelectorAll('.product-item')).map(function(item){
+    var project=item.querySelector('.product-input').value.trim();
+    var taskType=item.querySelector('.product-select').value;
+    var rawIncs=Array.prototype.slice.call(item.querySelectorAll('.inc-row-done,.inc-row-plan')).map(function(row){
+      return{desc:row.querySelector('.inc-desc').value.trim(),date:row.querySelector('.inc-date')?row.querySelector('.inc-date').value:''};
+    }).filter(function(inc){return inc.desc});
+    var out={project:project,taskType:taskType,incs:rawIncs,isKeyProject:false,keyResults:[]};
+    out.block=block;
+    if(isKeyableBlock(block)){
+      out.isKeyProject=item.classList.contains('is-key');
+      if(out.isKeyProject){
+        var effectZone=item.querySelector('.effect-zone');
+        out.keyResults=collectKeyResultsFromZone(effectZone).filter(function(entry){return entry.result||entry.digitalEffect;});
+        out.incs=[];
+      }
+    }
+    return out;
+  }).filter(function(project){return project.project||project.incs.length||project.keyResults.length;});
+}
+function validateKeyProject(project){
+  var issues=[];
+  if(!project.project)issues.push('указать название проекта');
+  if(!project.keyResults.length)issues.push('добавить ключевой результат и цифровой эффект');
+  project.keyResults.forEach(function(entry,index){
+    var label='результат '+(index+1);
+    if(!entry.result)issues.push('заполнить '+label);
+    else if(isProcessText(entry.result))issues.push(getResultProcessIssue(project.block,label));
+    if(!entry.digitalEffect)issues.push('добавить цифровой эффект для «'+label+'»');
+    else if(!containsNumber(entry.digitalEffect))issues.push('указать конкретное числовое значение для «'+label+'»');
+    else if(isActivityOnlyEffect(entry.digitalEffect))issues.push('указать результатную цифру для «'+label+'», а не только объём активности');
+    if(project.block==='plan'&&!entry.deadline)issues.push('указать срок для «'+label+'»');
+  });
+  return issues;
+}
+function getKeyProjectIssues(projects){
+  return projects.map(function(project){return{project:project,issues:validateKeyProject(project)}}).filter(function(entry){return entry.issues.length;});
+}
+
+function updateKeyProjectState(item){
+  if(!item)return;
+  var feedback=item.querySelector('.key-result-feedback');
+  if(!feedback)return;
+  if(!item.classList.contains('is-key')){hideInlineFeedback(feedback);return;}
+  var zone=item.querySelector('.effect-zone');
+  var block=item.getAttribute('data-project-block');
+  var keyResults=collectKeyResultsFromZone(zone).filter(function(entry){return entry.result||entry.digitalEffect;});
+  if(!keyResults.length){showInlineFeedback(feedback,'neutral','Добавьте ключевой результат проекта.');return;}
+  for(var i=0;i<keyResults.length;i++){
+    var entry=keyResults[i];
+    if(!entry.result){showInlineFeedback(feedback,'neutral','Добавьте ключевой результат проекта.');return;}
+    if(isProcessText(entry.result)){showInlineFeedback(feedback,'warn',getResultProcessFeedback(block));return;}
+    if(!entry.digitalEffect){showInlineFeedback(feedback,'neutral','Добавьте хотя бы один конкретный цифровой результат.');return;}
+    if(!containsNumber(entry.digitalEffect)){showInlineFeedback(feedback,'neutral','Укажите конкретное значение: количество, процент, срок, охват или финансовый эффект.');return;}
+    if(isActivityOnlyEffect(entry.digitalEffect)){showInlineFeedback(feedback,'warn','Цифра отражает объём работы, но не результат.');return;}
+    if(block==='plan'&&!entry.deadline){showInlineFeedback(feedback,'neutral','Укажите срок, когда планируете достичь этот результат.');return;}
+  }
+  showInlineFeedback(feedback,'good','Результат и цифровой эффект сформулированы.');
+}
+
+function buildKeyResultLine(entry){
+  var parts=[];
+  if(entry.result)parts.push(ensureSentence(entry.result));
+  if(entry.digitalEffect)parts.push(ensureSentence(entry.digitalEffect));
+  if(entry.deadline)parts.push('Планируем до '+formatDate(entry.deadline));
+  return parts.join(' ').trim();
+}
+function buildKeyNarrative(project){
+  return project.keyResults.map(buildKeyResultLine).filter(Boolean);
+}
+function buildSummarySections(done,plan){
+  var keyProjects=done.filter(function(project){return project.isKeyProject;});
+  var regularDone=done.filter(function(project){return !project.isKeyProject;});
+  var keyPlans=plan.filter(function(project){return project.isKeyProject;});
+  var regularPlans=plan.filter(function(project){return !project.isKeyProject;});
+  var html='';
+  if(keyProjects.length){
+    html+='<div class="summary-section-label">Ключевые проекты недели</div><div class="summary-list">'+keyProjects.map(function(project){
+      var keyLines=buildKeyNarrative(project);
+      return'<div class="summary-project-card"><div class="summary-project-title">'+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div class="summary-project-text">'+esc(keyLines[0])+'</div>':'<div class="summary-project-metrics">'+keyLines.map(function(line){return'<div class="summary-project-metric">'+esc(line)+'</div>'}).join('')+'</div>')+(project.incs.length?'<div class="summary-project-metrics">'+project.incs.map(function(inc){return'<div class="summary-project-metric">'+esc(inc.desc)+'</div>'}).join('')+'</div>':'')+'</div>';
+    }).join('')+'</div>';
+  }
+  if(regularDone.length){
+    html+='<div class="summary-section-label">Остальные результаты</div><div class="summary-list">'+regularDone.map(function(project){return'<div class="summary-project-card"><div class="summary-project-title">'+esc(project.project||'Без названия')+'</div><div class="summary-project-metrics">'+project.incs.map(function(inc){return'<div class="summary-project-metric">'+esc(inc.desc)+'</div>';}).join('')+'</div></div>';}).join('')+'</div>';
+  }
+  if(keyPlans.length){
+    html+='<div class="summary-section-label">Ключевые планы недели</div><div class="summary-list">'+keyPlans.map(function(project){
+      var keyLines=buildKeyNarrative(project);
+      return'<div class="summary-project-card"><div class="summary-project-title">'+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div class="summary-project-text">'+esc(keyLines[0])+'</div>':'<div class="summary-project-metrics">'+keyLines.map(function(line){return'<div class="summary-project-metric">'+esc(line)+'</div>'}).join('')+'</div>')+(project.incs.length?'<div class="summary-project-metrics">'+project.incs.map(function(inc){return'<div class="summary-project-metric">'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>'}).join('')+'</div>':'')+'</div>';
+    }).join('')+'</div>';
+  }
+  if(regularPlans.length){
+    html+='<div class="summary-section-label">Планы на эту неделю</div><div class="summary-list">'+regularPlans.map(function(project){return'<div class="summary-project-card"><div class="summary-project-title">'+esc(project.project||'Без названия')+'</div><div class="summary-project-metrics">'+project.incs.map(function(inc){return'<div class="summary-project-metric">'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>';}).join('')+'</div></div>';}).join('')+'</div>';
+  }
+  return html;
+}
+function buildSummaryFeedback(projects,issues,showDetails){
+  if(!projects.length)return'<div class="summary-feedback nudge"><div class="fb-emoji">📭</div><div class="fb-text"><div class="fb-title">Пока пусто</div>Добавьте результаты и планы на неделю.</div></div>';
+  var html='<div class="summary-feedback '+(issues.length?'nudge':'positive')+'"><div class="fb-emoji">'+(issues.length?'⚠️':'✓')+'</div><div class="fb-text"><div class="fb-title">'+(issues.length?'Нужно доработать ключевые проекты':'Отчёт выглядит содержательно')+'</div>'+(issues.length?'Проверьте ключевой результат и цифровой эффект.':'Ключевые проекты заполнены достаточно компактно и по делу.')+'</div></div>';
+  if(showDetails){
+    issues.forEach(function(entry){html+='<div class="summary-soft-warn"><span>⚠️</span><span>Для ключевого проекта «'+esc(entry.project.project||'Без названия')+'» необходимо: '+entry.issues.join('; ')+'.</span></div>';});
+  }
+  return html;
+}
+function openSummary(showDetails){
+  validatePlanDates();
+  var done=collectProjects('done');
+  var plan=collectProjects('plan');
+  var allProjects=done.concat(plan);
+  var issues=getKeyProjectIssues(allProjects.filter(function(project){return project.isKeyProject;}));
+  document.getElementById('summaryFeedback').innerHTML=buildSummaryFeedback(allProjects,issues,!!showDetails);
+  document.getElementById('summarySections').innerHTML=buildSummarySections(done,plan);
+  var projectNames={},runC=0,changeC=0,planTotal=0,planWithDates=0;
+  done.concat(plan).forEach(function(project){if(project.project)projectNames[project.project]=true;if(project.taskType==='Run-задача')runC+=1;else changeC+=1;});
+  plan.forEach(function(project){project.incs.forEach(function(inc){planTotal+=1;if(inc.date)planWithDates+=1;});});
+  var totalItems=done.reduce(function(sum,project){return sum+project.incs.length+(project.isKeyProject?project.keyResults.length:0);},0)+plan.reduce(function(sum,project){return sum+project.incs.length+(project.isKeyProject?project.keyResults.length:0);},0);
+  var stats='<div class="stat-tile"><div class="stat-value">'+Object.keys(projectNames).length+'</div><div class="stat-label">проектов в работе</div></div>';
+  stats+='<div class="stat-tile"><div class="stat-value">'+totalItems+'</div><div class="stat-label">задач на неделю</div></div>';
+  stats+='<div class="stat-tile wide"><div><div class="stat-label" style="margin-bottom:4px">Баланс задач</div><div style="font-size:13px;font-weight:600">'+runC+' Run · '+changeC+' Change</div></div><div class="stat-bar-wrap"><div class="stat-bar"><div class="stat-bar-fill green" style="width:'+(runC+changeC?Math.round(runC/(runC+changeC)*100):50)+'%"></div></div></div></div>';
+  if(planTotal>0)stats+='<div class="stat-tile wide"><div><div class="stat-label" style="margin-bottom:4px">Планы со сроком</div><div style="font-size:13px;font-weight:600">'+planTotal+'</div></div><div style="font-size:13px;font-weight:600;color:'+(planWithDates===planTotal?'var(--green)':'var(--warning-accent)')+'">'+planWithDates+' из '+planTotal+'</div></div>';
+  document.getElementById('summaryStats').innerHTML=stats;
+  var hints=[];
+  if(planTotal>0&&planWithDates<planTotal)hints.push({icon:'📅',text:'Укажите сроки для всех планов, чтобы отчёт было легче читать.'});
+  if(issues.length&&!showDetails)hints.push({icon:'📊',text:'Для ключевого проекта нужны результат и конкретный цифровой эффект.'});
+  if(!issues.length&&allProjects.some(function(project){return project.isKeyProject;}))hints.push({icon:'✓',text:'Ключевые проекты описаны компактно и с цифровым подтверждением.'});
+  document.getElementById('summaryHints').innerHTML=hints.map(function(hint){return'<div class="summary-hint"><span class="icon">'+hint.icon+'</span>'+esc(hint.text)+'</div>';}).join('');
+  document.getElementById('summaryOverlay').classList.add('open');
+}
+function closeSummary(){document.getElementById('summaryOverlay').classList.remove('open')}
+
+function buildReportText(){
+  var emp=document.getElementById('employee').value.trim()||'—';
+  var comments=document.getElementById('comments').value.trim();
+  var done=collectProjects('done');
+  var plan=collectProjects('plan');
+  var keyProjects=done.filter(function(project){return project.isKeyProject;});
+  var regularDone=done.filter(function(project){return !project.isKeyProject;});
+  var keyPlans=plan.filter(function(project){return project.isKeyProject;});
+  var regularPlans=plan.filter(function(project){return !project.isKeyProject;});
+  var lines=['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp,'Неделя: '+formatReportDate(reportDayValue)];
+  if(keyProjects.length){
+    lines.push('','КЛЮЧЕВЫЕ ПРОЕКТЫ НЕДЕЛИ','');
+    keyProjects.forEach(function(project,index){
+      lines.push((index+1)+'. '+(project.project||'Без названия'));
+      buildKeyNarrative(project).forEach(function(line){lines.push(line);});
+      project.incs.forEach(function(inc){lines.push('— '+inc.desc);});
+      lines.push('');
+    });
+  }
+  if(regularDone.length){
+    lines.push('ОСТАЛЬНЫЕ РЕЗУЛЬТАТЫ','');
+    regularDone.forEach(function(project){lines.push('Проект: '+(project.project||'Без названия'));project.incs.forEach(function(inc){lines.push('— '+inc.desc);});lines.push('');});
+  }
+  if(keyPlans.length){
+    lines.push('КЛЮЧЕВЫЕ ПЛАНЫ НЕДЕЛИ','');
+    keyPlans.forEach(function(project){
+      lines.push('Проект: '+(project.project||'Без названия'));
+      buildKeyNarrative(project).forEach(function(line){lines.push(line);});
+      project.incs.forEach(function(inc){lines.push('— '+inc.desc+(inc.date?' до '+formatDate(inc.date):''));});
+      lines.push('');
+    });
+  }
+  if(regularPlans.length){
+    lines.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ','');
+    regularPlans.forEach(function(project){lines.push('Проект: '+(project.project||'Без названия'));project.incs.forEach(function(inc){lines.push('— '+inc.desc+(inc.date?' до '+formatDate(inc.date):''));});lines.push('');});
+  }
+  if(comments){lines.push('КОММЕНТАРИИ И БЛОКЕРЫ');comments.split('\n').forEach(function(line){lines.push('— '+line);});}
+  return lines.filter(function(line,index,arr){return!(line===''&&arr[index-1]==='');}).join('\n');
+}
+function buildReportHTML(){
+  var emp=document.getElementById('employee').value.trim()||'—';
+  var comments=document.getElementById('comments').value.trim();
+  var done=collectProjects('done');
+  var plan=collectProjects('plan');
+  var keyProjects=done.filter(function(project){return project.isKeyProject;});
+  var regularDone=done.filter(function(project){return !project.isKeyProject;});
+  var keyPlans=plan.filter(function(project){return project.isKeyProject;});
+  var regularPlans=plan.filter(function(project){return !project.isKeyProject;});
+  var html='<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#2B2D33"><div style="font-size:18px;font-weight:700;margin-bottom:4px">ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ</div><div style="color:#8F96A4;margin-bottom:16px">Сотрудник: '+esc(emp)+' · Неделя: '+esc(formatReportDate(reportDayValue))+'</div>';
+  if(keyProjects.length){
+    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Ключевые проекты недели</div>';
+    keyProjects.forEach(function(project,index){
+      var keyLines=buildKeyNarrative(project);
+      html+='<div style="margin-bottom:14px;padding:12px 14px;border:1px solid #E6E9EE;border-radius:14px;background:#FFFFFF"><div style="font-size:14px;font-weight:700;margin-bottom:6px">'+(index+1)+'. '+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div style="font-size:13px;line-height:1.55">'+esc(keyLines[0])+'</div>':'<div style="margin-top:4px">'+keyLines.map(function(line){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(line)+'</div>';}).join('')+'</div>')+(project.incs.length?'<div style="margin-top:8px">'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+'</div>';}).join('')+'</div>':'')+'</div>';
+    });
+  }
+  if(regularDone.length){
+    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Остальные результаты</div>';
+    regularDone.forEach(function(project){html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+'</div>';}).join('')+'</div>';});
+  }
+  if(keyPlans.length){
+    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Ключевые планы недели</div>';
+    keyPlans.forEach(function(project){
+      var keyLines=buildKeyNarrative(project);
+      html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div style="font-size:13px;line-height:1.55">'+esc(keyLines[0])+'</div>':'<div>'+keyLines.map(function(line){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(line)+'</div>';}).join('')+'</div>')+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>';}).join('')+'</div>';
+    });
+  }
+  if(regularPlans.length){
+    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Планы на эту неделю</div>';
+    regularPlans.forEach(function(project){html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>';}).join('')+'</div>';});
+  }
+  if(comments)html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Комментарии и блокеры</div><div>'+esc(comments).replace(/\n/g,'<br>')+'</div>';
+  html+='</div>';
+  return html;
+}
+
+function copyReport(){
+  validatePlanDates();
+  var projects=collectProjects('done').concat(collectProjects('plan'));
+  var issues=getKeyProjectIssues(projects.filter(function(project){return project.isKeyProject;}));
+  if(issues.length){
+    openSummary(true);
+    toast('Доработайте ключевые проекты перед копированием отчёта.');
+    return;
+  }
+  var html=buildReportHTML(),plain=buildReportText();
+  var tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
   document.body.appendChild(tmp);
   var range=document.createRange();range.selectNodeContents(tmp);
   var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
-  try{document.execCommand('copy');toast('Отчёт скопирован в буфер обмена')}catch(e){navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован')})}
-  sel.removeAllRanges();document.body.removeChild(tmp);
+  try{document.execCommand('copy');toast('Отчёт скопирован в буфер обмена');}catch(e){navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован');});}
+  sel.removeAllRanges();
+  document.body.removeChild(tmp);
+}
+function clearAll(){
+  if(!confirm('Очистить всю форму?'))return;
+  document.getElementById('employee').value='';
+  document.getElementById('comments').value='';
+  document.getElementById('doneList').innerHTML='';
+  document.getElementById('planList').innerHTML='';
+  reportDayValue=getDefaultReportDay();
+  updateWeek();
+  updateTitle();
+  addProduct('done',true);
+  addProduct('plan',true);
+  updateBadge('done');
+  updateBadge('plan');
 }
 
-/* === SUMMARY === */
-function openSummary(){
-  document.querySelectorAll('.inc-date').forEach(function(el){var row=el.closest('[class^="inc-row"]');var desc=row?row.querySelector('.inc-desc'):null;if(desc&&desc.value.trim()&&!el.value)el.classList.add('empty-warning');else el.classList.remove('empty-warning')});
-  updateKeyQuantWarnings();
-  var done=getProducts('done'),plan=getProducts('plan');
-  var allP={},totalDone=0,totalPlan=0,runC=0,changeC=0,plansDate=0,plansTotal=0;
-  done.forEach(function(p){allP[p.product]=true;totalDone+=p.incs.length;if(p.isKey)totalDone++;if(p.taskType==='Run-задача')runC++;else changeC++});
-  plan.forEach(function(p){allP[p.product]=true;totalPlan+=p.incs.length;if(p.isKey)totalPlan++;if(p.taskType==='Run-задача')runC++;else changeC++;p.incs.forEach(function(i){plansTotal++;if(i.date)plansDate++})});
-  var pCount=Object.keys(allP).length,total=totalDone+totalPlan,ttypes=runC+changeC;
-  var runPct=ttypes>0?Math.round(runC/ttypes*100):50;
-  var keyDone=getKeyTask(done),keyPlan=getKeyTask(plan);
-  var fb=getFeedback(totalDone,totalPlan,plansTotal,plansDate,pCount);
-  var fbH='<div class="summary-feedback '+fb.tone+'"><div class="fb-emoji">'+fb.emoji+'</div><div class="fb-text"><div class="fb-title">'+fb.title+'</div>'+fb.text+'</div></div>';
-  if(keyDone){
-    fbH+='<div class="summary-key-card"><div class="summary-key-label">⭐ Ключевая задача</div><div class="summary-key-title">'+esc(keyDone.product)+'</div><div class="summary-key-sub">'+esc(keyDone.taskType)+'</div>';
-    if(keyDone.effectData){
-      var ed=keyDone.effectData;
-      if(ed.label||ed.desc)fbH+='<div class="summary-key-effect">'+(ed.label?(ed.icon?ed.icon+' ':'')+esc(ed.label):'Тип результата не выбран')+(ed.desc?': '+esc(ed.desc):'')+'</div>';
-      if(ed.quant)fbH+='<div class="summary-key-quant">📊 '+esc(ed.quant)+'</div>';
-      if(!ed.label)fbH+='<div class="summary-soft-warn">⚠️ Выберите тип результата для ключевой задачи</div>';
-      if(!ed.quant)fbH+='<div class="summary-soft-warn">⚠️ Оцифровка обязательна для ключевой задачи</div>';
-    }else{
-      fbH+='<div class="summary-soft-warn">⚠️ Заполните тип результата и оцифровку для ключевой задачи</div>';
-    }
-    fbH+='</div>';
-  }else if(done.length>0){fbH+='<div class="summary-warn"><span style="font-size:18px">⚠️</span>Отметьте ключевую задачу в блоке «Сделано»</div>'}
-  if(keyPlan){
-    fbH+='<div class="summary-key-card"><div class="summary-key-label">⭐ Ключевой план</div><div class="summary-key-title">'+esc(keyPlan.product)+'</div><div class="summary-key-sub">'+esc(keyPlan.taskType)+'</div>';
-    if(keyPlan.effectData){
-      var ep=keyPlan.effectData;
-      if(ep.label||ep.desc)fbH+='<div class="summary-key-effect">'+(ep.label?(ep.icon?ep.icon+' ':'')+esc(ep.label):'Тип результата не выбран')+(ep.desc?': '+esc(ep.desc):'')+'</div>';
-      if(ep.quant)fbH+='<div class="summary-key-quant">📊 '+esc(ep.quant)+'</div>';
-      if(!ep.label)fbH+='<div class="summary-soft-warn">⚠️ Выберите тип результата для ключевого плана</div>';
-      if(!ep.quant)fbH+='<div class="summary-soft-warn">⚠️ Оцифровка обязательна для ключевого плана</div>';
-    }else{
-      fbH+='<div class="summary-soft-warn">⚠️ Заполните тип результата и оцифровку для ключевого плана</div>';
-    }
-    fbH+='</div>';
-  }else if(plan.length>0){fbH+='<div class="summary-warn"><span style="font-size:18px">⚠️</span>Отметьте ключевую задачу в блоке «Планы»</div>'}
-  document.getElementById('summaryFeedback').innerHTML=fbH;
-  var sH='<div class="stat-tile"><div class="stat-value">'+pCount+'</div><div class="stat-label">'+decline(pCount,'продукт в работе','продукта в работе','продуктов в работе').replace(/^\d+ /,'')+'</div></div>';
-  sH+='<div class="stat-tile"><div class="stat-value">'+total+'</div><div class="stat-label">'+decline(total,'задача на неделю','задачи на неделю','задач на неделю').replace(/^\d+ /,'')+'</div></div>';
-  sH+='<div class="stat-tile wide"><div><div class="stat-label" style="margin-bottom:4px">Баланс задач</div><div style="font-size:13px;font-weight:600">'+runC+' Run · '+changeC+' Change</div></div><div class="stat-bar-wrap"><div class="stat-bar"><div class="stat-bar-fill green" style="width:'+runPct+'%"></div></div></div></div>';
-  if(plansTotal>0){var dc=plansDate===plansTotal?'var(--green)':'var(--warning-accent)';sH+='<div class="stat-tile wide"><div><div class="stat-label" style="margin-bottom:4px">Планы на неделю</div><div style="font-size:13px;font-weight:600">'+decline(totalPlan,'задача','задачи','задач')+'</div></div><div style="font-size:13px;font-weight:600;color:'+dc+'">'+plansDate+' из '+plansTotal+' со сроком</div></div>'}
-  document.getElementById('summaryStats').innerHTML=sH;
-  var hints=[];
-  if(plansTotal>0&&plansDate<plansTotal){var m2=plansTotal-plansDate;hints.push({icon:'📅',text:decline(m2,'план без срока','плана без срока','планов без срока')+' — укажите дедлайны'})}
-  if(getMissingKeyQuantInputs().length>0)hints.push({icon:'📊',text:'Для ключевых задач обязательна оцифровка результата'});
-  if(pCount===1&&totalDone>0)hints.push({icon:'📌',text:'Только один продукт — если работали с другими, добавьте их'});
-  var hasIssues=false;
-  done.concat(plan).forEach(function(p){p.incs.forEach(function(i){var lo=i.desc.toLowerCase();if(lo.split(/\s+/).length<4)hasIssues=true;for(var j=0;j<PROCESS_WORDS.length;j++){if(lo.indexOf(PROCESS_WORDS[j])!==-1){hasIssues=true;break}}})});
-  if(!hasIssues&&total>0)hints.push({icon:'✅',text:'Формулировки в порядке — конкретно и по делу'});
-  document.getElementById('summaryHints').innerHTML=hints.map(function(h2){return'<div class="summary-hint"><span class="icon">'+h2.icon+'</span>'+h2.text+'</div>'}).join('');
-  document.getElementById('summaryOverlay').classList.add('open');
+function getTipConfig(key){
+  if(key==='task-glossary')return{html:TASK_GLOSSARY,width:280};
+  if(key==='key-project')return{html:'<div style="font-size:12px;line-height:1.5">'+esc(KEY_TIP)+'</div>',width:300};
+  if(key==='result-field')return{html:RESULT_FIELD_TIP,width:320};
+  if(key==='plan-field')return{html:PLAN_FIELD_TIP,width:320};
+  if(key==='digital-effect')return{html:DIGITAL_EFFECT_TIP,width:336};
+  return null;
+}
+function positionTip(icon){
+  var rect=icon.getBoundingClientRect();
+  var left=Math.max(24,Math.min(window.innerWidth-24,rect.left+rect.width/2));
+  floatingTip.style.left=left+'px';
+  floatingTip.style.top=(rect.top-10)+'px';
+  floatingTip.style.transform='translate(-50%,-100%)';
+}
+function showTip(icon,lock){
+  var config=getTipConfig(icon.getAttribute('data-tip'));
+  if(!config)return;
+  floatingTip.innerHTML=config.html;
+  floatingTip.style.display='block';
+  floatingTip.style.background='#2B2D33';
+  floatingTip.style.color='#fff';
+  floatingTip.style.fontSize='12px';
+  floatingTip.style.padding='10px 14px';
+  floatingTip.style.borderRadius='12px';
+  floatingTip.style.whiteSpace='normal';
+  floatingTip.style.lineHeight='1.5';
+  floatingTip.style.width=config.width+'px';
+  floatingTip.style.boxShadow='0 4px 16px rgba(0,0,0,.2)';
+  floatingTip.style.fontFamily="'Inter',Arial,sans-serif";
+  positionTip(icon);
+  if(lock)lockedTipIcon=icon;
+}
+function hideTip(force){
+  if(!force&&lockedTipIcon)return;
+  lockedTipIcon=null;
+  floatingTip.style.display='none';
 }
 
-function getFeedback(td,tp,pt,pd,pc){
-  var t=td+tp;
-  if(t===0)return{emoji:'📭',tone:'nudge',title:'Пока пусто',text:'Добавьте результаты и планы'};
-  if(td===0&&tp>0)return{emoji:'🤔',tone:'nudge',title:'Только планы',text:'Блок «Что сделано» пустой'};
-  if(td>0&&tp===0)return{emoji:'📝',tone:'nudge',title:'Без планов',text:'Добавьте задачи на следующую неделю'};
-  if(t<=2)return{emoji:'🧐',tone:'nudge',title:'Маловато',text:'Всего '+decline(t,'задача','задачи','задач')};
-  if(t>=8&&pd===pt&&pc>=3)return{emoji:'🚀',tone:'positive',title:'Отличный отчёт!',text:'Много задач, несколько продуктов, сроки указаны'};
-  if(t>=6)return{emoji:'💪',tone:'positive',title:'Насыщенная неделя',text:decline(pc,'продукт','продукта','продуктов')+', '+decline(t,'задача','задачи','задач')};
-  if(pd===pt&&pt>0)return{emoji:'👍',tone:'positive',title:'Всё по плану',text:'Задачи есть, сроки указаны'};
-  return{emoji:'📋',tone:'neutral',title:'Отчёт заполнен',text:'Проверьте результаты и планы'};
-}
-
-function closeSummary(){document.getElementById('summaryOverlay').classList.remove('open')}
-function clearAll(){if(!confirm('Очистить всю форму?'))return;document.getElementById('employee').value='';document.getElementById('comments').value='';document.getElementById('doneList').innerHTML='';document.getElementById('planList').innerHTML='';updateBadge('done');updateBadge('plan');weekOffset=-1;updateWeek();updateTitle()}
-function toast(msg){document.getElementById('toastText').textContent=msg;var t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
-
-/* VALIDATION */
 document.addEventListener('focusout',function(e){
-  if(e.target.classList.contains('inc-desc')){setTimeout(function(){validateIncField(e.target)},100);var row=e.target.closest('[class^="inc-row"]');if(row){var dt=row.querySelector('.inc-date');if(dt&&e.target.value.trim()&&!dt.value)dt.classList.add('empty-warning')}}
-  if(e.target.classList.contains('inc-date')){var r2=e.target.closest('[class^="inc-row"]');var d2=r2?r2.querySelector('.inc-desc'):null;if(d2&&d2.value.trim()&&!e.target.value)e.target.classList.add('empty-warning');else e.target.classList.remove('empty-warning')}
+  if(e.target.classList.contains('inc-desc'))validateIncField(e.target);
+  if(e.target.classList.contains('inc-date'))validatePlanDates();
+  if(e.target.classList.contains('key-result-desc')||e.target.classList.contains('key-digital-effect')||e.target.classList.contains('key-result-date'))updateKeyProjectState(e.target.closest('.product-item'));
 });
 document.addEventListener('input',function(e){
-  if(e.target.classList.contains('inc-desc')){e.target.classList.remove('has-warning');var row=e.target.closest('[class^="inc-row"]');if(row&&row.nextElementSibling&&row.nextElementSibling.classList.contains('inc-hint'))row.nextElementSibling.remove()}
+  if(e.target.classList.contains('inc-desc'))scheduleFeedback(e.target,validateIncField);
   if(e.target.classList.contains('inc-date'))e.target.classList.remove('empty-warning');
-  if(e.target.classList.contains('ef-quant-input'))e.target.classList.remove('required-missing');
+  if(e.target.classList.contains('key-result-desc')||e.target.classList.contains('key-digital-effect')||e.target.classList.contains('key-result-date'))scheduleFeedback(e.target,function(input){updateKeyProjectState(input.closest('.product-item'));});
 });
-function validateIncField(f){
-  var row=f.closest('[class^="inc-row"]');
-  if(row&&row.nextElementSibling&&row.nextElementSibling.classList.contains('inc-hint'))row.nextElementSibling.remove();
-  f.classList.remove('has-warning');var t=f.value.trim();if(!t)return;
-  var lo=t.toLowerCase(),ws=lo.split(/\s+/),msg='';
-  var inDone=false;var bc=f.closest('[data-block]');if(bc&&bc.getAttribute('data-block')==='done')inDone=true;
-  for(var i=0;i<PROCESS_WORDS.length;i++){if(lo.indexOf(PROCESS_WORDS[i])!==-1){msg=inDone?'Похоже на процесс — опишите результат':'Похоже на процесс — опишите ожидаемый результат';break}}
-  if(!msg&&ws.length<4)msg='Добавьте конкретики — что, для какого сценария, какой результат';
-  if(!msg&&inDone&&ws.length>=3){var fw=ws[0].replace(/[^а-яё]/g,'');if(!PERFECTIVE_CHECK.test(fw))msg='Начните с глагола действия: «Спроектировали…», «Подготовили…»'}
-  if(msg&&row&&row.parentElement){f.classList.add('has-warning');var hint=document.createElement('div');hint.className='inc-hint';hint.innerHTML='<span class="hint-icon">⚠️</span>'+msg;row.parentElement.insertBefore(hint,row.nextSibling)}
-}
-
-/* TOOLTIP */
-var floatingTip=document.getElementById('floatingTip');
 document.addEventListener('mouseover',function(e){
-  var ic=e.target.closest('.tip-icon');if(!ic)return;var key=ic.getAttribute('data-tip');if(!key)return;
-  if(key==='task-glossary'){floatingTip.innerHTML=TASK_GLOSSARY;floatingTip.style.width='280px'}
-  else{floatingTip.textContent=key;floatingTip.style.width='260px'}
-  floatingTip.style.display='block';floatingTip.style.background='#2B2D33';floatingTip.style.color='#fff';
-  floatingTip.style.fontSize='12px';floatingTip.style.padding='10px 14px';floatingTip.style.borderRadius='12px';
-  floatingTip.style.whiteSpace='normal';floatingTip.style.lineHeight='1.5';
-  floatingTip.style.boxShadow='0 4px 16px rgba(0,0,0,.2)';floatingTip.style.fontFamily="'Inter',Arial,sans-serif";
-  var r=ic.getBoundingClientRect();
-  floatingTip.style.left=(r.left+r.width/2)+'px';floatingTip.style.top=(r.top-10)+'px';
-  floatingTip.style.transform='translate(-50%,-100%)';
+  var icon=e.target.closest('.tip-icon');
+  if(!icon||lockedTipIcon)return;
+  showTip(icon,false);
 });
-document.addEventListener('mouseout',function(e){if(e.target.closest('.tip-icon'))floatingTip.style.display='none'});
+document.addEventListener('mouseout',function(e){
+  if(e.target.closest('.tip-icon')&&!lockedTipIcon)floatingTip.style.display='none';
+});
+document.addEventListener('click',function(e){
+  var icon=e.target.closest('.tip-icon');
+  if(icon){
+    e.preventDefault();
+    if(lockedTipIcon===icon)hideTip(true);else showTip(icon,true);
+    return;
+  }
+  if(lockedTipIcon&&!e.target.closest('#floatingTip'))hideTip(true);
+});
+window.addEventListener('scroll',function(){if(lockedTipIcon)positionTip(lockedTipIcon)},true);
+window.addEventListener('resize',function(){if(lockedTipIcon)positionTip(lockedTipIcon)});
 
-/* INIT */
-updateWeek();addProduct('done',true);addProduct('plan',true);window.scrollTo(0,0);
+reportDayValue=getDefaultReportDay();
+updateWeek();
+addProduct('done',true);
+addProduct('plan',true);
+updateBadge('done');
+updateBadge('plan');
+window.scrollTo(0,0);
 </script>
 </body>
 </html>
