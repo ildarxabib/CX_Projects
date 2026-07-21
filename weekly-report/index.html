@@ -681,6 +681,15 @@ function renderCommentsSectionHTML(comments){
   if(!comments)return'';
   return'<div style="margin:0 0 24px"><div style="background:#F6F6F6;border-radius:14px;padding:18px 20px 22px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="width:30px;height:30px;border-radius:8px;background:#8F96A4;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:15px;line-height:1;flex-shrink:0">✎</span><span style="font-size:19px;font-weight:700;color:#333333;text-decoration:underline;text-underline-offset:4px;line-height:1.25">Комментарии и блокеры</span></div><div style="font-size:15px;line-height:1.7;color:#333333;padding-left:2px">'+esc(comments).replace(/\n/g,'<br><br>')+'</div></div></div>';
 }
+function buildReportTextProjectBlock(project,block){
+  var items=getProjectReportItems(project,block);
+  if(!items.length)return'';
+  var lines=[];
+  if(project.isKeyProject)lines.push('★ Ключевой проект недели');
+  lines.push((project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
+  items.forEach(function(item){lines.push('  • '+item.text+(block==='plan'?renderPlainDeadline(item.deadline):''));});
+  return lines.join('\n');
+}
 function buildSummarySections(done,plan){
   var keyProjects=done.filter(function(project){return project.isKeyProject;});
   var regularDone=done.filter(function(project){return !project.isKeyProject;});
@@ -746,31 +755,20 @@ function buildReportText(){
   var comments=document.getElementById('comments').value.trim();
   var done=collectProjects('done');
   var plan=collectProjects('plan');
-  var lines=['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp+' · '+formatReportDateCompact(reportDayValue),''];
+  var sections=[];
   if(done.length){
-    lines.push('ЧТО БЫЛО СДЕЛАНО','');
-    done.forEach(function(project){
-      var items=getProjectReportItems(project,'done');
-      if(!items.length)return;
-      if(project.isKeyProject)lines.push('★ Ключевой проект недели');
-      lines.push((project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
-      items.forEach(function(item){lines.push('• '+item.text);});
-      lines.push('');
-    });
+    var doneBlocks=done.map(function(project){return buildReportTextProjectBlock(project,'done');}).filter(Boolean);
+    if(doneBlocks.length)sections.push('ЧТО БЫЛО СДЕЛАНО\n\n'+doneBlocks.join('\n\n'));
   }
   if(plan.length){
-    lines.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ','');
-    plan.forEach(function(project){
-      var items=getProjectReportItems(project,'plan');
-      if(!items.length)return;
-      if(project.isKeyProject)lines.push('★ Ключевой проект недели');
-      lines.push((project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
-      items.forEach(function(item){lines.push('• '+item.text+renderPlainDeadline(item.deadline));});
-      lines.push('');
-    });
+    var planBlocks=plan.map(function(project){return buildReportTextProjectBlock(project,'plan');}).filter(Boolean);
+    if(planBlocks.length)sections.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n\n'+planBlocks.join('\n\n'));
   }
-  if(comments){lines.push('КОММЕНТАРИИ И БЛОКЕРЫ');comments.split('\n').forEach(function(line){lines.push('• '+line);});}
-  return lines.filter(function(line,index,arr){return!(line===''&&arr[index-1]==='');}).join('\n');
+  if(comments){
+    var commentLines=comments.split('\n').map(function(line){return line.trim();}).filter(Boolean).map(function(line){return'  • '+line;}).join('\n');
+    if(commentLines)sections.push('КОММЕНТАРИИ И БЛОКЕРЫ\n\n'+commentLines);
+  }
+  return['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp+' · '+formatReportDateCompact(reportDayValue),sections.join('\n\n\n')].filter(Boolean).join('\n\n');
 }
 function buildReportHTML(){
   var emp=document.getElementById('employee').value.trim()||'—';
@@ -799,16 +797,30 @@ function copyReport(){
     toast('Доработайте ключевые проекты перед копированием отчёта.');
     return;
   }
-  var html=buildReportHTML(),plain=buildReportText();
-  var tmp=document.createElement('div');
-  tmp.innerHTML=html;
-  tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
-  document.body.appendChild(tmp);
-  var range=document.createRange();range.selectNodeContents(tmp);
-  var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);
-  try{document.execCommand('copy');toast('Отчёт скопирован в буфер обмена');}catch(e){navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован');});}
-  sel.removeAllRanges();
-  document.body.removeChild(tmp);
+  var plain=buildReportText();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован в буфер обмена');}).catch(function(){
+      var tmp=document.createElement('textarea');
+      tmp.value=plain;
+      tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(tmp);
+      tmp.focus();
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      toast('Отчёт скопирован в буфер обмена');
+    });
+    return;
+  }
+  var fallback=document.createElement('textarea');
+  fallback.value=plain;
+  fallback.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
+  document.body.appendChild(fallback);
+  fallback.focus();
+  fallback.select();
+  document.execCommand('copy');
+  document.body.removeChild(fallback);
+  toast('Отчёт скопирован в буфер обмена');
 }
 function clearAll(){
   if(!confirm('Очистить всю форму?'))return;
