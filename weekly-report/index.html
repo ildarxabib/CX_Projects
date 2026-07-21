@@ -652,7 +652,7 @@ function getReportDivider(){
   return'────────────────────────────────────────';
 }
 function formatPlainStrong(text){
-  return text?'**'+text+'**':'';
+  return text||'';
 }
 function renderHTMLSpacer(height){
   return'<div style="height:'+height+'px;line-height:'+height+'px;font-size:'+height+'px">&nbsp;</div>';
