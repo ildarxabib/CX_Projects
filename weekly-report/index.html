@@ -620,6 +620,61 @@ function buildKeyResultLine(entry){
 function buildKeyNarrative(project){
   return project.keyResults.map(buildKeyResultLine).filter(Boolean);
 }
+function cleanReportText(text){
+  return(text||'').toString().trim().replace(/\s+/g,' ');
+}
+function stripEndingPunctuation(text){
+  return cleanReportText(text).replace(/[.!?…]+$/,'');
+}
+function formatReportDateCompact(value){
+  var selected=parseISODate(value)||parseISODate(getDefaultReportDay());
+  var start=getWeekStart(selected),end=cloneDate(start);
+  end.setDate(start.getDate()+4);
+  return formatDate(start)+' - '+formatDate(end);
+}
+function composeKeyReportText(entry){
+  return[stripEndingPunctuation(entry.result),stripEndingPunctuation(entry.digitalEffect)].filter(Boolean).join('. ');
+}
+function getProjectReportItems(project,block){
+  if(project.isKeyProject){
+    return project.keyResults.map(function(entry){
+      return{text:composeKeyReportText(entry),deadline:block==='plan'?entry.deadline:''};
+    }).filter(function(entry){return entry.text;});
+  }
+  return project.incs.map(function(inc){
+    return{text:cleanReportText(inc.desc),deadline:block==='plan'?inc.date:''};
+  }).filter(function(entry){return entry.text;});
+}
+function renderPlainDeadline(deadline){
+  return deadline?' -> до '+formatDate(deadline):'';
+}
+function renderHTMLDeadline(deadline){
+  if(!deadline)return'';
+  return' <span style="color:#00B956;font-weight:700;white-space:nowrap">→ до '+esc(formatDate(deadline))+'</span>';
+}
+function renderReportSectionHTML(title,icon,iconBg,projects,block){
+  if(!projects.length)return'';
+  var section='<div style="margin:0 0 18px">';
+  section+='<div style="background:#F6F6F6;border-radius:12px;padding:12px 16px 14px">';
+  section+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="width:28px;height:28px;border-radius:8px;background:'+iconBg+';color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;line-height:1">'+icon+'</span><span style="font-size:18px;font-weight:700;color:#333333;text-decoration:underline;text-underline-offset:4px">'+esc(title)+'</span></div>';
+  projects.forEach(function(project){
+    var items=getProjectReportItems(project,block);
+    if(!items.length)return;
+    section+='<div style="margin-top:10px">';
+    section+='<div style="font-size:16px;font-weight:700;color:#333333">'+esc(project.project||'Без названия')+(project.taskType?'<span style="font-weight:400;color:#999999"> ('+esc(project.taskType)+')</span>':'')+'</div>';
+    section+='<div style="margin-top:4px;display:flex;flex-direction:column;gap:4px">';
+    items.forEach(function(item){
+      section+='<div style="font-size:15px;line-height:1.45;color:#333333;padding-left:18px;position:relative"><span style="position:absolute;left:0;top:0;color:#333333">•</span>'+esc(item.text)+renderHTMLDeadline(item.deadline)+'</div>';
+    });
+    section+='</div></div>';
+  });
+  section+='</div></div>';
+  return section;
+}
+function renderCommentsSectionHTML(comments){
+  if(!comments)return'';
+  return'<div style="margin:0 0 18px"><div style="background:#F6F6F6;border-radius:12px;padding:12px 16px 14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="width:28px;height:28px;border-radius:8px;background:#8F96A4;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:15px;line-height:1">✎</span><span style="font-size:18px;font-weight:700;color:#333333;text-decoration:underline;text-underline-offset:4px">Комментарии и блокеры</span></div><div style="font-size:15px;line-height:1.5;color:#333333">'+esc(comments).replace(/\n/g,'<br>')+'</div></div></div>';
+}
 function buildSummarySections(done,plan){
   var keyProjects=done.filter(function(project){return project.isKeyProject;});
   var regularDone=done.filter(function(project){return !project.isKeyProject;});
@@ -685,38 +740,28 @@ function buildReportText(){
   var comments=document.getElementById('comments').value.trim();
   var done=collectProjects('done');
   var plan=collectProjects('plan');
-  var keyProjects=done.filter(function(project){return project.isKeyProject;});
-  var regularDone=done.filter(function(project){return !project.isKeyProject;});
-  var keyPlans=plan.filter(function(project){return project.isKeyProject;});
-  var regularPlans=plan.filter(function(project){return !project.isKeyProject;});
-  var lines=['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp,'Неделя: '+formatReportDate(reportDayValue)];
-  if(keyProjects.length){
-    lines.push('','КЛЮЧЕВЫЕ ПРОЕКТЫ НЕДЕЛИ','');
-    keyProjects.forEach(function(project,index){
-      lines.push((index+1)+'. '+(project.project||'Без названия'));
-      buildKeyNarrative(project).forEach(function(line){lines.push(line);});
-      project.incs.forEach(function(inc){lines.push('— '+inc.desc);});
+  var lines=['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp+' · '+formatReportDateCompact(reportDayValue),''];
+  if(done.length){
+    lines.push('ЧТО БЫЛО СДЕЛАНО','');
+    done.forEach(function(project){
+      var items=getProjectReportItems(project,'done');
+      if(!items.length)return;
+      lines.push((project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
+      items.forEach(function(item){lines.push('• '+item.text);});
       lines.push('');
     });
   }
-  if(regularDone.length){
-    lines.push('ОСТАЛЬНЫЕ РЕЗУЛЬТАТЫ','');
-    regularDone.forEach(function(project){lines.push('Проект: '+(project.project||'Без названия'));project.incs.forEach(function(inc){lines.push('— '+inc.desc);});lines.push('');});
-  }
-  if(keyPlans.length){
-    lines.push('КЛЮЧЕВЫЕ ПЛАНЫ НЕДЕЛИ','');
-    keyPlans.forEach(function(project){
-      lines.push('Проект: '+(project.project||'Без названия'));
-      buildKeyNarrative(project).forEach(function(line){lines.push(line);});
-      project.incs.forEach(function(inc){lines.push('— '+inc.desc+(inc.date?' до '+formatDate(inc.date):''));});
-      lines.push('');
-    });
-  }
-  if(regularPlans.length){
+  if(plan.length){
     lines.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ','');
-    regularPlans.forEach(function(project){lines.push('Проект: '+(project.project||'Без названия'));project.incs.forEach(function(inc){lines.push('— '+inc.desc+(inc.date?' до '+formatDate(inc.date):''));});lines.push('');});
+    plan.forEach(function(project){
+      var items=getProjectReportItems(project,'plan');
+      if(!items.length)return;
+      lines.push((project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
+      items.forEach(function(item){lines.push('• '+item.text+renderPlainDeadline(item.deadline));});
+      lines.push('');
+    });
   }
-  if(comments){lines.push('КОММЕНТАРИИ И БЛОКЕРЫ');comments.split('\n').forEach(function(line){lines.push('— '+line);});}
+  if(comments){lines.push('КОММЕНТАРИИ И БЛОКЕРЫ');comments.split('\n').forEach(function(line){lines.push('• '+line);});}
   return lines.filter(function(line,index,arr){return!(line===''&&arr[index-1]==='');}).join('\n');
 }
 function buildReportHTML(){
@@ -724,34 +769,15 @@ function buildReportHTML(){
   var comments=document.getElementById('comments').value.trim();
   var done=collectProjects('done');
   var plan=collectProjects('plan');
-  var keyProjects=done.filter(function(project){return project.isKeyProject;});
-  var regularDone=done.filter(function(project){return !project.isKeyProject;});
-  var keyPlans=plan.filter(function(project){return project.isKeyProject;});
-  var regularPlans=plan.filter(function(project){return !project.isKeyProject;});
-  var html='<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#2B2D33"><div style="font-size:18px;font-weight:700;margin-bottom:4px">ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ</div><div style="color:#8F96A4;margin-bottom:16px">Сотрудник: '+esc(emp)+' · Неделя: '+esc(formatReportDate(reportDayValue))+'</div>';
-  if(keyProjects.length){
-    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Ключевые проекты недели</div>';
-    keyProjects.forEach(function(project,index){
-      var keyLines=buildKeyNarrative(project);
-      html+='<div style="margin-bottom:14px;padding:12px 14px;border:1px solid #E6E9EE;border-radius:14px;background:#FFFFFF"><div style="font-size:14px;font-weight:700;margin-bottom:6px">'+(index+1)+'. '+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div style="font-size:13px;line-height:1.55">'+esc(keyLines[0])+'</div>':'<div style="margin-top:4px">'+keyLines.map(function(line){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(line)+'</div>';}).join('')+'</div>')+(project.incs.length?'<div style="margin-top:8px">'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+'</div>';}).join('')+'</div>':'')+'</div>';
-    });
-  }
-  if(regularDone.length){
-    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Остальные результаты</div>';
-    regularDone.forEach(function(project){html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+'</div>';}).join('')+'</div>';});
-  }
-  if(keyPlans.length){
-    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Ключевые планы недели</div>';
-    keyPlans.forEach(function(project){
-      var keyLines=buildKeyNarrative(project);
-      html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+(keyLines.length===1?'<div style="font-size:13px;line-height:1.55">'+esc(keyLines[0])+'</div>':'<div>'+keyLines.map(function(line){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(line)+'</div>';}).join('')+'</div>')+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>';}).join('')+'</div>';
-    });
-  }
-  if(regularPlans.length){
-    html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Планы на эту неделю</div>';
-    regularPlans.forEach(function(project){html+='<div style="margin-bottom:14px"><div style="font-weight:700;margin-bottom:4px">Проект: '+esc(project.project||'Без названия')+'</div>'+project.incs.map(function(inc){return'<div style="padding-left:14px;position:relative"><span style="position:absolute;left:0">•</span>'+esc(inc.desc)+(inc.date?' до '+esc(formatDate(inc.date)):'')+'</div>';}).join('')+'</div>';});
-  }
-  if(comments)html+='<div style="font-size:13px;font-weight:700;color:#8F96A4;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px">Комментарии и блокеры</div><div>'+esc(comments).replace(/\n/g,'<br>')+'</div>';
+  var html='<div style="font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.45;color:#333333;background:#FFFFFF;padding:2px 0">';
+  html+='<div style="font-size:20px;font-weight:700;color:#333333;display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:22px;line-height:1">📋</span><span>Еженедельный отчёт</span></div>';
+  html+='<div style="font-size:14px;color:#999999;margin-bottom:12px">Сотрудник: '+esc(emp)+' · '+esc(formatReportDateCompact(reportDayValue))+'</div>';
+  html+='<div style="height:1px;background:#D8D8D8;margin:0 0 16px"></div>';
+  html+=renderReportSectionHTML('Что было сделано','✓','#00B956',done,'done');
+  if(done.length&&plan.length)html+='<div style="height:1px;background:#D8D8D8;margin:0 0 16px"></div>';
+  html+=renderReportSectionHTML('Планы на эту неделю','▶','#34AAF2',plan,'plan');
+  if((done.length||plan.length)&&comments)html+='<div style="height:1px;background:#D8D8D8;margin:0 0 16px"></div>';
+  html+=renderCommentsSectionHTML(comments);
   html+='</div>';
   return html;
 }
