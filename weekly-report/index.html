@@ -697,7 +697,7 @@ function buildReportTextProjectBlock(project,block){
   var items=getProjectReportItems(project,block);
   if(!items.length)return'';
   var lines=[];
-  if(project.isKeyProject)lines.push('★ Ключевой проект недели');
+  if(project.isKeyProject)lines.push('Ключевой проект недели');
   lines.push(formatPlainStrong(project.project||'Без названия')+(project.taskType?' ('+project.taskType+')':''));
   items.forEach(function(item){lines.push('  • '+item.text+(block==='plan'?renderPlainDeadline(item.deadline):''));});
   return lines.join('\n');
