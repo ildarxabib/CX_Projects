@@ -648,6 +648,9 @@ function getProjectReportItems(project,block){
 function renderPlainDeadline(deadline){
   return deadline?' -> до '+formatDate(deadline):'';
 }
+function getReportDivider(){
+  return'────────────────────────────────────────';
+}
 function renderHTMLDeadline(deadline){
   if(!deadline)return'';
   return' <span style="color:#00B956;font-weight:700;white-space:nowrap">→ до '+esc(formatDate(deadline))+'</span>';
@@ -666,7 +669,7 @@ function renderReportSectionHTML(title,icon,iconBg,projects,block){
     if(!items.length)return;
     section+='<div style="margin-top:'+(renderedCount?18:0)+'px">';
     if(project.isKeyProject)section+=renderKeyProjectMark();
-    section+='<div style="font-size:17px;font-weight:700;color:#333333;line-height:1.3">'+esc(project.project||'Без названия')+(project.taskType?'<span style="font-weight:400;color:#999999"> ('+esc(project.taskType)+')</span>':'')+'</div>';
+    section+='<div style="font-size:17px;font-weight:700;color:#333333;line-height:1.3;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">'+esc(project.project||'Без названия')+(project.taskType?'<span style="font-weight:400;color:#999999;text-decoration:none"> ('+esc(project.taskType)+')</span>':'')+'</div>';
     section+='<div style="margin-top:8px;display:flex;flex-direction:column;gap:10px">';
     items.forEach(function(item){
       section+='<div style="font-size:15px;line-height:1.6;color:#333333;padding-left:22px;position:relative;text-indent:0"><span style="position:absolute;left:0;top:0;color:#333333">•</span>'+esc(item.text)+renderHTMLDeadline(item.deadline)+'</div>';
@@ -755,20 +758,21 @@ function buildReportText(){
   var comments=document.getElementById('comments').value.trim();
   var done=collectProjects('done');
   var plan=collectProjects('plan');
+  var divider=getReportDivider();
   var sections=[];
   if(done.length){
     var doneBlocks=done.map(function(project){return buildReportTextProjectBlock(project,'done');}).filter(Boolean);
-    if(doneBlocks.length)sections.push('ЧТО БЫЛО СДЕЛАНО\n\n'+doneBlocks.join('\n\n'));
+    if(doneBlocks.length)sections.push('ЧТО БЫЛО СДЕЛАНО\n'+divider+'\n\n'+doneBlocks.join('\n\n'));
   }
   if(plan.length){
     var planBlocks=plan.map(function(project){return buildReportTextProjectBlock(project,'plan');}).filter(Boolean);
-    if(planBlocks.length)sections.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n\n'+planBlocks.join('\n\n'));
+    if(planBlocks.length)sections.push('ПЛАНЫ НА ЭТУ НЕДЕЛЮ\n'+divider+'\n\n'+planBlocks.join('\n\n'));
   }
   if(comments){
     var commentLines=comments.split('\n').map(function(line){return line.trim();}).filter(Boolean).map(function(line){return'  • '+line;}).join('\n');
-    if(commentLines)sections.push('КОММЕНТАРИИ И БЛОКЕРЫ\n\n'+commentLines);
+    if(commentLines)sections.push('КОММЕНТАРИИ И БЛОКЕРЫ\n'+divider+'\n\n'+commentLines);
   }
-  return['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp+' · '+formatReportDateCompact(reportDayValue),sections.join('\n\n\n')].filter(Boolean).join('\n\n');
+  return['ЕЖЕНЕДЕЛЬНЫЙ ОТЧЁТ','Сотрудник: '+emp+' · '+formatReportDateCompact(reportDayValue),divider,sections.join('\n\n\n')].filter(Boolean).join('\n\n');
 }
 function buildReportHTML(){
   var emp=document.getElementById('employee').value.trim()||'—';
@@ -797,7 +801,27 @@ function copyReport(){
     toast('Доработайте ключевые проекты перед копированием отчёта.');
     return;
   }
-  var plain=buildReportText();
+  var html=buildReportHTML(),plain=buildReportText();
+  if(navigator.clipboard&&window.ClipboardItem){
+    var item=new ClipboardItem({
+      'text/html':new Blob([html],{type:'text/html'}),
+      'text/plain':new Blob([plain],{type:'text/plain'})
+    });
+    navigator.clipboard.write([item]).then(function(){toast('Отчёт скопирован в буфер обмена');}).catch(function(){
+      navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован в буфер обмена');}).catch(function(){
+        var tmp=document.createElement('textarea');
+        tmp.value=plain;
+        tmp.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
+        document.body.appendChild(tmp);
+        tmp.focus();
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+        toast('Отчёт скопирован в буфер обмена');
+      });
+    });
+    return;
+  }
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(plain).then(function(){toast('Отчёт скопирован в буфер обмена');}).catch(function(){
       var tmp=document.createElement('textarea');
