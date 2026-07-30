@@ -660,6 +660,10 @@
     }
 
     .method summary::-webkit-details-marker { display: none; }
+    .method summary:focus-visible {
+      outline: 2px solid var(--mf-green);
+      outline-offset: 2px;
+    }
 
     .method summary svg {
       color: var(--mf-text-secondary);
@@ -952,23 +956,24 @@
               <tr><td>Tier 0</td><td>8 ч</td></tr>
               <tr><td>Tier 1</td><td>48 ч</td></tr>
               <tr><td>Tier 2</td><td>110 ч</td></tr>
-              <tr><td>Tier S</td><td>245 ч</td></tr>
+              <tr><td>Tier S · активная фаза</td><td>245 ч</td></tr>
+              <tr><td>Tier S · пассивная фаза</td><td>115 ч</td></tr>
             </tbody>
           </table>
-          <p class="method-note">Базовая полезная мощность CJE — 375 часов на квартал. Режим задачи не влияет на квартальный тариф.</p>
+          <p class="method-note">Базовая полезная мощность CJE — 375 часов на квартал. Для Tier S эксперт выбирает фазу при заведении задачи: активная списывает 245 часов, пассивная — 115 часов. Для остальных Tier режим не меняет квартальный тариф.</p>
         </div>
         <div class="method-panel">
           <h3>Недельный срез</h3>
           <table class="method-table">
-            <thead><tr><th>Tier</th><th>Активно / пассивно</th></tr></thead>
+            <thead><tr><th>Tier</th><th>Диапазон → расчёт / пассивно</th></tr></thead>
             <tbody>
               <tr><td>Tier 0</td><td>3% / —</td></tr>
               <tr><td>Tier 1</td><td>21% / —</td></tr>
-              <tr><td>Tier 2</td><td>47% / 14%</td></tr>
-              <tr><td>Tier S</td><td>55% / 17%</td></tr>
+              <tr><td>Tier 2</td><td>25–40% → 32% / 14%</td></tr>
+              <tr><td>Tier S</td><td>35–50% → 42% / 17%</td></tr>
             </tbody>
           </table>
-          <p class="method-note">Пассивный режим: нет активных действий 3+ рабочих дня, следующее действие ожидается не раньше чем через 3 дня.</p>
+          <p class="method-note">Калькулятор использует середину диапазона: 32% для активного Tier 2 и 42% для активного Tier S. Это даёт одну понятную цифру для решения; суммирование широких диапазонов затруднило бы оценку свободного слота. Рекомендация «Tier 2 активно» появляется при остатке от 32%, «Tier S активно» — от 42%. Пассивный режим: нет активных действий 3+ рабочих дня, следующее действие ожидается не раньше чем через 3 дня.</p>
         </div>
       </div>
     </details>
@@ -980,8 +985,8 @@
     const TIERS = {
       tier0: { label: "Tier 0", quarter: 8, active: 3, passive: null },
       tier1: { label: "Tier 1", quarter: 48, active: 21, passive: null },
-      tier2: { label: "Tier 2", quarter: 110, active: 47, passive: 14 },
-      tierS: { label: "Tier S", quarter: 245, active: 55, passive: 17 }
+      tier2: { label: "Tier 2", quarter: 110, active: 32, activeRange: [25, 40], passive: 14 },
+      tierS: { label: "Tier S", quarter: 245, quarterPassive: 115, active: 42, activeRange: [35, 50], passive: 17 }
     };
 
     const QUARTER_CAPACITY = 375;
@@ -1028,7 +1033,10 @@
 
     function taskLoad(task, mode) {
       const tier = TIERS[task.tier] || TIERS.tier0;
-      if (mode === "quarter") return tier.quarter;
+      if (mode === "quarter") {
+        if (task.tier === "tierS" && task.activity === "passive") return tier.quarterPassive;
+        return tier.quarter;
+      }
       if (task.activity === "passive" && tier.passive !== null) return tier.passive;
       return tier.active;
     }
@@ -1054,8 +1062,9 @@
       const ratio = capacity > 0 ? free / capacity : 0;
       if (mode === "week") {
         if (free < 3) return { label: "Нет слотов", cls: "status-error" };
-        if (free < 21) return { label: "Только Tier 0", cls: "status-warn" };
-        if (free < 47) return { label: "Ограниченно", cls: "status-info" };
+        if (free < 14) return { label: "Только Tier 0", cls: "status-warn" };
+        if (free < 21) return { label: "Пассивный слот", cls: "status-info" };
+        if (free < 32) return { label: "Ограниченно", cls: "status-info" };
         return { label: "Есть ресурс", cls: "status-good" };
       }
       if (free < 8) return { label: "Нет ресурса", cls: "status-error" };
@@ -1067,13 +1076,14 @@
     function optionsFor(free, mode) {
       const options = [];
       if (mode === "quarter") {
-        if (free >= 245) options.push("Tier S");
+        if (free >= 245) options.push("Tier S активно");
+        if (free >= 115) options.push("Tier S пассивно");
         if (free >= 110) options.push("Tier 2");
         if (free >= 48) options.push("Tier 1");
         if (free >= 8) options.push("Tier 0");
       } else {
-        if (free >= 55) options.push("Tier S активно");
-        if (free >= 47) options.push("Tier 2 активно");
+        if (free >= 42) options.push("Tier S активно");
+        if (free >= 32) options.push("Tier 2 активно");
         if (free >= 21) options.push("Tier 1");
         if (free >= 17) options.push("Tier S пассивно");
         if (free >= 14) options.push("Tier 2 пассивно");
@@ -1181,7 +1191,7 @@
               <div class="employee-fit">
                 <strong>Можно взять:</strong>
                 ${options.length
-                  ? options.slice(0, 4).map(option => `<span class="fit-chip">${esc(option)}</span>`).join("")
+                  ? options.map(option => `<span class="fit-chip">${esc(option)}</span>`).join("")
                   : `<span>${free < 0 ? "нужна переприоритизация" : "новых слотов нет"}</span>`}
               </div>
               <div class="tasks">
@@ -1281,7 +1291,7 @@
             `Задача ${taskIndex + 1}`,
             TIERS[task.tier].label,
             task.activity === "passive" ? "Пассивный" : "Активный",
-            TIERS[task.tier].quarter,
+            taskLoad(task, "quarter"),
             taskLoad(task, "week")
           ]);
         });
