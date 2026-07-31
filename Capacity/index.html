@@ -546,7 +546,7 @@
 
     .task-row {
       display: grid;
-      grid-template-columns: minmax(170px, 1fr) 128px 202px 88px 40px;
+      grid-template-columns: minmax(170px, 1fr) 210px 202px 118px 40px;
       align-items: center;
       gap: 10px;
       padding: 10px;
@@ -571,14 +571,39 @@
     .task-input {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       font-weight: 600;
     }
 
     .task-select:focus { border-color: var(--mf-green); }
 
     .task-cost {
+      display: grid;
+      justify-items: end;
+      gap: 1px;
       text-align: right;
       font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .task-cost strong { font-weight: 700; }
+
+    .task-cost small {
+      color: var(--mf-text-secondary);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .work-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--mf-soft-green);
+      color: var(--mf-green);
+      font-size: 10px;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -756,7 +781,7 @@
 
     @media (max-width: 1020px) {
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
-      .task-row { grid-template-columns: minmax(160px, 1fr) 120px 190px 76px 40px; }
+      .task-row { grid-template-columns: minmax(150px, 1fr) 180px 180px 110px 40px; }
       .employee-header { grid-template-columns: minmax(200px, 1fr) auto; }
       .employee-summary { grid-column: 1 / -1; justify-content: flex-end; }
     }
@@ -776,12 +801,14 @@
       .employee-header { grid-template-columns: 1fr auto; padding: 18px; }
       .employee-body { padding: 18px; }
       .task-row {
-        grid-template-columns: 1fr 108px 40px;
+        grid-template-columns: 1fr 40px;
         align-items: start;
       }
       .task-input { grid-column: 1 / -1; }
-      .task-mode { grid-column: 1 / 2; }
-      .task-cost { align-self: center; }
+      .task-select, .task-mode, .task-cost { grid-column: 1 / 2; }
+      .task-mode { width: 100%; }
+      .task-cost { justify-items: start; text-align: left; }
+      .task-row > .icon-button { grid-column: 2; grid-row: 1; }
       .method-content { grid-template-columns: 1fr; }
     }
 
@@ -797,10 +824,6 @@
       .employee-fit { align-items: flex-start; }
       .mini-stat { min-width: 0; text-align: left; }
       .task-row { grid-template-columns: 1fr 40px; }
-      .task-select, .task-mode, .task-cost { grid-column: 1 / 2; }
-      .task-mode { width: 100%; }
-      .task-row > .icon-button { grid-column: 2; grid-row: 1; }
-      .task-cost { text-align: left; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -872,7 +895,7 @@
       <div>
         <p class="eyebrow">Управление ресурсами CX</p>
         <h1>Калькулятор загрузки команды</h1>
-        <p class="lead">Проверьте квартальный бюджет или недельную доступность каждого CJE. Калькулятор использует тарифы и веса из методологии CX Portfolio & Capacity Management. Введённые параметры не сохраняются после закрытия или перезагрузки страницы.</p>
+        <p class="lead">Добавьте задачи, которые сейчас находятся в статусе «В работе». Калькулятор покажет квартальную и недельную загрузку, свободные слоты и ориентировочный lead time. Данные не сохраняются после закрытия или перезагрузки страницы.</p>
       </div>
       <label class="period-control">
         <span class="field-label" id="periodLabel">Плановый квартал</span>
@@ -908,7 +931,7 @@
           <span class="metric-icon"><svg aria-hidden="true"><use href="#i-clock"></use></svg></span>
         </div>
         <p class="metric-value" id="teamUsed">0 ч</p>
-        <p class="metric-caption" id="usedCaption">списано активными задачами</p>
+        <p class="metric-caption" id="usedCaption">только задачи «В работе»</p>
       </article>
       <article class="metric-card">
         <div class="metric-head">
@@ -932,7 +955,7 @@
       <div class="section-head">
         <div>
           <h2 class="section-title">Загрузка по сотрудникам</h2>
-          <p class="section-description">Добавляйте текущие задачи и меняйте режим Tier 2 / Tier S между активным и пассивным.</p>
+          <p class="section-description">В расчёт входят только задачи «В работе». Активный и пассивный режим доступны только для Tier 2.</p>
         </div>
         <button class="button button-primary" id="addEmployeeButton" type="button">
           <svg aria-hidden="true"><use href="#i-plus"></use></svg>
@@ -951,29 +974,26 @@
         <div class="method-panel">
           <h3>Квартальное планирование</h3>
           <table class="method-table">
-            <thead><tr><th>Tier</th><th>Тариф</th></tr></thead>
+            <thead><tr><th>Tier</th><th>Тариф</th><th>Lead time</th></tr></thead>
             <tbody>
-              <tr><td>Tier 0</td><td>8 ч</td></tr>
-              <tr><td>Tier 1</td><td>48 ч</td></tr>
-              <tr><td>Tier 2</td><td>110 ч</td></tr>
-              <tr><td>Tier S · активная фаза</td><td>245 ч</td></tr>
-              <tr><td>Tier S · пассивная фаза</td><td>115 ч</td></tr>
+              <tr><td>Tier 0 · Автопилот</td><td>6–10 → 8 ч</td><td>1–2 спринта</td></tr>
+              <tr><td>Tier 1 · Штурман</td><td>34–60 → 50 ч</td><td>3–5 спринтов</td></tr>
+              <tr><td>Tier 2 · Навигатор</td><td>92–130 → 110 ч</td><td>5–9 спринтов</td></tr>
             </tbody>
           </table>
-          <p class="method-note">Базовая полезная мощность CJE — 375 часов на квартал. Для Tier S эксперт выбирает фазу при заведении задачи: активная списывает 245 часов, пассивная — 115 часов. Для остальных Tier режим не меняет квартальный тариф.</p>
+          <p class="method-note">В расчёт входят только задачи «В работе». Базовая мощность CJE — 375 часов на квартал. Значения 8, 50 и 110 часов — утверждённые рабочие нормативы. Верхняя граница диапазона не является жёстким лимитом.</p>
         </div>
         <div class="method-panel">
           <h3>Недельный срез</h3>
           <table class="method-table">
             <thead><tr><th>Tier</th><th>Диапазон → расчёт / пассивно</th></tr></thead>
             <tbody>
-              <tr><td>Tier 0</td><td>3% / —</td></tr>
-              <tr><td>Tier 1</td><td>21% / —</td></tr>
-              <tr><td>Tier 2</td><td>25–40% → 32% / 14%</td></tr>
-              <tr><td>Tier S</td><td>35–50% → 42% / 17%</td></tr>
+              <tr><td>Tier 0</td><td>2–3% → 3% / —</td></tr>
+              <tr><td>Tier 1</td><td>13–20% → 17% / —</td></tr>
+              <tr><td>Tier 2</td><td>30–44% → 37% / 14%</td></tr>
             </tbody>
           </table>
-          <p class="method-note">Калькулятор использует середину диапазона: 32% для активного Tier 2 и 42% для активного Tier S. Это даёт одну понятную цифру для решения; суммирование широких диапазонов затруднило бы оценку свободного слота. Рекомендация «Tier 2 активно» появляется при остатке от 32%, «Tier S активно» — от 42%. Пассивный режим: нет активных действий 3+ рабочих дня, следующее действие ожидается не раньше чем через 3 дня.</p>
+          <p class="method-note">Новая задача всегда оценивается как активная. Пассивный Tier 2 остаётся в портфеле с весом 14%, но не предлагается как новый слот. Пассивный режим допустим, если активных действий не было 3+ рабочих дня и следующее действие не ожидается в ближайшие 3 дня.</p>
         </div>
       </div>
     </details>
@@ -983,10 +1003,9 @@
 
   <script>
     const TIERS = {
-      tier0: { label: "Tier 0", quarter: 8, active: 3, passive: null },
-      tier1: { label: "Tier 1", quarter: 48, active: 21, passive: null },
-      tier2: { label: "Tier 2", quarter: 110, active: 32, activeRange: [25, 40], passive: 14 },
-      tierS: { label: "Tier S", quarter: 245, quarterPassive: 115, active: 42, activeRange: [35, 50], passive: 17 }
+      tier0: { label: "Tier 0 · Автопилот", quarter: 8, quarterRange: [6, 10], active: 3, activeRange: [2, 3], passive: null, leadTime: "1–2 спринта" },
+      tier1: { label: "Tier 1 · Штурман", quarter: 50, quarterRange: [34, 60], active: 17, activeRange: [13, 20], passive: null, leadTime: "3–5 спринтов" },
+      tier2: { label: "Tier 2 · Навигатор", quarter: 110, quarterRange: [92, 130], active: 37, activeRange: [30, 44], passive: 14, passiveRange: [11, 17], leadTime: "5–9 спринтов" }
     };
 
     const QUARTER_CAPACITY = 375;
@@ -1033,10 +1052,7 @@
 
     function taskLoad(task, mode) {
       const tier = TIERS[task.tier] || TIERS.tier0;
-      if (mode === "quarter") {
-        if (task.tier === "tierS" && task.activity === "passive") return tier.quarterPassive;
-        return tier.quarter;
-      }
+      if (mode === "quarter") return tier.quarter;
       if (task.activity === "passive" && tier.passive !== null) return tier.passive;
       return tier.active;
     }
@@ -1059,42 +1075,36 @@
 
     function statusFor(free, capacity, mode) {
       if (free < 0) return { label: "Перегрузка", cls: "status-error" };
-      const ratio = capacity > 0 ? free / capacity : 0;
       if (mode === "week") {
         if (free < 3) return { label: "Нет слотов", cls: "status-error" };
-        if (free < 14) return { label: "Только Tier 0", cls: "status-warn" };
-        if (free < 21) return { label: "Пассивный слот", cls: "status-info" };
-        if (free < 32) return { label: "Ограниченно", cls: "status-info" };
+        if (free < 17) return { label: "Только Tier 0", cls: "status-warn" };
+        if (free < 37) return { label: "Tier 1 или Tier 0", cls: "status-info" };
         return { label: "Есть ресурс", cls: "status-good" };
       }
       if (free < 8) return { label: "Нет ресурса", cls: "status-error" };
-      if (free < 48) return { label: "Только Tier 0", cls: "status-warn" };
-      if (ratio < .3) return { label: "Ограниченно", cls: "status-info" };
+      if (free < 50) return { label: "Только Tier 0", cls: "status-warn" };
+      if (free < 110) return { label: "Tier 1 · Tier 2 со сдвигом", cls: "status-info" };
       return { label: "Есть ресурс", cls: "status-good" };
     }
 
     function optionsFor(free, mode) {
       const options = [];
       if (mode === "quarter") {
-        if (free >= 245) options.push("Tier S активно");
-        if (free >= 115) options.push("Tier S пассивно");
-        if (free >= 110) options.push("Tier 2");
-        if (free >= 48) options.push("Tier 1");
-        if (free >= 8) options.push("Tier 0");
+        if (free >= 110) options.push("Tier 2 · 5–9 спр.");
+        else if (free >= 50) options.push("Tier 2 со сдвигом · 5–9 спр.");
+        if (free >= 50) options.push("Tier 1 · 3–5 спр.");
+        if (free >= 8) options.push("Tier 0 · 1–2 спр.");
       } else {
-        if (free >= 42) options.push("Tier S активно");
-        if (free >= 32) options.push("Tier 2 активно");
-        if (free >= 21) options.push("Tier 1");
-        if (free >= 17) options.push("Tier S пассивно");
-        if (free >= 14) options.push("Tier 2 пассивно");
-        if (free >= 3) options.push("Tier 0");
+        if (free >= 37) options.push("Tier 2 · 5–9 спр.");
+        if (free >= 17) options.push("Tier 1 · 3–5 спр.");
+        if (free >= 3) options.push("Tier 0 · 1–2 спр.");
       }
       return options;
     }
 
     function recommendationText(options, free, mode) {
       if (free < 0) return "Команда перегружена. Новая задача потребует переприоритизации или эскалации.";
-      if (!options.length) return "Свободного слота недостаточно. Дождитесь завершения задачи или перехода Tier 2 / Tier S в пассивный режим.";
+      if (!options.length) return "Свободного слота недостаточно. Нужны перенос, перераспределение или эскалация.";
       if (mode === "quarter") return "Ниже — типы задач, которые помещаются в текущий квартальный остаток хотя бы у одного сотрудника.";
       return "Ниже — типы задач, которые помещаются в недельный остаток хотя бы у одного сотрудника.";
     }
@@ -1111,7 +1121,10 @@
         ? { label: "Есть перегрузка", cls: "status-error" }
         : statusFor(teamFree, teamCapacity, mode);
       const bestFree = state.employees.length
-        ? Math.max(...state.employees.map(employee => employeeCapacity(employee, mode) - employeeLoad(employee, mode)))
+        ? Math.max(...state.employees.map(employee => {
+            const employeeFree = employeeCapacity(employee, mode) - employeeLoad(employee, mode);
+            return mode === "quarter" ? Math.min(teamFree, employeeFree) : employeeFree;
+          }))
         : 0;
       const options = optionsFor(bestFree, mode);
 
@@ -1121,8 +1134,8 @@
       document.querySelector("#teamFree").textContent = `${formatNumber(teamFree)} ${unit(mode)}`;
       document.querySelector("#capacityLabel").textContent = mode === "quarter" ? "Фонд квартала" : "Фонд недели";
       document.querySelector("#capacityCaption").textContent = mode === "quarter" ? "полезная мощность команды" : "100% на каждого сотрудника";
-      document.querySelector("#usedCaption").textContent = mode === "quarter" ? "списано задачами портфеля" : "занято вниманием на этой неделе";
-      document.querySelector("#freeCaption").textContent = mode === "quarter" ? "доступно до конца квартала" : "суммарный остаток команды";
+      document.querySelector("#usedCaption").textContent = "только задачи «В работе»";
+      document.querySelector("#freeCaption").textContent = mode === "quarter" ? "текущий свободный пул" : "суммарный остаток команды";
       const teamStatus = document.querySelector("#teamStatus");
       teamStatus.className = `status-pill ${status.cls}`;
       teamStatus.textContent = status.label;
@@ -1144,13 +1157,18 @@
         return;
       }
 
+      const mode = state.mode;
+      const teamCapacity = state.employees.reduce((sum, employee) => sum + employeeCapacity(employee, mode), 0);
+      const teamUsed = state.employees.reduce((sum, employee) => sum + employeeLoad(employee, mode), 0);
+      const teamFree = teamCapacity - teamUsed;
+
       employeesRoot.innerHTML = state.employees.map((employee, employeeIndex) => {
-        const mode = state.mode;
         const capacity = employeeCapacity(employee, mode);
         const used = employeeLoad(employee, mode);
         const free = capacity - used;
         const status = statusFor(free, capacity, mode);
-        const options = optionsFor(free, mode);
+        const availableFree = mode === "quarter" ? Math.min(teamFree, free) : free;
+        const options = optionsFor(availableFree, mode);
         const percentage = capacity > 0 ? Math.min(100, Math.max(0, used / capacity * 100)) : 0;
         const progressClass = used > capacity ? "error" : used / Math.max(capacity, 1) >= .85 ? "warn" : "";
 
@@ -1214,15 +1232,21 @@
       const cost = taskLoad(task, mode);
       return `
         <div class="task-row" data-task="${task.id}">
-          <span class="task-input">Задача ${taskIndex + 1}</span>
+          <span class="task-input">
+            <span>Задача ${taskIndex + 1}</span>
+            <span class="work-badge">В работе</span>
+          </span>
           <select class="task-select" data-action="tier" aria-label="Tier задачи">
             ${Object.entries(TIERS).map(([key, value]) => `<option value="${key}" ${task.tier === key ? "selected" : ""}>${value.label}</option>`).join("")}
           </select>
-          <div class="task-mode" aria-label="Режим задачи">
+          <div class="task-mode" aria-label="Недельный режим задачи">
             <button type="button" data-action="activity" data-activity="active" class="${task.activity !== "passive" ? "active" : ""}">Активно</button>
             <button type="button" data-action="activity" data-activity="passive" class="${task.activity === "passive" ? "active" : ""}" ${canBePassive ? "" : "disabled"} title="${canBePassive ? "Пассивный режим" : "Tier 0 и Tier 1 не имеют пассивного режима"}">Пассивно</button>
           </div>
-          <span class="task-cost">${formatNumber(cost)} ${unit(mode)}</span>
+          <span class="task-cost">
+            <strong>${formatNumber(cost)} ${unit(mode)}</strong>
+            <small>${tier.leadTime}</small>
+          </span>
           <button class="icon-button" data-action="remove-task" type="button" title="Удалить задачу" aria-label="Удалить задачу">
             <svg aria-hidden="true"><use href="#i-trash"></use></svg>
           </button>
@@ -1281,18 +1305,20 @@
     }
 
     function exportCsv() {
-      const rows = [["Сотрудник", "Задача", "Tier", "Режим", "Квартал, ч", "Неделя, %"]];
+      const rows = [["Сотрудник", "Задача", "Статус", "Tier", "Режим", "Квартал, ч", "Неделя, %", "Lead time"]];
       state.employees.forEach((employee, employeeIndex) => {
         const employeeLabel = `Сотрудник ${employeeIndex + 1}`;
-        if (!employee.tasks.length) rows.push([employeeLabel, "", "", "", "0", "0"]);
+        if (!employee.tasks.length) rows.push([employeeLabel, "", "", "", "", "0", "0", ""]);
         employee.tasks.forEach((task, taskIndex) => {
           rows.push([
             employeeLabel,
             `Задача ${taskIndex + 1}`,
+            "В работе",
             TIERS[task.tier].label,
             task.activity === "passive" ? "Пассивный" : "Активный",
             taskLoad(task, "quarter"),
-            taskLoad(task, "week")
+            taskLoad(task, "week"),
+            TIERS[task.tier].leadTime
           ]);
         });
       });
