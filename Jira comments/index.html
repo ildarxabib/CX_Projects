@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Комментарии для Jira — Клиентский опыт B2B</title>
+<style>
+:root {
+  /* Brand */
+  --mf-green: #00B956;
+  --mf-green-hover: #10E272;
+  --mf-button-down: #404D46;
+  --mf-purple: #731982;
+
+  --mf-banner-gradient: linear-gradient(90deg, #F5F1F8 0%, #EAE6EF 28%, #E3DEE9 48%, #D9D4E0 72%, #D1CBD9 100%);
+  --mf-accent-callout-gradient: linear-gradient(105deg, #A74DF4 0%, #8E63F4 34%, #647FF4 66%, #35B8EF 100%);
+
+  /* Neutral */
+  --mf-bg: #F6F6F6;
+  --mf-surface: #FFFFFF;
+  --mf-surface-secondary: #EDEDED;
+  --mf-border: #D8D8D8;
+  --mf-text: #333333;
+  --mf-text-secondary: #999999;
+  --mf-text-disabled: #999999;
+
+  /* Semantic */
+  --mf-error: #F62434;
+  --mf-warning: #FFA717;
+  --mf-info: #34AAF2;
+  --mf-success: #00B956;
+
+  /* Soft */
+  --mf-soft-green: #DDFFEC;
+  --mf-soft-purple: #F2E5FF;
+  --mf-soft-warning: #FFEDD1;
+  --mf-soft-error: #FFC5C9;
+  --mf-soft-info: #D8F1FF;
+
+  /* Radius */
+  --mf-radius-card: 24px;
+  --mf-radius-tile: 20px;
+  --mf-radius-input: 16px;
+  --mf-radius-button: 14px;
+  --mf-radius-nav: 12px;
+  --mf-radius-pill: 999px;
+
+  /* Shadow */
+  --mf-shadow-card: 0 2px 12px rgba(0,0,0,0.07);
+  --mf-shadow-card-hover: 0 8px 28px rgba(0,0,0,0.12);
+  --mf-shadow-button-hover: 0 4px 16px rgba(0,185,86,0.30);
+  --mf-shadow-modal: 0 12px 40px rgba(0,0,0,0.14);
+
+  /* Spacing */
+  --mf-space-xs: 4px;
+  --mf-space-sm: 8px;
+  --mf-space-md: 16px;
+  --mf-space-lg: 24px;
+  --mf-space-xl: 32px;
+  --mf-space-xxl: 48px;
+  --mf-space-xxxl: 64px;
+
+  /* Typography */
+  --mf-font: "MegaFon Graphik LC", Inter, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: var(--mf-space-xxl) var(--mf-space-lg);
+  background: var(--mf-bg);
+  font-family: var(--mf-font);
+  color: var(--mf-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; }
+
+/* Header */
+.page-head { margin-bottom: var(--mf-space-xl); }
+h1 { font-size: 40px; line-height: 1.15; font-weight: 700; margin: 0 0 var(--mf-space-md); }
+.page-sub { font-size: 16px; color: var(--mf-text-secondary); margin: 0; max-width: 720px; line-height: 1.5; }
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--mf-space-lg);
+  align-items: start;
+}
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--mf-surface);
+  border-radius: var(--mf-radius-card);
+  box-shadow: var(--mf-shadow-card);
+  padding: var(--mf-space-xl);
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 var(--mf-space-xs);
+}
+.card-hint {
+  font-size: 14px;
+  color: var(--mf-text-secondary);
+  margin: 0 0 var(--mf-space-lg);
+  line-height: 1.5;
+}
+
+/* Situation tiles */
+.tiles { display: flex; flex-direction: column; gap: var(--mf-space-sm); }
+
+.tile {
+  display: flex;
+  gap: var(--mf-space-md);
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: var(--mf-space-md);
+  background: var(--mf-surface);
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-radius-tile);
+  cursor: pointer;
+  font-family: var(--mf-font);
+  color: var(--mf-text);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.tile:hover { border-color: var(--mf-green); }
+.tile.is-active { border-color: var(--mf-green); box-shadow: 0 0 0 1px var(--mf-green) inset; }
+
+.tile-mark {
+  flex: 0 0 auto;
+  width: 20px; height: 20px;
+  margin-top: 2px;
+  border-radius: var(--mf-radius-pill);
+  border: 1.5px solid var(--mf-border);
+  position: relative;
+}
+.tile.is-active .tile-mark { border-color: var(--mf-green); }
+.tile.is-active .tile-mark::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: var(--mf-radius-pill);
+  background: var(--mf-green);
+}
+
+.tile-body { flex: 1 1 auto; }
+.tile-name { font-size: 16px; font-weight: 700; margin: 0 0 var(--mf-space-xs); line-height: 1.3; }
+.tile-desc { font-size: 14px; color: var(--mf-text-secondary); margin: 0; line-height: 1.45; }
+
+/* Fields */
+.fields { margin-top: var(--mf-space-xl); padding-top: var(--mf-space-xl); border-top: 1px solid var(--mf-border); }
+.fields[hidden] { display: none; }
+
+.field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: var(--mf-space-sm);
+}
+.field-note { font-size: 14px; color: var(--mf-text-secondary); margin: var(--mf-space-sm) 0 0; line-height: 1.45; }
+
+input[type="text"] {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--mf-space-md);
+  font-family: var(--mf-font);
+  font-size: 16px;
+  color: var(--mf-text);
+  background: var(--mf-surface);
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-radius-input);
+  outline: none;
+  transition: border-color .15s ease;
+}
+input[type="text"]:focus { border-color: var(--mf-green); }
+input[type="text"]::placeholder { color: var(--mf-text-secondary); }
+
+/* Preview */
+.preview-card { position: sticky; top: var(--mf-space-lg); }
+
+.preview {
+  background: var(--mf-bg);
+  border-radius: var(--mf-radius-tile);
+  padding: var(--mf-space-lg);
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  min-height: 260px;
+  margin-bottom: var(--mf-space-lg);
+}
+.preview .ph {
+  background: var(--mf-soft-warning);
+  border-radius: var(--mf-space-xs);
+  padding: 0 var(--mf-space-xs);
+}
+.preview .empty { color: var(--mf-text-secondary); }
+.preview a { color: var(--mf-green); text-decoration: underline; }
+.preview a:hover { color: var(--mf-green-hover); }
+.preview .li { display: flex; gap: var(--mf-space-sm); }
+.preview .li-num { flex: 0 0 auto; }
+
+.actions { display: flex; gap: var(--mf-space-sm); }
+
+.btn {
+  height: 48px;
+  padding: 0 var(--mf-space-lg);
+  border-radius: var(--mf-radius-button);
+  font-family: var(--mf-font);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+}
+.btn-primary { background: var(--mf-green); color: #FFFFFF; flex: 1 1 auto; }
+.btn-primary:hover { background: var(--mf-green-hover); box-shadow: var(--mf-shadow-button-hover); }
+.btn-primary:active { background: var(--mf-button-down); }
+.btn-secondary { background: var(--mf-surface); color: var(--mf-text); border-color: var(--mf-border); }
+.btn-secondary:hover { border-color: var(--mf-green); color: var(--mf-green); }
+.btn:disabled { background: var(--mf-surface-secondary); color: var(--mf-text-disabled); border-color: transparent; cursor: default; box-shadow: none; }
+
+.footnote {
+  margin-top: var(--mf-space-xl);
+  font-size: 14px;
+  color: var(--mf-text-secondary);
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <h1>Комментарии для Jira</h1>
+    <p class="page-sub">Выбери ситуацию — получишь готовый текст для комментария к задаче. Формулировки едины для всей команды Клиентского опыта, менять их в задаче не нужно.</p>
+  </header>
+
+  <div class="layout">
+
+    <section class="card">
+      <h2 class="card-title">Ситуация</h2>
+      <p class="card-hint">Что происходит с задачей прямо сейчас</p>
+
+      <div class="tiles" id="tiles"></div>
+
+      <div class="fields" id="fields" hidden>
+        <label class="field-label" for="dateInput">С какой даты готовы взять задачу</label>
+        <input type="text" id="dateInput" placeholder="например, 15 сентября">
+        <p class="field-note">Подставится в первый вариант. Если оставить пустым, в тексте останется метка — заполнишь вручную.</p>
+      </div>
+    </section>
+
+    <section class="card preview-card">
+      <h2 class="card-title">Текст комментария</h2>
+      <p class="card-hint">Проверь перед вставкой</p>
+
+      <div class="preview" id="preview"><span class="empty">Выбери ситуацию слева.</span></div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="copyWiki" disabled>Скопировать для Jira</button>
+        <button class="btn btn-secondary" id="copyPlain" disabled>Скопировать текстом</button>
+      </div>
+
+      <p class="footnote">«Скопировать для Jira» отдаёт текст с wiki-разметкой: жирные подзаголовки, нумерованный список, ссылка. «Скопировать текстом» — то же самое без разметки, для мессенджера или письма.</p>
+    </section>
+
+  </div>
+</div>
+
+<script>
+var SCORING_URL = "https://ildarxabib.github.io/CX_Projects/scoring_matrix/";
+var DATE_PH = "{дата}";
+
+var CASES = [
+  {
+    id: "scoring",
+    name: "Скоринг не проведён",
+    desc: "Задача пришла без результата анкеты",
+    needsDate: false,
+    wiki: function () {
+      return "Привет! Чтобы мы смогли взять твою задачу в работу, пожалуйста, пройди онлайн-скоринг по [ссылке|" + SCORING_URL + "], это займёт не более 10 минут. Скоринг позволяет оценить потенциальное влияние на клиентский опыт и определяет формат участия нашей команды. Пожалуйста, зафиксируй результат скоринга в виде комментария под этой задачей (кнопка «Скопировать для Jira» прямо в онлайн-анкете). Если возникнут сложности или вопросы, оставь свой комментарий здесь или напиши мне в TrueConf.";
+    },
+    plain: function () {
+      return "Привет! Чтобы мы смогли взять твою задачу в работу, пожалуйста, пройди онлайн-скоринг по ссылке: " + SCORING_URL + " — это займёт не более 10 минут. Скоринг позволяет оценить потенциальное влияние на клиентский опыт и определяет формат участия нашей команды. Пожалуйста, зафиксируй результат скоринга в виде комментария под этой задачей (кнопка «Скопировать для Jira» прямо в онлайн-анкете). Если возникнут сложности или вопросы, оставь свой комментарий здесь или напиши мне в TrueConf.";
+    }
+  },
+  {
+    id: "tier0",
+    name: "Tier 0 — работы не требуются",
+    desc: "Скоринг показал низкий уровень риска",
+    needsDate: false,
+    wiki: function () {
+      return "Привет! По результатам скоринга задача классифицирована как запуск с низким уровнем риска, работы со стороны Клиентского опыта не требуются. Ответственность за дизайн продукта и финальный путь пользователя остаётся на стороне продуктовой команды. В случае выхода на ComCom согласование инициативы Клиентским опытом будет носить технический характер.";
+    }
+  },
+  {
+    id: "tier1-no-capacity",
+    name: "Tier 1 — не можем взять сейчас",
+    desc: "Участие требуется, но свободного ресурса нет",
+    needsDate: true,
+    wiki: function (date) {
+      var d = date || DATE_PH;
+      return [
+        "Привет! По результатам скоринга задача относится к Tier 1 — участие Клиентского опыта по ней требуется. Но сейчас у команды нет свободного ресурса, чтобы взять её в работу в твои сроки. Предлагаю выбрать один из трёх вариантов — напиши здесь, какой подходит:",
+        "",
+        "# *Сдвиг сроков.* Готовы взять задачу в работу с " + d + ", проработка займёт порядка одного спринта (1 неделя).",
+        "# *Самостоятельная проработка.* Вы прорабатываете клиентский путь и требования своими силами. Мы в проработке не участвуем и результат не проверяем — ответственность за клиентский путь остаётся на продуктовой команде.",
+        "# *Техническое согласование.* Согласуем задачу формально, без анализа с нашей стороны. Важно понимать цену: проработки клиентского опыта по задаче не будет вообще, ответственность за качество клиентского пути полностью на продуктовой команде, на ComCom наше согласование будет техническим.",
+        "",
+        "Если ни один из вариантов не подходит — давай обсудим приоритеты, напиши мне в TrueConf."
+      ].join("\n");
+    },
+    plain: function (date) {
+      var d = date || DATE_PH;
+      return [
+        "Привет! По результатам скоринга задача относится к Tier 1 — участие Клиентского опыта по ней требуется. Но сейчас у команды нет свободного ресурса, чтобы взять её в работу в твои сроки. Предлагаю выбрать один из трёх вариантов — напиши здесь, какой подходит:",
+        "",
+        "1. Сдвиг сроков. Готовы взять задачу в работу с " + d + ", проработка займёт порядка одного спринта (1 неделя).",
+        "2. Самостоятельная проработка. Вы прорабатываете клиентский путь и требования своими силами. Мы в проработке не участвуем и результат не проверяем — ответственность за клиентский путь остаётся на продуктовой команде.",
+        "3. Техническое согласование. Согласуем задачу формально, без анализа с нашей стороны. Важно понимать цену: проработки клиентского опыта по задаче не будет вообще, ответственность за качество клиентского пути полностью на продуктовой команде, на ComCom наше согласование будет техническим.",
+        "",
+        "Если ни один из вариантов не подходит — давай обсудим приоритеты, напиши мне в TrueConf."
+      ].join("\n");
+    }
+  },
+  {
+    id: "tier-s",
+    name: "Масштабный запуск вне квоты",
+    desc: "Требуется полноценное проектирование, решение за CMO",
+    needsDate: false,
+    wiki: function () {
+      return "Привет! Задача выглядит как масштабный запуск: по влиянию на клиента она выходит за рамки обычной проработки и требует полноценного проектирования клиентского пути. Такие задачи Клиентский опыт берёт в работу по решению CMO в рамках квартального планирования. Пожалуйста, вынеси задачу на обсуждение с CMO — после решения включим её в план. Пока решения нет, работы по задаче с нашей стороны не ведутся. Если ждать нельзя, можем дать точечные рекомендации в сокращённом формате — напиши здесь.";
+    }
+  },
+  {
+    id: "formal",
+    name: "Формальное согласование",
+    desc: "Просят согласовать, ресурса нет даже на анализ",
+    needsDate: false,
+    wiki: function () {
+      return "Привет! Вижу задачу на согласование. Сейчас у Клиентского опыта нет свободного ресурса, чтобы провести анализ по этой инициативе — целевой клиентский путь и требования мы не смотрели. Согласование с нашей стороны носит формально-технический характер: мы не возражаем против инициативы, но не подтверждаем качество проработки клиентского пути. Ответственность за дизайн продукта и финальный путь пользователя остаётся на продуктовой команде. Если по ходу реализации появятся вопросы по клиентскому опыту — готовы оказывать точечную консультационную поддержку.";
+    }
+  }
+];
+
+var state = { caseId: null, date: "" };
+
+var tilesEl = document.getElementById("tiles");
+var fieldsEl = document.getElementById("fields");
+var dateEl = document.getElementById("dateInput");
+var previewEl = document.getElementById("preview");
+var copyWikiBtn = document.getElementById("copyWiki");
+var copyPlainBtn = document.getElementById("copyPlain");
+
+function currentCase() {
+  for (var i = 0; i < CASES.length; i++) {
+    if (CASES[i].id === state.caseId) return CASES[i];
+  }
+  return null;
+}
+
+function wikiText() {
+  var c = currentCase();
+  if (!c) return "";
+  return c.wiki(state.date);
+}
+
+function plainText() {
+  var c = currentCase();
+  if (!c) return "";
+  if (c.plain) return c.plain(state.date);
+  return c.wiki(state.date);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function inlineWiki(line) {
+  var out = escapeHtml(line);
+  out = out.replace(/\[([^\]|]+)\|([^\]]+)\]/g, function (m, label, url) {
+    return '<a href="' + url + '" target="_blank" rel="noopener">' + label + "</a>";
+  });
+  out = out.replace(/\*([^*]+)\*/g, "<strong>$1</strong>");
+  out = out.split(escapeHtml(DATE_PH)).join('<span class="ph">' + escapeHtml(DATE_PH) + "</span>");
+  return out;
+}
+
+function renderWiki(text) {
+  var lines = text.split("\n");
+  var counter = 0;
+  var html = [];
+  lines.forEach(function (line) {
+    if (line.indexOf("# ") === 0) {
+      counter += 1;
+      html.push('<div class="li"><span class="li-num">' + counter + '.</span><span>' + inlineWiki(line.slice(2)) + "</span></div>");
+    } else {
+      if (line.trim() !== "") counter = 0;
+      html.push("<div>" + (line === "" ? "&nbsp;" : inlineWiki(line)) + "</div>");
+    }
+  });
+  return html.join("");
+}
+
+function renderTiles() {
+  tilesEl.innerHTML = "";
+  CASES.forEach(function (c) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tile" + (state.caseId === c.id ? " is-active" : "");
+    btn.innerHTML =
+      '<span class="tile-mark"></span>' +
+      '<span class="tile-body">' +
+        '<span class="tile-name">' + escapeHtml(c.name) + "</span>" +
+        '<p class="tile-desc">' + escapeHtml(c.desc) + "</p>" +
+      "</span>";
+    btn.addEventListener("click", function () {
+      state.caseId = c.id;
+      render();
+    });
+    tilesEl.appendChild(btn);
+  });
+}
+
+function renderPreview() {
+  var c = currentCase();
+  if (!c) {
+    previewEl.innerHTML = '<span class="empty">Выбери ситуацию слева.</span>';
+    copyWikiBtn.disabled = true;
+    copyPlainBtn.disabled = true;
+    return;
+  }
+  previewEl.innerHTML = renderWiki(wikiText());
+  copyWikiBtn.disabled = false;
+  copyPlainBtn.disabled = false;
+}
+
+function render() {
+  renderTiles();
+  var c = currentCase();
+  fieldsEl.hidden = !(c && c.needsDate);
+  renderPreview();
+}
+
+function flash(btn, label) {
+  var original = btn.textContent;
+  btn.textContent = label;
+  setTimeout(function () { btn.textContent = original; }, 1800);
+}
+
+function copy(text, btn) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () {
+      flash(btn, "Скопировано");
+    }).catch(function () {
+      fallbackCopy(text, btn);
+    });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  var ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); flash(btn, "Скопировано"); }
+  catch (e) { flash(btn, "Не удалось"); }
+  document.body.removeChild(ta);
+}
+
+dateEl.addEventListener("input", function () {
+  state.date = dateEl.value.trim();
+  renderPreview();
+});
+
+copyWikiBtn.addEventListener("click", function () { copy(wikiText(), copyWikiBtn); });
+copyPlainBtn.addEventListener("click", function () { copy(plainText(), copyPlainBtn); });
+
+render();
+</script>
+</body>
+</html>
