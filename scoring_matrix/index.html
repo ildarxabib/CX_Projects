@@ -18,6 +18,12 @@
   --shadow-tip: 0 8px 32px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.07);
   --font: 'MegaFon Graphik LC', 'Inter', Arial, sans-serif;
   --ease: .2s cubic-bezier(.4,0,.2,1);
+
+  /* выравнивание маркеров по первой строке текста */
+  --art-point-lh: 21.6px;   /* 13.5px × 1.6 */
+  --art-row-lh: 20px;       /* 12.5px × 1.6 */
+  --marker-optical: 0.5px;  /* оптическая коррекция буллитов вниз */
+  --icon-optical: 0.25px;   /* оптическая коррекция иконок вниз */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary);min-height:100vh;padding:40px 24px 80px;-webkit-font-smoothing:antialiased}
@@ -27,7 +33,6 @@ body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary)
 .logo-badge{width:44px;height:44px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,185,86,.25)}
 .logo-badge svg{width:24px;height:24px;stroke:#fff}
 .page-title{font-size:22px;font-weight:600;color:var(--text-primary);letter-spacing:-.3px}
-.page-subtitle{font-size:13px;color:var(--text-secondary);margin-top:2px}
 
 /* ── Main card ── */
 .card{max-width:1280px;margin:0 auto;background:var(--bg-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);border:1px solid var(--border-secondary);overflow:hidden}
@@ -42,15 +47,6 @@ body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary)
 .progress-dot.filled{background:var(--green)}
 .progress-label{font-size:12px;color:var(--text-secondary);white-space:nowrap}
 .progress-label span{color:var(--green);font-weight:600}
-
-/* ── Meta section ── */
-.meta-section{display:flex;align-items:flex-end;gap:16px;padding:18px 28px;border-bottom:1px solid var(--border-secondary);background:var(--bg-card)}
-.meta-field{display:flex;flex-direction:column;gap:5px}
-.meta-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
-.meta-input{border:1.5px solid var(--border-primary);border-radius:var(--radius-input);padding:9px 14px;font-family:var(--font);font-size:14px;color:var(--text-primary);background:var(--bg-input);outline:none;min-width:300px;transition:border-color var(--ease),background var(--ease),box-shadow var(--ease)}
-.meta-input::placeholder{color:var(--text-secondary)}
-.meta-input:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
-.meta-date-val{font-size:14px;color:var(--text-secondary);padding:9px 14px;background:var(--bg-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-input)}
 
 /* ── Table header ── */
 .table-head{display:grid;grid-template-columns:210px 1fr 1fr 1fr 200px;background:var(--bg-secondary);border-bottom:1.5px solid var(--border-secondary);padding:0 28px}
@@ -141,33 +137,39 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 .tag-orange{background:var(--warning-bg);color:var(--warning-accent)}
 .tag-red{background:var(--error-bg);color:var(--error-accent)}
 
-/* Score progress */
-.score-progress{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:16px 20px;box-shadow:var(--shadow-card)}
-.prog-labels{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px}
-.prog-label-l{color:var(--text-secondary);font-weight:500}
-.prog-label-r{color:var(--text-secondary);font-weight:600}
-.prog-track{height:6px;background:var(--border-secondary);border-radius:999px;overflow:hidden}
-.prog-fill{height:100%;border-radius:999px;background:var(--green);width:0;transition:width .5s cubic-bezier(.4,0,.2,1),background .3s}
+/* ── Label reminder ── */
+.label-reminder{background:var(--bg-card);border:1.5px solid var(--border-secondary);border-radius:var(--radius-tile);padding:16px 20px;box-shadow:var(--shadow-card)}
+.label-reminder-head{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.label-steps{display:flex;flex-direction:column;gap:7px}
+.label-step{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--text-primary);line-height:1.5}
+.label-step-num{width:18px;height:18px;border-radius:999px;background:var(--bg-page);border:1px solid var(--border-primary);font-size:10px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.label-chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;background:var(--success-bg);color:var(--green);font-size:12px;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace}
 
 /* Artifact block */
 .artifact-block{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:20px;box-shadow:var(--shadow-card)}
-.artifact-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.artifact-label::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green)}
-.artifact-text{font-size:13px;color:var(--text-primary);line-height:1.75;white-space:pre-wrap}
-.artifact-divider{height:1px;background:var(--border-secondary);margin:14px 0}
-.artifact-field-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
-.artifact-textarea{width:100%;border:1.5px solid var(--border-primary);border-radius:12px;padding:10px 14px;font-family:var(--font);font-size:13px;color:var(--text-primary);background:var(--bg-input);resize:vertical;min-height:80px;outline:none;transition:border-color var(--ease),background var(--ease),box-shadow var(--ease);line-height:1.6;margin-bottom:14px}
-.artifact-textarea:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
-.artifact-textarea::placeholder{color:var(--text-secondary)}
+.artifact-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.artifact-head-icon{width:36px;height:36px;border-radius:12px;background:var(--success-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.artifact-head-icon svg{width:19px;height:19px;fill:none;stroke:var(--green);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.artifact-head-title{font-size:16px;font-weight:700;color:var(--text-primary);letter-spacing:-.2px}
+.art-point{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--text-primary);line-height:1.6}
+.art-point::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--green);flex-shrink:0;
+  margin-top:calc((var(--art-point-lh) - 9px)/2 + var(--marker-optical))}
+.art-point.verdict{font-weight:700;margin-top:6px;margin-bottom:18px}
+.art-list{border-top:1px solid var(--border-secondary)}
+.art-row{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border-secondary)}
+.art-row-icon{width:20px;height:var(--art-row-lh);flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  margin-top:var(--icon-optical)}
+.art-row-icon svg{display:block;width:20px;height:20px;fill:none;stroke:var(--text-secondary);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.art-row-title{font-size:12.5px;font-weight:700;color:var(--text-primary);flex:0 0 190px;line-height:1.6}
+.art-row-text{font-size:12.5px;color:var(--text-primary);line-height:1.6;flex:1}
+@media (max-width:720px){.art-row{flex-wrap:wrap;gap:8px}.art-row-title{flex:1 1 auto}.art-row-text{flex:1 1 100%}}
+.art-note{margin-top:16px;padding:12px 14px;background:var(--bg-secondary);border-radius:12px;font-size:12px;color:var(--text-secondary);line-height:1.6}
 .artifact-closing{font-size:12px;color:var(--text-secondary);line-height:1.6;padding-top:12px;border-top:1px solid var(--border-secondary)}
 
 /* Tier colors */
 .tier-t0 .score-pill-value{color:var(--green)}
-.tier-t0 .prog-fill{background:var(--green)}
 .tier-t1 .score-pill-value{color:var(--warning-accent)}
-.tier-t1 .prog-fill{background:var(--warning-accent)}
 .tier-t2 .score-pill-value{color:var(--error-accent)}
-.tier-t2 .prog-fill{background:var(--error-accent)}
 
 /* Buttons */
 .cta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -178,6 +180,8 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 .btn-secondary:hover{border-color:var(--green);color:var(--green)}
 .btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:11px 16px;background:transparent;color:var(--text-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-btn);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease)}
 .btn-ghost:hover{border-color:var(--border-primary);color:var(--text-primary)}
+.copy-error{font-size:12px;color:var(--error-accent);font-weight:500;display:none}
+.copy-error.show{display:inline}
 
 /* ── Tooltip ── */
 .tooltip-popup{position:fixed;z-index:9999;width:320px;background:var(--bg-card);border-radius:18px;box-shadow:var(--shadow-tip);border:1px solid var(--border-secondary);padding:18px 18px 16px;display:none}
@@ -197,8 +201,7 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
   body{background:#fff;padding:0}
   .page-header,.tooltip-btn,.tooltip-popup,.cta-row,.hint-bar{display:none!important}
   .card{box-shadow:none;border:1px solid #ddd}
-  .meta-input{border:none;background:transparent;padding:0}
-  .comment-area,.artifact-textarea{border:none;background:transparent;padding:0;min-height:auto}
+  .comment-area{border:none;background:transparent;padding:0;min-height:auto}
   .matrix-row{break-inside:avoid}
   .result-section{border-radius:0 0 8px 8px}
   .tier2-warn{border:1px solid #fcc}
@@ -211,12 +214,11 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 <div class="page-header">
   <div class="logo-badge">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
     </svg>
   </div>
   <div>
     <div class="page-title">Матрица оценки продуктового запуска</div>
-    <div class="page-subtitle">CX-скоринг · МегаФон B2B · Self-диагностика для продакта</div>
   </div>
 </div>
 
@@ -232,18 +234,6 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
     <div class="progress-indicator">
       <div class="progress-dots" id="progressDots"></div>
       <div class="progress-label">Заполнено <span id="progressCount">0</span> из 7</div>
-    </div>
-  </div>
-
-  <!-- Meta Section -->
-  <div class="meta-section">
-    <div class="meta-field">
-      <div class="meta-label">Название запуска / продукта</div>
-      <input type="text" class="meta-input" id="launchName" placeholder="Например: Новый тариф МегаБизнес Pro">
-    </div>
-    <div class="meta-field">
-      <div class="meta-label">Дата заполнения</div>
-      <div class="meta-date-val" id="autoDate"></div>
     </div>
   </div>
 
@@ -528,25 +518,24 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
           </div>
           <span class="tier-tag" id="tierTag"></span>
         </div>
-        <div class="score-progress">
-          <div class="prog-labels">
-            <span class="prog-label-l">Уровень нагрузки на CX-команду</span>
-            <span class="prog-label-r" id="progRight"></span>
+
+        <!-- Label reminder -->
+        <div class="label-reminder">
+          <div class="label-reminder-head">Что сделать в Jira</div>
+          <div class="label-steps">
+            <div class="label-step"><span class="label-step-num">1</span><span>Нажмите «Скопировать для Jira» и вставьте результат комментарием в задачу</span></div>
+            <div class="label-step"><span class="label-step-num">2</span><span>Поставьте на задачу метку <span class="label-chip" id="labelChip">Tier-0</span> — по ней команда Клиентского опыта видит результат скоринга</span></div>
           </div>
-          <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
         </div>
+
         <div class="artifact-block" id="artifactBlock">
-          <div class="artifact-label">Артефакт для Jira</div>
+          <div class="artifact-head"><div class="artifact-head-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="var(--green)" stroke="none"/></svg></div><div class="artifact-head-title">Решение по Клиентскому опыту</div></div>
           <div id="artifactContent"></div>
         </div>
         <div class="cta-row">
           <button class="btn-primary" id="copyBtn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Скопировать для Jira
-          </button>
-          <button class="btn-secondary" id="pdfBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Сохранить PDF
           </button>
           <button class="btn-ghost" id="resetBtn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 100-9.17"/></svg>
@@ -568,9 +557,9 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 const MAX = 14, ROWS = 7;
 
 const TIERS = [
-  { max:6,  cls:'tier-t0', tagCls:'tag-green',  dot:'#00B956',     label:'Tier 0 — Self-Service / Автопилот',         tag:'Низкая нагрузка',  desc:'Задачи с низким риском и стандартной логикой.', art:'tier0' },
-  { max:10, cls:'tier-t1', tagCls:'tag-orange', dot:'#FF9F0A',     label:'Tier 1 — Minimal Engagement / Штурман',     tag:'Средняя нагрузка', desc:'Задачи среднего влияния или с элементами новшества.', art:'tier1' },
-  { max:14, cls:'tier-t2', tagCls:'tag-red',    dot:'#FF4D4F',     label:'Tier 2 — Full Design / Навигатор',          tag:'Высокая нагрузка', desc:'Высокорисковые, уникальные или стратегические запуски.', art:'tier2' },
+  { max:6,  cls:'tier-t0', tagCls:'tag-green',  dot:'#00B956', label:'Tier 0 — работы Клиентского опыта не требуются', tag:'Низкая нагрузка',  desc:'Стандартное решение с низким уровнем риска.', art:'tier0', slug:'Tier-0' },
+  { max:10, cls:'tier-t1', tagCls:'tag-orange', dot:'#FF9F0A', label:'Tier 1 — требования и рекомендации',             tag:'Средняя нагрузка', desc:'Заметное влияние на клиента или элементы новизны.', art:'tier1', slug:'Tier-1' },
+  { max:14, cls:'tier-t2', tagCls:'tag-red',    dot:'#FF4D4F', label:'Tier 2 — полное проектирование',                 tag:'Высокая нагрузка', desc:'Высокорисковый или стратегический запуск.', art:'tier2', slug:'Tier-2' },
 ];
 
 const CRIT_NAMES = ['Reach (Охват)','Impact (Влияние)','Validation (Обоснование)','CX-сложность и степень изменений','Токсичность','Реализация','Влияние на обращаемость'];
@@ -628,9 +617,6 @@ for (let i = 0; i < ROWS; i++) {
   d.id = 'dot-' + i;
   dotsWrap.appendChild(d);
 }
-
-// Auto date
-document.getElementById('autoDate').textContent = new Date().toLocaleDateString('ru-RU', { day:'2-digit', month:'long', year:'numeric' });
 
 // Score cell clicks
 document.querySelectorAll('.td-score').forEach(cell => {
@@ -700,11 +686,8 @@ function update() {
   tag.className = 'tier-tag ' + tier.tagCls;
   tag.textContent = tier.tag;
 
-  // Progress bar
-  const pct = Math.round((score / MAX) * 100);
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progFill').style.background = tier.dot;
-  document.getElementById('progRight').textContent = score + ' / ' + MAX + ' баллов';
+  // Label chip
+  document.getElementById('labelChip').textContent = tier.slug;
 
   // Auto-Tier-2 warning: toxicity=2 + (reach=2 or impact=2)
   const tox = rowScores[4] ?? 0;
@@ -715,40 +698,60 @@ function update() {
   renderArtifact(tier);
 }
 
-function renderArtifact(tier) {
-  const c = document.getElementById('artifactContent');
-  if (tier.art === 'tier0') {
-    c.innerHTML = `<div class="artifact-text">Задача классифицирована как стандартное решение с низким уровнем риска. Проектирование CJ-командой не проводится.
+const ICONS = {
+  next:    '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+  package: '<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
+  control: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'
+};
 
-Ответственность за дизайн продукта и финальный путь пользователя остаётся на стороне Продукта.
+const ROW = {
+  next0: ['next', 'Что дальше',
+    'Работы команды Клиентского опыта по задаче не проводятся — задача идёт в работу без ожидания. Согласование Клиентским опытом на ComCom носит технический характер. В первые 14 дней после запуска Продукт обеспечивает мониторинг обращаемости и аварий.'],
+  next1: ['next', 'Что дальше',
+    'CJE проанализирует задачу и отдельным комментарием опишет перечень работ со своей стороны, сориентирует по срокам и задаст уточняющие вопросы, если для оценки не хватает данных.'],
+  art0: ['package', 'Артефакты',
+    'Артефакты со стороны Клиентского опыта по задаче не формируются.'],
+  art1: ['package', 'Артефакты',
+    'Со стороны Клиентского опыта будет подготовлен перечень обязательных требований и рекомендаций. CJM, прототипы и другие проектные артефакты в этом формате не создаются.'],
+  art2: ['package', 'Артефакты',
+    'По согласованию с CJE для задачи может быть собран пакет артефактов: перечень требований и рекомендаций, CJM, прототип и другие. Финальный перечень и объём работ утверждаются после анализа задачи со стороны CJE.'],
+  ctrl0: ['control', 'Контроль реализации',
+    'Финальное решение по целевому клиентскому пути и ответственность за дизайн продукта остаются за инициатором. Команда Клиентского опыта решение по задаче не формирует и не подтверждает.'],
+  ctrl1: ['control', 'Контроль реализации',
+    'Реализация должна соответствовать требованиям и рекомендациям Клиентского опыта. Отклонения фиксируются инициатором в задаче — ответственность за них и за связанные с ними риски остаётся на инициаторе.']
+};
 
-В случае выхода на ComCom согласование инициативы Клиентским опытом будет носить технический характер.
-
-В течение первых 14 дней после запуска Продукту необходимо обеспечить мониторинг обращаемости и аварий (своими силами или с привлечением коллег из BSS, ОМУН и КС).
-
-В случае выявления негативных аномалий (всплеск обращаемости, жалоб) задача подлежит переоценке и редизайну с участием CJ-экспертов.</div>`;
-  } else if (tier.art === 'tier1') {
-    c.innerHTML = `<div class="artifact-text">Для обеспечения качества опыта требуется соблюсти следующие CX-требования и рекомендации:</div>
-      <div class="artifact-divider"></div>
-      <div class="artifact-field-label">Обязательные требования</div>
-      <textarea class="artifact-textarea" id="t1mandatory" placeholder="Опишите обязательные CX-требования...&#10;Например: прозрачность стоимости, управляемость (выход), подтверждение, информирование клиента"></textarea>
-      <div class="artifact-field-label">Рекомендации</div>
-      <textarea class="artifact-textarea" id="t1recs" placeholder="Опишите рекомендации по улучшению опыта...&#10;Например: предсказуемость, сохранение контекста, визуальный акцент на ключевых действиях"></textarea>
-      <div class="artifact-closing">Детальные CJ не требуются. Контроль реализации данных пунктов остаётся за владельцем продукта.</div>`;
-  } else {
-    c.innerHTML = `<div class="artifact-text">Задача классифицирована как высокорисковый или стратегический запуск. Требуется полное сопровождение проектирования со стороны CJ-эксперта.
-
-Формат работы:
-— Исследование и анализ текущего пути клиента
-— Проектирование E2E Customer Journey
-— Выявление friction points и точек риска
-— Разработка сценариев взаимодействия
-— Прототипирование (при необходимости)
-
-Ожидаемые артефакты: User Flow (схема), CJM, визуальный сценарий.
-
-Срок и формат участия согласуются с CJ-экспертом отдельно.</div>`;
+const ART = {
+  tier0: {
+    cls: 'Стандартный запуск с низким влиянием на клиента.',
+    verdict: 'Вовлечение Клиентского опыта не требуется.',
+    rows: [ROW.next0, ROW.art0, ROW.ctrl0]
+  },
+  tier1: {
+    cls: 'Умеренное влияние на клиента, изменения в существующих сценариях.',
+    verdict: 'Требуется вовлечение Клиентского опыта в формате подготовки требований и рекомендаций.',
+    rows: [ROW.next1, ROW.art1, ROW.ctrl1]
+  },
+  tier2: {
+    cls: 'Повышенный риск для клиента и существенные изменения в сценариях.',
+    verdict: 'Требуется глубокое погружение и вовлечение Клиентского опыта.',
+    rows: [ROW.next1, ROW.art2, ROW.ctrl1]
   }
+};
+
+function renderArtifact(tier) {
+  const a = ART[tier.art];
+  const rows = a.rows.map(function(r) {
+    return '<div class="art-row">' +
+             '<div class="art-row-icon"><svg viewBox="0 0 24 24">' + ICONS[r[0]] + '</svg></div>' +
+             '<div class="art-row-title">' + r[1] + '</div>' +
+             '<div class="art-row-text">' + r[2] + '</div>' +
+           '</div>';
+  }).join('');
+  document.getElementById('artifactContent').innerHTML =
+    '<div class="art-point">' + a.cls + '</div>' +
+    '<div class="art-point verdict">' + a.verdict + '</div>' +
+    '<div class="art-list">' + rows + '</div>';
 }
 
 // ── Tooltips ────────────────────────────────────────────────────────────────
@@ -793,12 +796,14 @@ function closeTooltip() {
 document.getElementById('copyBtn').addEventListener('click', function() {
   const checked = document.querySelectorAll('#matrixBody input[type="radio"]:checked');
   if (checked.length < ROWS) return;
+
   const score = +document.getElementById('totalScore').textContent;
   const tier  = TIERS.find(t => score <= t.max);
-  const name  = document.getElementById('launchName').value || '—';
-  const date  = document.getElementById('autoDate').textContent;
 
-  let txt = `h2. Результат CX-скоринга продуктового запуска\n*Запуск:* ${name}\n*Дата:* ${date}\n\nh3. Матрица оценки\n|| Критерий || Оценка || Балл || Комментарий ||\n`;
+  let txt = 'CX-СКОРИНГ | ' + tier.slug + ' | ' + score + '/' + MAX + '\n\n';
+  txt += 'h2. Результат CX-скоринга продуктового запуска\n\n';
+  txt += 'h3. Матрица оценки\n';
+  txt += '|| Критерий || Оценка || Балл || Комментарий ||\n';
 
   document.querySelectorAll('#matrixBody .matrix-row').forEach((row, i) => {
     const rb    = row.querySelector('input:checked');
@@ -809,24 +814,25 @@ document.getElementById('copyBtn').addEventListener('click', function() {
     if (i === 6 && rb) {
       const ctId = +rb.value === 1 ? 'commTypes1' : +rb.value === 2 ? 'commTypes2' : null;
       if (ctId) {
-        const sel = [...document.querySelectorAll(`#${ctId} input:checked`)].map(cb => cb.closest('.comm-type-item').querySelector('.comm-type-label').textContent.trim());
+        const sel = [...document.querySelectorAll('#' + ctId + ' input:checked')]
+          .map(cb => cb.closest('.comm-type-item').querySelector('.comm-type-label').textContent.trim());
         if (sel.length) extra = ' [' + sel.join(', ') + ']';
       }
     }
-    txt += `| ${CRIT_NAMES[i]} | ${state}${extra} | ${val} | ${comm} |\n`;
+    txt += '| ' + CRIT_NAMES[i] + ' | ' + state + extra + ' | ' + val + ' | ' + comm + ' |\n';
   });
 
-  txt += `\n*ИТОГО:* ${score} баллов из ${MAX}\n*ФОРМАТ:* ${tier.label}\n*Нагрузка:* ${tier.tag}\n\nh3. Артефакт\n`;
+  txt += '\n* *Итого:* ' + score + ' баллов из ' + MAX + '\n';
+  txt += '* *Формат:* ' + tier.label + '\n';
+  txt += '* *Нагрузка на команду Клиентского опыта:* ' + tier.tag + '\n\n';
+  txt += 'h3. Решение по Клиентскому опыту\n';
 
-  if (tier.art === 'tier0') {
-    txt += `Задача классифицирована как стандартное решение с низким уровнем риска. Проектирование CJ-командой не проводится.\nОтветственность за дизайн продукта остаётся на стороне Продукта.\nВ течение первых 14 дней после запуска — обеспечить мониторинг обращаемости и аварий.\n`;
-  } else if (tier.art === 'tier1') {
-    const m = document.getElementById('t1mandatory')?.value || '—';
-    const r = document.getElementById('t1recs')?.value || '—';
-    txt += `*Обязательные требования:*\n${m}\n\n*Рекомендации:*\n${r}\n\nКонтроль реализации остаётся за владельцем продукта.\n`;
-  } else {
-    txt += `Требуется полное сопровождение проектирования CJ-экспертом.\nОжидаемые артефакты: User Flow, CJM, визуальный сценарий.\nСрок и формат участия согласуются с CJ-экспертом отдельно.\n`;
-  }
+  const a = ART[tier.art];
+  txt += a.cls + '\n' + a.verdict + '\n\n';
+  a.rows.forEach(function(r) { txt += '* *' + r[1] + ':* ' + r[2] + '\n'; });
+
+  txt += '\n{panel:bgColor=#EAFBF1}*Не забудьте поставить на задачу метку:* {{' + tier.slug + '}}\n';
+  txt += 'По ней команда Клиентского опыта видит результат скоринга.{panel}\n';
 
   navigator.clipboard.writeText(txt).catch(() => {
     const el = document.createElement('textarea');
@@ -834,12 +840,9 @@ document.getElementById('copyBtn').addEventListener('click', function() {
   });
 
   const orig = this.innerHTML;
-  this.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!`;
-  setTimeout(() => this.innerHTML = orig, 2500);
+  this.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано — не забудьте метку ' + tier.slug;
+  setTimeout(() => this.innerHTML = orig, 4000);
 });
-
-// ── PDF ──────────────────────────────────────────────────────────────────────
-document.getElementById('pdfBtn').addEventListener('click', () => window.print());
 
 // ── Reset ────────────────────────────────────────────────────────────────────
 document.getElementById('resetBtn').addEventListener('click', () => {
@@ -848,7 +851,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.querySelectorAll('.comment-area').forEach(t => t.value = '');
   document.querySelectorAll('.comm-types').forEach(ct => ct.classList.remove('open'));
   document.getElementById('toxNudge').classList.remove('show');
-  document.getElementById('launchName').value = '';
   document.getElementById('totalScore').textContent = '0';
   document.getElementById('progressCount').textContent = '0';
   for (let i = 0; i < ROWS; i++) document.getElementById('dot-'+i).classList.remove('filled');
