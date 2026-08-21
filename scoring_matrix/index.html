@@ -23,6 +23,8 @@
   --art-point-lh: 21.6px;   /* 13.5px × 1.6 */
   --art-row-lh: 20px;       /* 12.5px × 1.6 */
   --marker-optical: 0.5px;  /* оптическая коррекция буллитов вниз */
+  --opt-title-lh: 16.9px;   /* 13px × 1.3 — строка заголовка варианта и названия критерия */
+  --comm-label-lh: 15.95px; /* 11px × 1.45 — строка подписи канала */
   --icon-optical: 0.25px;   /* оптическая коррекция иконок вниз */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -30,23 +32,22 @@ body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary)
 
 /* ── Page header ── */
 .page-header{max-width:1280px;margin:0 auto 28px;display:flex;align-items:center;gap:14px}
-.logo-badge{width:44px;height:44px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(0,185,86,.25)}
-.logo-badge svg{width:24px;height:24px;stroke:#fff}
+.logo-badge{height:44px;flex-shrink:0;display:flex;align-items:center}
+.logo-badge img{display:block;height:44px;width:auto}
 .page-title{font-size:22px;font-weight:600;color:var(--text-primary);letter-spacing:-.3px}
 
 /* ── Main card ── */
 .card{max-width:1280px;margin:0 auto;background:var(--bg-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);border:1px solid var(--border-secondary);overflow:hidden}
 
 /* ── Card header ── */
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--border-secondary);background:var(--bg-secondary);border-radius:var(--radius-card) var(--radius-card) 0 0}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 28px;border-bottom:1px solid var(--border-secondary);background:var(--bg-secondary);border-radius:var(--radius-card) var(--radius-card) 0 0}
 .card-header-title{font-size:15px;font-weight:600;color:var(--text-primary)}
 .card-header-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
 .progress-indicator{display:flex;align-items:center;gap:10px}
-.progress-dots{display:flex;gap:5px}
-.progress-dot{width:8px;height:8px;border-radius:50%;background:var(--border-primary);transition:background var(--ease)}
-.progress-dot.filled{background:var(--green)}
+.progress-bar{height:4px;background:var(--border-secondary)}
+.progress-bar-fill{height:100%;width:0;background:var(--green);transition:width .3s cubic-bezier(.4,0,.2,1)}
 .progress-label{font-size:12px;color:var(--text-secondary);white-space:nowrap}
-.progress-label span{color:var(--green);font-weight:600}
+.progress-label b{color:var(--text-primary);font-weight:600}
 
 /* ── Table header ── */
 .table-head{display:grid;grid-template-columns:210px 1fr 1fr 1fr 200px;background:var(--bg-secondary);border-bottom:1.5px solid var(--border-secondary);padding:0 28px}
@@ -60,17 +61,18 @@ body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary)
 .matrix-row{display:grid;grid-template-columns:210px 1fr 1fr 1fr 200px;border-bottom:1px solid var(--border-secondary);padding:0 28px;position:relative;transition:background var(--ease)}
 .matrix-row:last-child{border-bottom:none}
 .matrix-row.key-row{border-left:3px solid transparent;padding-left:25px}
-.matrix-row.row-impact{border-left-color:var(--info-accent)}
 .matrix-row.row-toxicity{border-left-color:var(--error-accent)}
 
 /* Criterion cell */
 .td-crit{padding:20px 12px 20px 0;display:flex;flex-direction:column;gap:8px}
 .crit-header{display:flex;align-items:flex-start;gap:8px}
-.crit-index{width:22px;height:22px;border-radius:999px;background:var(--bg-page);border:1px solid var(--border-primary);font-size:11px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.crit-index{width:22px;height:22px;border-radius:999px;background:var(--bg-page);border:1px solid var(--border-primary);font-size:11px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  margin-top:calc((var(--opt-title-lh) - 22px)/2 + var(--marker-optical))}
 .crit-name-wrap{flex:1}
 .crit-en{display:block;font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.3}
 .crit-ru{display:block;font-size:11px;color:var(--text-secondary);margin-top:1px}
-.tooltip-btn{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-primary);background:var(--bg-card);font-size:10px;font-weight:700;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color var(--ease),color var(--ease),background var(--ease);line-height:1;margin-top:3px;font-family:var(--font)}
+.tooltip-btn{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-primary);background:var(--bg-card);font-size:10px;font-weight:700;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color var(--ease),color var(--ease),background var(--ease);line-height:1;font-family:var(--font);
+  margin-top:calc((var(--opt-title-lh) - 18px)/2 + var(--marker-optical))}
 .tooltip-btn:hover,.tooltip-btn.active{border-color:var(--green);color:var(--green);background:var(--success-bg)}
 .key-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;background:var(--info-bg);color:var(--info-accent);margin-left:30px;width:fit-content}
 .key-badge-red{background:var(--error-bg);color:var(--error-accent)}
@@ -81,7 +83,8 @@ body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary)
 .td-score.is-selected{background:var(--success-bg)}
 .td-score.is-selected .opt-title{color:var(--green)}
 .score-option{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
-.radio-wrap{flex-shrink:0;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-primary);background:var(--bg-card);transition:border-color var(--ease);position:relative;margin-top:2px}
+.radio-wrap{flex-shrink:0;width:18px;height:18px;border-radius:50%;border:2px solid var(--border-primary);background:var(--bg-card);transition:border-color var(--ease);position:relative;
+  margin-top:calc((var(--opt-title-lh) - 18px)/2 + var(--marker-optical))}
 .radio-wrap::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--green);opacity:0;transition:opacity var(--ease)}
 input[type="radio"]{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
 input[type="radio"]:checked+.radio-wrap{border-color:var(--green)}
@@ -95,7 +98,7 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 .comm-types{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .3s;margin-top:0}
 .comm-types.open{max-height:200px;opacity:1;margin-top:8px}
 .comm-type-item{display:flex;align-items:flex-start;gap:8px;padding:3px 0;cursor:pointer}
-.comm-check-input{width:14px;height:14px;margin-top:2px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+.comm-check-input{width:14px;height:14px;margin-top:calc((var(--comm-label-lh) - 14px)/2 + var(--marker-optical));accent-color:var(--green);cursor:pointer;flex-shrink:0}
 .comm-type-label{font-size:11px;color:var(--text-secondary);line-height:1.45;cursor:pointer}
 
 /* Toxicity nudge */
@@ -109,41 +112,33 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 .comment-area::placeholder{color:var(--text-secondary)}
 .comment-area:focus{border-color:var(--green);background:var(--bg-card);box-shadow:0 0 0 3px rgba(0,185,86,.12)}
 
-/* ── Result section ── */
+/* ── Result section (внизу карточки, на всю ширину) ── */
 .result-section{padding:28px;background:var(--bg-secondary);border-top:1px solid var(--border-secondary);border-radius:0 0 var(--radius-card) var(--radius-card)}
 .hint-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--info-bg);border-radius:12px;font-size:13px;color:var(--info-accent);font-weight:500}
 .hint-bar.hidden{display:none}
-.result-layout{display:none;gap:20px;align-items:flex-start}
-.result-layout.show{display:flex}
-.score-pill{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-card);border:1.5px solid var(--border-primary);border-radius:var(--radius-tile);padding:20px 28px;min-width:130px;flex-shrink:0;gap:2px;box-shadow:var(--shadow-card)}
+.result-body{display:none;gap:20px;align-items:flex-start}
+.result-body.show{display:flex}
+.score-pill{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-card);border:1.5px solid var(--border-primary);border-radius:var(--radius-tile);padding:20px 28px;min-width:140px;flex-shrink:0;gap:2px;box-shadow:var(--shadow-card)}
 .score-pill-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
 .score-pill-value{font-size:48px;font-weight:700;line-height:1;color:var(--green);transition:color .3s}
-.score-pill-max{font-size:12px;color:var(--text-secondary)}
-.result-right{flex:1;display:flex;flex-direction:column;gap:14px}
-
-/* Tier-2 warning */
-.tier2-warn{display:none;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--error-bg);border:1px solid rgba(255,77,79,.2);border-radius:12px;font-size:13px;color:var(--error-accent);font-weight:500;line-height:1.5}
-.tier2-warn.show{display:flex}
-.tier2-warn svg{flex-shrink:0;margin-top:1px}
-
-/* Tier header */
+.score-pill-of{font-size:12px;color:var(--text-secondary)}
+.score-pill.is-t1 .score-pill-value{color:var(--warning-accent)}
+.result-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
 .tier-header-block{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:16px 20px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-card)}
 .tier-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.tier-name-text{font-size:15px;font-weight:700;color:var(--text-primary);flex:1}
+.tier-name-text{font-size:15px;font-weight:700;color:var(--text-primary)}
 .tier-desc{font-size:12px;color:var(--text-secondary);margin-top:2px}
-.tier-name-col{flex:1}
-.tier-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600}
-.tag-green{background:var(--success-bg);color:var(--green)}
-.tag-orange{background:var(--warning-bg);color:var(--warning-accent)}
-.tag-red{background:var(--error-bg);color:var(--error-accent)}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:720px){.result-body{flex-direction:column}.score-pill{width:100%}}
 
-/* ── Label reminder ── */
-.label-reminder{background:var(--bg-card);border:1.5px solid var(--border-secondary);border-radius:var(--radius-tile);padding:16px 20px;box-shadow:var(--shadow-card)}
-.label-reminder-head{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.label-steps{display:flex;flex-direction:column;gap:7px}
-.label-step{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--text-primary);line-height:1.5}
-.label-step-num{width:18px;height:18px;border-radius:999px;background:var(--bg-page);border:1px solid var(--border-primary);font-size:10px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.label-chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;background:var(--success-bg);color:var(--green);font-size:12px;font-weight:700;font-family:ui-monospace,Menlo,Consolas,monospace}
+/* Callouts */
+.callout{display:flex;align-items:flex-start;gap:10px;padding:13px 16px;border-radius:12px;font-size:13px;line-height:1.55}
+.callout svg{flex-shrink:0;margin-top:2px}
+.callout-title{font-weight:700;display:block;margin-bottom:2px}
+.callout-trigger{display:none;background:var(--error-bg);border:1px solid rgba(255,77,79,.2);color:var(--error-accent)}
+.callout-trigger.show{display:flex}
+.callout-tiers{display:none;background:var(--info-bg);border:1px solid rgba(0,181,255,.2);color:#00699a}
+.callout-tiers.show{display:flex}
 
 /* Artifact block */
 .artifact-block{background:var(--bg-card);border-radius:var(--radius-tile);border:1.5px solid var(--border-secondary);padding:20px;box-shadow:var(--shadow-card)}
@@ -163,38 +158,26 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 .art-row-title{font-size:12.5px;font-weight:700;color:var(--text-primary);flex:0 0 190px;line-height:1.6}
 .art-row-text{font-size:12.5px;color:var(--text-primary);line-height:1.6;flex:1}
 @media (max-width:720px){.art-row{flex-wrap:wrap;gap:8px}.art-row-title{flex:1 1 auto}.art-row-text{flex:1 1 100%}}
-.art-note{margin-top:16px;padding:12px 14px;background:var(--bg-secondary);border-radius:12px;font-size:12px;color:var(--text-secondary);line-height:1.6}
-.artifact-closing{font-size:12px;color:var(--text-secondary);line-height:1.6;padding-top:12px;border-top:1px solid var(--border-secondary)}
-
-/* Tier colors */
-.tier-t0 .score-pill-value{color:var(--green)}
-.tier-t1 .score-pill-value{color:var(--warning-accent)}
-.tier-t2 .score-pill-value{color:var(--error-accent)}
 
 /* Buttons */
-.cta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;background:var(--green);color:var(--text-inverse);border:none;border-radius:var(--radius-btn);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background var(--ease),box-shadow var(--ease),transform .1s;white-space:nowrap}
-.btn-primary:hover{background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
-.btn-primary:active{background:var(--green-pressed);transform:scale(.98)}
-.btn-secondary{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;background:var(--bg-card);color:var(--text-primary);border:1.5px solid var(--border-primary);border-radius:var(--radius-btn);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease);white-space:nowrap}
-.btn-secondary:hover{border-color:var(--green);color:var(--green)}
-.btn-ghost{display:inline-flex;align-items:center;gap:7px;padding:11px 16px;background:transparent;color:var(--text-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-btn);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease)}
+.btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;background:var(--green);color:var(--text-inverse);border:none;border-radius:var(--radius-btn);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background var(--ease),box-shadow var(--ease),transform .1s}
+.btn-primary:hover:not(:disabled){background:var(--green-hover);box-shadow:0 4px 16px rgba(0,185,86,.3)}
+.btn-primary:active:not(:disabled){background:var(--green-pressed);transform:scale(.98)}
+.btn-primary:disabled{background:var(--border-primary);color:var(--text-inverse);cursor:not-allowed}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;background:transparent;color:var(--text-secondary);border:1.5px solid var(--border-secondary);border-radius:var(--radius-btn);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:border-color var(--ease),color var(--ease)}
 .btn-ghost:hover{border-color:var(--border-primary);color:var(--text-primary)}
-.copy-error{font-size:12px;color:var(--error-accent);font-weight:500;display:none}
-.copy-error.show{display:inline}
 
 /* ── Tooltip ── */
+.tooltip-popup::before{content:'';position:absolute;top:0;left:-14px;width:14px;height:100%}
 .tooltip-popup{position:fixed;z-index:9999;width:320px;background:var(--bg-card);border-radius:18px;box-shadow:var(--shadow-tip);border:1px solid var(--border-secondary);padding:18px 18px 16px;display:none}
-.tooltip-popup.show{display:block;animation:tipIn .15s ease}
+.tooltip-popup.show{display:block;animation:tipIn .09s ease-out}
 @keyframes tipIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.tip-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px;padding-right:22px;line-height:1.3}
+.tip-title{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:12px;line-height:1.3}
 .tip-section{margin-bottom:10px}
 .tip-section:last-child{margin-bottom:0}
 .tip-section-label{font-size:10px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .tip-section-text{font-size:12px;color:var(--text-primary);line-height:1.6}
 .tip-divider{height:1px;background:var(--border-secondary);margin:10px 0}
-.tip-close-btn{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:none;background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:background var(--ease);font-family:var(--font)}
-.tip-close-btn:hover{background:var(--border-primary);color:var(--text-primary)}
 
 /* ── Print ── */
 @media print{
@@ -203,8 +186,6 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
   .card{box-shadow:none;border:1px solid #ddd}
   .comment-area{border:none;background:transparent;padding:0;min-height:auto}
   .matrix-row{break-inside:avoid}
-  .result-section{border-radius:0 0 8px 8px}
-  .tier2-warn{border:1px solid #fcc}
 }
 </style>
 </head>
@@ -213,9 +194,7 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 <!-- Page Header -->
 <div class="page-header">
   <div class="logo-badge">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
-    </svg>
+    <img src="data:image/png;base64,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" alt="">
   </div>
   <div>
     <div class="page-title">Матрица оценки продуктового запуска</div>
@@ -225,17 +204,16 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
 <!-- Main Card -->
 <div class="card" id="mainCard">
 
-  <!-- Card Header -->
   <div class="card-header">
     <div>
       <div class="card-header-title">Матрица скоринга</div>
       <div class="card-header-sub">Оцените каждый из 7 критериев от 0 до 2 баллов</div>
     </div>
     <div class="progress-indicator">
-      <div class="progress-dots" id="progressDots"></div>
-      <div class="progress-label">Заполнено <span id="progressCount">0</span> из 7</div>
+      <div class="progress-label">Заполнено <b id="progressCount">0</b> из 7</div>
     </div>
   </div>
+  <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
 
   <!-- Table Header -->
   <div class="table-head">
@@ -260,54 +238,54 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       </div>
       <div class="td-score score-0" data-score="0" data-row="0">
         <label class="score-option"><input type="radio" name="r1" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Узкая ниша / выделенный сегмент</div>
-            <ul class="opt-list"><li>Клиенты с ограниченной потребностью</li><li>Данные об охвате отсутствуют</li></ul>
+          <div class="score-body"><div class="opt-title">Небольшая группа клиентов</div>
+            <ul class="opt-list"><li>Услуга нужна немногим</li><li>Охват неизвестен</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="0">
         <label class="score-option"><input type="radio" name="r1" value="1"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Крупный сегмент</div>
-            <ul class="opt-list"><li>Пользователи определённой услуги</li><li>Определённый регион</li></ul>
+            <ul class="opt-list"><li>Пользователи специфичной услуги</li><li>Один или два отдельных региона</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="0">
         <label class="score-option"><input type="radio" name="r1" value="2"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Большая часть базы</div></div>
+          <div class="score-body"><div class="opt-title">Большая часть базы</div>
+            <ul class="opt-list"><li>Распространённая услуга среди клиентов</li><li>Несколько или все регионы</li></ul></div>
         </label>
       </div>
       <div class="td-comment"><textarea class="comment-area" placeholder="Комментарий..."></textarea></div>
     </div>
 
     <!-- 2. Impact (KEY) -->
-    <div class="matrix-row key-row row-impact" data-row="1">
+    <div class="matrix-row" data-row="1">
       <div class="td-crit">
         <div class="crit-header">
           <span class="crit-index">2</span>
-          <div class="crit-name-wrap"><span class="crit-en">Impact</span><span class="crit-ru">Влияние</span></div>
+          <div class="crit-name-wrap"><span class="crit-en">Impact</span><span class="crit-ru">Ожидаемый эффект</span></div>
           <button class="tooltip-btn" data-tip="1">?</button>
         </div>
-        <span class="key-badge">Ключевой</span>
       </div>
       <div class="td-score score-0" data-score="0" data-row="1">
         <label class="score-option"><input type="radio" name="r2" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Косвенное влияние</div>
-            <ul class="opt-list"><li>Низкий эффект</li><li>Эффект не поддаётся измерению</li></ul>
+          <div class="score-body"><div class="opt-title">Эффекта почти нет</div>
+            <ul class="opt-list"><li>Низкое / косвенное влияние</li><li>Эффект не поддаётся измерению</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="1">
         <label class="score-option"><input type="radio" name="r2" value="1"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Заметное влияние</div>
-            <ul class="opt-list"><li>Явное улучшение usability</li><li>Упрощение процесса / Эффект измерим</li></ul>
+          <div class="score-body"><div class="opt-title">Заметный эффект</div>
+            <ul class="opt-list"><li>Ожидается явное влияние на метрики</li><li>Эффект можно будет измерить</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="1">
         <label class="score-option"><input type="radio" name="r2" value="2"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Ощутимый инкремент</div>
-            <ul class="opt-list"><li>Влияние на выручку, АБПП, снижение оттока</li><li>С посчитанным эффектом</li></ul>
+            <ul class="opt-list"><li>Ожидается существенное влияние на ключевые метрики: выручка, АБПП, отток</li><li>Расчёт опирается на аналитические данные</li></ul>
           </div>
         </label>
       </div>
@@ -325,22 +303,22 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       </div>
       <div class="td-score score-0" data-score="0" data-row="2">
         <label class="score-option"><input type="radio" name="r3" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Явные обоснования отсутствуют</div>
-            <ul class="opt-list"><li>Тестируется бизнес-гипотеза</li><li>Провалидированные результаты отсутствуют</li></ul>
+          <div class="score-body"><div class="opt-title">Явных обоснований пока нет</div>
+            <ul class="opt-list"><li>Проверяется гипотеза</li><li>Подтверждённых данных нет</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="2">
         <label class="score-option"><input type="radio" name="r3" value="1"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Есть значимые обоснования</div>
-            <ul class="opt-list"><li>Посчитан бизнес-кейс</li><li>Результаты исследований и опросов</li><li>Аналитика данных, подтверждающая необходимость запуска</li></ul>
+            <ul class="opt-list"><li>Посчитан бизнес-кейс</li><li>Есть результаты исследований с клиентами, анализ рынка</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="2">
         <label class="score-option"><input type="radio" name="r3" value="2"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Подтверждена высокая важность</div>
-            <ul class="opt-list"><li>Необходимость занять позицию на рынке</li><li>Есть требование регулятора</li><li>Приоритизировано топ-менеджментом / стратегическое направление</li></ul>
+            <ul class="opt-list"><li>Необходимость занять позицию на рынке</li><li>Есть требования регулятора</li><li>Приоритет от топ-менеджмента</li><li>Стратегически важное направление для бизнеса</li></ul>
           </div>
         </label>
       </div>
@@ -352,28 +330,28 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       <div class="td-crit">
         <div class="crit-header">
           <span class="crit-index">4</span>
-          <div class="crit-name-wrap"><span class="crit-en">CX-сложность</span><span class="crit-ru">Степень изменений</span></div>
+          <div class="crit-name-wrap"><span class="crit-en">CX-сложность</span><span class="crit-ru">Изменения для клиента</span></div>
           <button class="tooltip-btn" data-tip="3">?</button>
         </div>
       </div>
       <div class="td-score score-0" data-score="0" data-row="3">
         <label class="score-option"><input type="radio" name="r4" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Линейный путь</div>
-            <ul class="opt-list"><li>Затрагивается 1–2 шага в сценарии</li><li>Небольшое количество действий клиента</li><li>Минорные правки / изменений для клиента нет</li></ul>
+          <div class="score-body"><div class="opt-title">Путь клиента почти не меняется</div>
+            <ul class="opt-list"><li>Меняются 1–2 шага</li><li>Клиент делает те же действия</li><li>Мелкие правки или изменений нет</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="3">
         <label class="score-option"><input type="radio" name="r4" value="1"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Разветвлённые пути</div>
-            <ul class="opt-list"><li>Добавляются новые шаги в сценарии</li><li>Появляются развилки и вариативность действий</li></ul>
+          <div class="score-body"><div class="opt-title">Новые шаги и развилки</div>
+            <ul class="opt-list"><li>Взаимодействие ощутимо меняется: проще или, наоборот, сложнее</li><li>В сценарии добавляются шаги</li><li>У клиента появляется выбор</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="3">
         <label class="score-option"><input type="radio" name="r4" value="2"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Комплексные или новые пути</div>
-            <ul class="opt-list"><li>Формируются новые сценарии и процессы</li><li>Кардинально меняется логика взаимодействия</li></ul>
+          <div class="score-body"><div class="opt-title">Сценарий строится заново</div>
+            <ul class="opt-list"><li>Появляются новые сценарии и процессы</li><li>Логика взаимодействия меняется полностью</li></ul>
           </div>
         </label>
       </div>
@@ -401,14 +379,14 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       <div class="td-score score-1" data-score="1" data-row="4">
         <label class="score-option"><input type="radio" name="r5" value="1"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Умеренная</div>
-            <ul class="opt-list"><li>Вводятся навязчивые баннеры, уведомления, пуши</li><li>Активное продвижение новых условий</li></ul>
+            <ul class="opt-list"><li>Появляются навязчивые баннеры, уведомления, пуши</li><li>Активно продвигаем новые условия</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="4">
         <label class="score-option"><input type="radio" name="r5" value="2"><span class="radio-wrap"></span>
           <div class="score-body"><div class="opt-title">Высокая</div>
-            <ul class="opt-list"><li>Dark-паттерны / скрытые условия</li><li>Монетизация ранее бесплатного</li><li>Любое повышение стоимости</li><li>Принудительное изменение условий и сценариев</li></ul>
+            <ul class="opt-list"><li>Дарк-паттерны или скрытые условия</li><li>Бесплатное становится платным</li><li>Любое повышение цены</li><li>Условия меняются без согласия клиента</li></ul>
           </div>
         </label>
       </div>
@@ -426,22 +404,22 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       </div>
       <div class="td-score score-0" data-score="0" data-row="5">
         <label class="score-option"><input type="radio" name="r6" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Стандартное решение</div>
-            <ul class="opt-list"><li>Полностью повторяются существующие механики</li><li>Можно реализовать по аналогии с другими продуктами</li></ul>
+          <div class="score-body"><div class="opt-title">Делаем как обычно</div>
+            <ul class="opt-list"><li>Повторяем существующие механики</li><li>Есть аналог в другом продукте</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="5">
         <label class="score-option"><input type="radio" name="r6" value="1"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Требуются нововведения</div>
-            <ul class="opt-list"><li>Нужна адаптация существующих решений с локальными новшествами</li></ul>
+          <div class="score-body"><div class="opt-title">Нужна доработка</div>
+            <ul class="opt-list"><li>Берём готовое решение и меняем под себя</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-2" data-score="2" data-row="5">
         <label class="score-option"><input type="radio" name="r6" value="2"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Нестандартное, уникальное решение</div>
-            <ul class="opt-list"><li>Создание принципиально нового взаимодействия</li></ul>
+          <div class="score-body"><div class="opt-title">Аналогов нет</div>
+            <ul class="opt-list"><li>Придумываем взаимодействие с нуля</li></ul>
           </div>
         </label>
       </div>
@@ -459,15 +437,15 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       </div>
       <div class="td-score score-0" data-score="0" data-row="6">
         <label class="score-option"><input type="radio" name="r7" value="0"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Не прогнозируется</div>
-            <ul class="opt-list"><li>В CJ ничего не меняется или изменения бесшовные</li><li>Исходящие коммуникации не задействованы</li></ul>
+          <div class="score-body"><div class="opt-title">Обращений не ждём</div>
+            <ul class="opt-list"><li>Путь клиента не меняется или меняется незаметно</li><li>Клиенту ничего не отправляем</li></ul>
           </div>
         </label>
       </div>
       <div class="td-score score-1" data-score="1" data-row="6">
         <label class="score-option"><input type="radio" name="r7" value="1"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Умеренное влияние</div>
-            <ul class="opt-list"><li>Небольшой охват</li><li>Умеренные изменения в CJ</li><li>Задействован минимум 1 вид коммуникаций:</li></ul>
+          <div class="score-body"><div class="opt-title">Возможен рост обращений</div>
+            <ul class="opt-list"><li>Небольшой охват</li><li>Путь клиента меняется умеренно</li><li>Используем хотя бы один канал:</li></ul>
             <div class="comm-types" id="commTypes1">
               <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c1_n"><span class="comm-type-label">Нотификации (сервисные, в разных каналах)</span></label>
               <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c1_i"><span class="comm-type-label">Информирование и рассылки в разных каналах</span></label>
@@ -478,8 +456,8 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
       </div>
       <div class="td-score score-2" data-score="2" data-row="6">
         <label class="score-option"><input type="radio" name="r7" value="2"><span class="radio-wrap"></span>
-          <div class="score-body"><div class="opt-title">Риск повышенной обращаемости</div>
-            <ul class="opt-list"><li>Большой охват</li><li>Существенные изменения в CJ</li><li>Задействовано несколько или все виды коммуникаций:</li></ul>
+          <div class="score-body"><div class="opt-title">Ждём роста обращений</div>
+            <ul class="opt-list"><li>Большой охват</li><li>Путь клиента меняется существенно</li><li>Используем несколько каналов или все:</li></ul>
             <div class="comm-types" id="commTypes2">
               <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c2_n"><span class="comm-type-label">Нотификации (сервисные, в разных каналах)</span></label>
               <label class="comm-type-item"><input type="checkbox" class="comm-check-input" name="c2_i"><span class="comm-type-label">Информирование и рассылки в разных каналах</span></label>
@@ -497,128 +475,134 @@ input[type="radio"]:checked+.radio-wrap::after{opacity:1}
   <div class="result-section">
     <div class="hint-bar" id="hintBar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      Заполните все 7 критериев — результат и артефакт появятся автоматически
+      Заполните все 7 критериев — решение по Клиентскому опыту появится автоматически
     </div>
-    <div class="result-layout" id="resultLayout">
+
+    <div class="result-body" id="resultBody">
+
       <div class="score-pill" id="scorePill">
         <span class="score-pill-label">Итого</span>
         <span class="score-pill-value" id="totalScore">0</span>
-        <span class="score-pill-max">из 14 баллов</span>
+        <span class="score-pill-of" id="totalScoreOf">из 14 баллов</span>
       </div>
-      <div class="result-right" id="resultRight">
-        <div class="tier2-warn" id="tier2Warn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Внимание: высокая токсичность в сочетании с широким охватом — повышенный риск для клиентского опыта. Рекомендуем Tier 2 независимо от итоговой суммы баллов.
-        </div>
-        <div class="tier-header-block">
-          <div class="tier-dot" id="tierDot"></div>
-          <div class="tier-name-col">
-            <div class="tier-name-text" id="tierName"></div>
-            <div class="tier-desc" id="tierDesc"></div>
-          </div>
-          <span class="tier-tag" id="tierTag"></span>
-        </div>
 
-        <!-- Label reminder -->
-        <div class="label-reminder">
-          <div class="label-reminder-head">Что сделать в Jira</div>
-          <div class="label-steps">
-            <div class="label-step"><span class="label-step-num">1</span><span>Нажмите «Скопировать для Jira» и вставьте результат комментарием в задачу</span></div>
-            <div class="label-step"><span class="label-step-num">2</span><span>Поставьте на задачу метку <span class="label-chip" id="labelChip">Tier-0</span> — по ней команда Клиентского опыта видит результат скоринга</span></div>
-          </div>
-        </div>
+      <div class="result-right">
 
-        <div class="artifact-block" id="artifactBlock">
-          <div class="artifact-head"><div class="artifact-head-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="var(--green)" stroke="none"/></svg></div><div class="artifact-head-title">Решение по Клиентскому опыту</div></div>
-          <div id="artifactContent"></div>
-        </div>
-        <div class="cta-row">
-          <button class="btn-primary" id="copyBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Скопировать для Jira
-          </button>
-          <button class="btn-ghost" id="resetBtn">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 100-9.17"/></svg>
-            Сбросить
-          </button>
+      <div class="tier-header-block">
+        <span class="tier-dot" id="tierDot"></span>
+        <div>
+          <div class="tier-name-text" id="tierName"></div>
+          <div class="tier-desc" id="tierDesc"></div>
         </div>
       </div>
+
+      <div class="callout callout-trigger" id="calloutTrigger">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Выявлена токсичность — запуск требует внимания Клиентского опыта.</span>
+      </div>
+
+      <div class="callout callout-tiers" id="calloutTierS">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span><span class="callout-title">Похоже на масштабный запуск</span>Такие инициативы могут претендовать на Tier S — полный цикл проектирования. Уровень Tier S не присваивается по скорингу: он согласуется с CMO в рамках квартального планирования. Обсудите инициативу с командой Клиентского опыта до Быстрой оценки.</span>
+      </div>
+
+      <div class="artifact-block" id="artifactBlock">
+        <div class="artifact-head"><div class="artifact-head-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="var(--green)" stroke="none"/></svg></div><div class="artifact-head-title">Решение по Клиентскому опыту</div></div>
+        <div id="artifactContent"></div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn-primary" id="copyBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Скопировать для Jira
+        </button>
+        <button class="btn-ghost" id="resetBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 100-9.17"/></svg>
+          Сбросить
+        </button>
+      </div>
+
+      </div><!-- /result-right -->
     </div>
   </div>
-</div>
+</div><!-- /card -->
 
 <!-- Tooltip popup -->
 <div class="tooltip-popup" id="tooltipPopup">
-  <button class="tip-close-btn" id="tipClose">✕</button>
   <div id="tooltipContent"></div>
 </div>
 
 <script>
 const MAX = 14, ROWS = 7;
+const TIER_S_HINT = 11;   // порог подсказки про Tier S
 
+/* ── Склонение ─────────────────────────────────────────────────────────────
+   plural(n, ['балл','балла','баллов']) → корректная форма для любого n      */
+function plural(n, forms) {
+  const n10 = Math.abs(n) % 10, n100 = Math.abs(n) % 100;
+  if (n10 === 1 && n100 !== 11) return forms[0];
+  if (n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) return forms[1];
+  return forms[2];
+}
+const ball = n => plural(n, ['балл','балла','баллов']);
+
+/* ── Бинарная модель: только Tier 0 и Tier 1.
+      Tier S присваивает CMO в квартальном планировании — анкета его не выдаёт. */
 const TIERS = [
-  { max:6,  cls:'tier-t0', tagCls:'tag-green',  dot:'#00B956', label:'Tier 0 — работы Клиентского опыта не требуются', tag:'Низкая нагрузка',  desc:'Стандартное решение с низким уровнем риска.', art:'tier0', slug:'Tier-0' },
-  { max:10, cls:'tier-t1', tagCls:'tag-orange', dot:'#FF9F0A', label:'Tier 1 — требования и рекомендации',             tag:'Средняя нагрузка', desc:'Заметное влияние на клиента или элементы новизны.', art:'tier1', slug:'Tier-1' },
-  { max:14, cls:'tier-t2', tagCls:'tag-red',    dot:'#FF4D4F', label:'Tier 2 — полное проектирование',                 tag:'Высокая нагрузка', desc:'Высокорисковый или стратегический запуск.', art:'tier2', slug:'Tier-2' },
+  { max:6,  cls:'',      dot:'#00B956', full:'Tier 0 — работы Клиентского опыта не требуются',
+    desc:'Стандартное решение с низким уровнем риска.', art:'tier0', slug:'Tier-0' },
+  { max:14, cls:'is-t1',  dot:'#FF9F0A', full:'Tier 1 — требования и рекомендации',
+    desc:'Заметное влияние на клиента или элементы новизны.', art:'tier1', slug:'Tier-1' }
 ];
 
-const CRIT_NAMES = ['Reach (Охват)','Impact (Влияние)','Validation (Обоснование)','CX-сложность и степень изменений','Токсичность','Реализация','Влияние на обращаемость'];
+const CRIT_NAMES  = ['Reach (Охват)','Impact (Ожидаемый эффект)','Validation (Обоснование)','CX-сложность (Изменения для клиента)','Токсичность','Реализация','Влияние на обращаемость'];
 
 const TIPS = [
   {
     title: 'Reach — Охват',
-    desc: 'Этот критерий отвечает на вопрос: сколько клиентов столкнётся с изменением? Чем шире охват — тем выше цена ошибки в сценарии и тем важнее продуманность каждого шага.',
-    how:  'Подумайте: кто конкретно увидит это изменение? Отдельный нишевый сегмент с особыми условиями — или большинство клиентов, которые пользуются базовыми услугами?',
-    edge: 'Личный кабинет, биллинг, базовые коммуникации — почти всегда 2 балла, даже если правка кажется минорной. Региональный тест в одном городе без планов масштабирования — скорее 1 балл.'
+    desc: 'Сколько клиентов увидят изменение. Чем больше людей его заметят, тем дороже обходится ошибка в сценарии.',
+    how:  'Прикиньте, кого затронет: узкую группу с особыми условиями или всех, кто пользуется базовыми услугами.',
+    edge: 'Личный кабинет, биллинг, базовые уведомления — почти всегда 2 балла, даже если правка маленькая. Тест в одном регионе без планов масштабирования — 1 балл.'
   },
   {
-    title: 'Impact — Влияние',
-    desc: 'Impact — это не о том, насколько важен продукт для бизнеса, а о том, насколько изменение ощутимо для самого клиента. Видит ли он разницу до и после? Становится ли ему проще?',
-    how:  'Спросите себя: клиент заметит это изменение? Есть ли конкретная метрика, по которой можно измерить эффект: снижение оттока, рост АБПП, уменьшение обращений в КЦ?',
-    edge: 'Если эффект очевиден интуитивно, но не посчитан — это 1 балл, а не 2. 2 балла — только когда есть конкретная измеримая цель. «Наверное поможет» — 0 баллов.'
+    title: 'Impact — Ожидаемый эффект',
+    desc: 'Что изменится после запуска — в деньгах и в клиентских метриках. Это всегда прогноз: оценивается, насколько он обоснован, а не объём работ по сценарию.',
+    how:  'На какой показатель повлияет запуск — выручка, АБПП, отток, CSI, обращаемость? Прогноз выражен в цифрах или пока на уровне «должно помочь»?',
+    edge: 'Влияние понятно, но в цифрах не выражено — 1 балл. 2 балла — когда есть расчёт, опирающийся на данные. «Наверное, поможет» — 0 баллов.'
   },
   {
     title: 'Validation — Обоснование',
-    desc: 'Обоснование показывает, насколько хорошо изучена потребность. Запуск без валидации — это гипотеза, которую ещё нужно проверить. Запуск с данными — это взвешенное решение.',
-    how:  'Есть ли реальные данные, подтверждающие, что это нужно клиентам прямо сейчас? Или это внутреннее предположение команды без внешних подтверждений?',
-    edge: 'Требование регулятора или директива топ-менеджмента — автоматически 2 балла, даже без исследований. Небольшой опрос из 10 клиентов — скорее 1 балл, а не 2.'
+    desc: 'На чём основано решение запускать: на данных или на предположении команды.',
+    how:  'Есть подтверждение, что это нужно клиентам, — исследование, аналитика, бизнес-кейс? Или пока гипотеза?',
+    edge: 'Требование регулятора или решение топ-менеджмента — 2 балла даже без исследований. Опрос десяти клиентов — 1 балл.'
   },
   {
-    title: 'CX-сложность — Степень изменений',
-    desc: 'Оценивает, насколько сильно меняется путь клиента. Минорная правка кнопки — это одно. Новый сценарий подключения с несколькими шагами и развилками — совсем другое.',
-    how:  'Сколько шагов клиента затрагивает изменение? Появляются ли новые точки выбора или решения, которые клиент должен принять? Меняется ли логика взаимодействия принципиально?',
-    edge: 'Если клиент делает то же самое, но интерфейс чуть поменялся — 0–1 балл. Если появляется принципиально новая логика или тип взаимодействия без аналогов — 2 балла.'
+    title: 'CX-сложность — Изменения для клиента',
+    desc: 'Насколько перестраивается путь клиента. Оценивается объём перестройки, а не её результат: стало проще или, наоборот, сложнее — здесь не важно.',
+    how:  'Сколько шагов затронуто? Появляются ли новые решения, которые клиент должен принять? Меняется ли логика взаимодействия?',
+    edge: 'Клиент делает то же самое, изменился только интерфейс — 0–1 балл. Появляется логика, которой раньше не было, — 2 балла.'
   },
   {
     title: 'Токсичность',
-    desc: 'Токсичность — потенциал запуска вызвать негативную реакцию: ощущение обмана, навязывания или ухудшения условий. Это самый часто недооцениваемый критерий: продакт редко воспринимает свой продукт как токсичный.',
-    how:  'Задайте себе честный вопрос: клиент обрадуется этому изменению или расстроится? Мы что-то забираем, ограничиваем или навязываем? Если есть сомнение — ставьте балл выше.',
-    edge: 'Любое повышение цены или монетизация ранее бесплатного — автоматически 2 балла без исключений. Новое уведомление, даже полезное — минимум 1 балл. «Мы просто информируем» тоже может быть навязчивым.'
+    desc: 'Насколько изменение может расстроить или разозлить клиента: ощущение, что его обманули, что-то забрали или навязали. Этот критерий занижают чаще других — изнутри свой продукт редко выглядит токсичным.',
+    how:  'Ответьте честно: клиент обрадуется изменению или расстроится? Мы что-то забираем, ограничиваем или навязываем? Сомневаетесь — ставьте балл выше.',
+    edge: 'Любое повышение цены или платная опция вместо бесплатной — 2 балла без исключений.'
   },
   {
     title: 'Реализация',
-    desc: 'Оценивает уникальность технической и UX-реализации. Делаем то, что уже делали в других продуктах — или создаём что-то новое, без готового образца и проверенного паттерна?',
-    how:  'Есть ли похожий реализованный сценарий в другом продукте компании, на который можно опереться один в один? Или нужно проектировать взаимодействие с чистого листа?',
-    edge: 'Берём существующий паттерн и адаптируем под конкретный продукт — 1 балл. Если аналогов нет вообще и нужно изобретать новое взаимодействие — 2 балла.'
+    desc: 'Делаем то, что уже делали в других продуктах, или что-то новое, без готового примера.',
+    how:  'Есть похожий сценарий, на который можно опереться один в один? Или проектируем с нуля?',
+    edge: 'Берём готовый паттерн и адаптируем под свой продукт — 1 балл. Аналогов нет вообще — 2 балла.'
   },
   {
-    title: 'Влияние на обращаемость',
-    desc: 'Оцениваем риск роста обращений в поддержку после запуска. Чем больше клиентов узнают об изменении и чем активнее коммуникация — тем выше вероятность вопросов, недопонимания и жалоб в КЦ.',
-    how:  'Будут ли клиенты получать сообщения об этом изменении? Через сколько каналов? Насколько изменение неожиданное? Потребует ли дополнительных действий с его стороны?',
-    edge: 'Если клиент вообще не узнает об изменении — 0 баллов. Если изменение активно продвигается через несколько каналов одновременно — скорее всего, 2 балла. Отметьте задействованные каналы ниже.'
+    title: 'Обращаемость',
+    desc: 'Риск, что после запуска вырастет число обращений в поддержку.',
+    how:  'Клиенты узнают об изменении? Через сколько каналов? Насколько оно для них неожиданное? Потребует ли от клиента действий?',
+    edge: 'Клиент вообще не узнает об изменении — 0 баллов. Активное продвижение через несколько каналов одновременно — 2 балла. Отметьте задействованные каналы ниже.'
   }
 ];
 
-// Progress dots init
-const dotsWrap = document.getElementById('progressDots');
-for (let i = 0; i < ROWS; i++) {
-  const d = document.createElement('div');
-  d.className = 'progress-dot';
-  d.id = 'dot-' + i;
-  dotsWrap.appendChild(d);
-}
-
-// Score cell clicks
+/* ── Выбор оценки ── */
 document.querySelectorAll('.td-score').forEach(cell => {
   cell.addEventListener('click', () => {
     const radio = cell.querySelector('input[type="radio"]');
@@ -631,69 +615,59 @@ document.querySelectorAll('.td-score').forEach(cell => {
     const rowIdx = +cell.dataset.row;
     const score  = +cell.dataset.score;
 
-    // Criterion 7: comm-types toggle
     if (rowIdx === 6) {
       document.getElementById('commTypes1').classList.toggle('open', score === 1);
       document.getElementById('commTypes2').classList.toggle('open', score === 2);
     }
-    // Toxicity nudge
     if (rowIdx === 4) {
       document.getElementById('toxNudge').classList.toggle('show', score === 0);
     }
-
     update();
   });
 });
+
+/* ── Определение уровня ── */
+function resolveTier(score, rowScores) {
+  const hardTrigger = rowScores[4] === 2;          // токсичность = 2
+  const byScore = TIERS.find(t => score <= t.max);
+  return { tier: hardTrigger ? TIERS[1] : byScore, hardTrigger };
+}
 
 function update() {
   const checked = document.querySelectorAll('#matrixBody input[type="radio"]:checked');
   let score = 0;
   const rowScores = {};
   checked.forEach(rb => {
-    const cell = rb.closest('.td-score');
-    const ri = +cell.dataset.row;
-    const v  = +rb.value;
-    score += v;
-    rowScores[ri] = v;
+    const ri = +rb.closest('.td-score').dataset.row;
+    score += +rb.value;
+    rowScores[ri] = +rb.value;
   });
   const filled = checked.length;
 
-  // Progress dots + counter
-  for (let i = 0; i < ROWS; i++) document.getElementById('dot-'+i).classList.toggle('filled', i in rowScores);
+  document.getElementById('progressFill').style.width = (filled / ROWS * 100) + '%';
   document.getElementById('progressCount').textContent = filled;
-  document.getElementById('totalScore').textContent = score;
 
   if (filled < ROWS) {
     document.getElementById('hintBar').classList.remove('hidden');
-    document.getElementById('resultLayout').classList.remove('show');
+    document.getElementById('resultBody').classList.remove('show');
     return;
   }
 
-  document.getElementById('hintBar').classList.add('hidden');
-  document.getElementById('resultLayout').classList.add('show');
+  const { tier, hardTrigger } = resolveTier(score, rowScores);
+  const tierSHint = score >= TIER_S_HINT;
 
-  const tier = TIERS.find(t => score <= t.max);
+  document.getElementById('totalScore').textContent = score;
+  document.getElementById('totalScoreOf').textContent = 'из ' + MAX + ' ' + ball(MAX);
+  document.getElementById('scorePill').className = 'score-pill ' + tier.cls;
 
-  // Score pill
-  const pill = document.getElementById('scorePill');
-  pill.className = 'score-pill ' + tier.cls;
-
-  // Tier block
   document.getElementById('tierDot').style.background = tier.dot;
-  document.getElementById('tierName').textContent = tier.label;
+  document.getElementById('tierName').textContent = tier.full;
   document.getElementById('tierDesc').textContent = tier.desc;
-  const tag = document.getElementById('tierTag');
-  tag.className = 'tier-tag ' + tier.tagCls;
-  tag.textContent = tier.tag;
 
-  // Label chip
-  document.getElementById('labelChip').textContent = tier.slug;
-
-  // Auto-Tier-2 warning: toxicity=2 + (reach=2 or impact=2)
-  const tox = rowScores[4] ?? 0;
-  const reach = rowScores[0] ?? 0;
-  const impact = rowScores[1] ?? 0;
-  document.getElementById('tier2Warn').classList.toggle('show', tox === 2 && (reach === 2 || impact === 2));
+  document.getElementById('hintBar').classList.add('hidden');
+  document.getElementById('resultBody').classList.add('show');
+  document.getElementById('calloutTrigger').classList.toggle('show', hardTrigger);
+  document.getElementById('calloutTierS').classList.toggle('show', tierSHint);
 
   renderArtifact(tier);
 }
@@ -712,9 +686,7 @@ const ROW = {
   art0: ['package', 'Артефакты',
     'Артефакты со стороны Клиентского опыта по задаче не формируются.'],
   art1: ['package', 'Артефакты',
-    'Со стороны Клиентского опыта будет подготовлен перечень обязательных требований и рекомендаций. CJM, прототипы и другие проектные артефакты в этом формате не создаются.'],
-  art2: ['package', 'Артефакты',
-    'По согласованию с CJE для задачи может быть собран пакет артефактов: перечень требований и рекомендаций, CJM, прототип и другие. Финальный перечень и объём работ утверждаются после анализа задачи со стороны CJE.'],
+    'Базово со стороны Клиентского опыта готовится перечень требований и рекомендаций. Необходимость дополнительных артефактов CJE определяет после анализа задачи и фиксирует в задаче. Полный цикл проектирования клиентского пути в этот формат не входит.'],
   ctrl0: ['control', 'Контроль реализации',
     'Финальное решение по целевому клиентскому пути и ответственность за дизайн продукта остаются за инициатором. Команда Клиентского опыта решение по задаче не формирует и не подтверждает.'],
   ctrl1: ['control', 'Контроль реализации',
@@ -731,11 +703,6 @@ const ART = {
     cls: 'Умеренное влияние на клиента, изменения в существующих сценариях.',
     verdict: 'Требуется вовлечение Клиентского опыта в формате подготовки требований и рекомендаций.',
     rows: [ROW.next1, ROW.art1, ROW.ctrl1]
-  },
-  tier2: {
-    cls: 'Повышенный риск для клиента и существенные изменения в сценариях.',
-    verdict: 'Требуется глубокое погружение и вовлечение Клиентского опыта.',
-    rows: [ROW.next1, ROW.art2, ROW.ctrl1]
   }
 };
 
@@ -754,51 +721,87 @@ function renderArtifact(tier) {
     '<div class="art-list">' + rows + '</div>';
 }
 
-// ── Tooltips ────────────────────────────────────────────────────────────────
-let activeTipBtn = null;
-document.querySelectorAll('.tooltip-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    const idx = +btn.dataset.tip;
-    if (activeTipBtn === btn) { closeTooltip(); return; }
-    if (activeTipBtn) closeTooltip();
-    activeTipBtn = btn;
-    btn.classList.add('active');
-    const tip = TIPS[idx];
-    const popup = document.getElementById('tooltipPopup');
-    document.getElementById('tooltipContent').innerHTML = `
-      <div class="tip-title">${tip.title}</div>
-      <div class="tip-section"><div class="tip-section-label">О чём этот критерий</div><div class="tip-section-text">${tip.desc}</div></div>
-      <div class="tip-divider"></div>
-      <div class="tip-section"><div class="tip-section-label">Как выбрать оценку</div><div class="tip-section-text">${tip.how}</div></div>
-      <div class="tip-divider"></div>
-      <div class="tip-section"><div class="tip-section-label">Пограничные случаи</div><div class="tip-section-text">${tip.edge}</div></div>`;
-    popup.classList.add('show');
-    const r = btn.getBoundingClientRect();
-    let left = r.right + 10, top = r.top;
-    if (left + 320 > window.innerWidth - 16) left = r.left - 330;
-    if (top + 300 > window.innerHeight - 16) top = window.innerHeight - 316;
-    if (top < 8) top = 8;
-    popup.style.left = left + 'px';
-    popup.style.top  = top  + 'px';
-  });
-});
-document.getElementById('tipClose').addEventListener('click', closeTooltip);
-document.addEventListener('click', e => {
-  if (!e.target.closest('.tooltip-popup') && !e.target.closest('.tooltip-btn')) closeTooltip();
-});
+/* ── Тултипы: только ховер ─────────────────────────────────────────────────
+   Позиция считается по фактической высоте попапа, а не по константе —
+   иначе длинные подсказки уезжают вверх и отрываются от иконки.
+   Задержки минимальные: открытие почти мгновенное, закрытие ровно такое,
+   чтобы курсор успел перейти с иконки на само окно.                      */
+const OPEN_DELAY = 40, CLOSE_DELAY = 90;
+const popup = document.getElementById('tooltipPopup');
+let activeTipBtn = null, openTimer = null, closeTimer = null;
+
+function renderTip(idx) {
+  const tip = TIPS[idx];
+  document.getElementById('tooltipContent').innerHTML =
+    '<div class="tip-title">' + tip.title + '</div>' +
+    '<div class="tip-section"><div class="tip-section-label">О чём этот критерий</div><div class="tip-section-text">' + tip.desc + '</div></div>' +
+    '<div class="tip-divider"></div>' +
+    '<div class="tip-section"><div class="tip-section-label">Как выбрать оценку</div><div class="tip-section-text">' + tip.how + '</div></div>' +
+    '<div class="tip-divider"></div>' +
+    '<div class="tip-section"><div class="tip-section-label">Пограничные случаи</div><div class="tip-section-text">' + tip.edge + '</div></div>';
+}
+
+function placeTip(btn) {
+  const r = btn.getBoundingClientRect();
+  const h = popup.offsetHeight, w = popup.offsetWidth;   // фактические размеры
+  let left = r.right + 10;
+  if (left + w > window.innerWidth - 16) left = r.left - w - 10;
+  if (left < 8) left = 8;
+  let top = r.top - 8;                                    // верх окна у иконки
+  if (top + h > window.innerHeight - 16) top = window.innerHeight - h - 16;
+  if (top < 8) top = 8;
+  popup.style.left = left + 'px';
+  popup.style.top  = top  + 'px';
+}
+
+function openTooltip(btn) {
+  clearTimeout(closeTimer);
+  if (activeTipBtn === btn) return;
+  if (activeTipBtn) activeTipBtn.classList.remove('active');
+  activeTipBtn = btn;
+  btn.classList.add('active');
+  renderTip(+btn.dataset.tip);
+  popup.classList.add('show');
+  placeTip(btn);
+}
+
 function closeTooltip() {
-  document.getElementById('tooltipPopup').classList.remove('show');
+  clearTimeout(openTimer); clearTimeout(closeTimer);
+  popup.classList.remove('show');
   if (activeTipBtn) { activeTipBtn.classList.remove('active'); activeTipBtn = null; }
 }
 
-// ── Copy for Jira ────────────────────────────────────────────────────────────
+function scheduleClose() {
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(closeTooltip, CLOSE_DELAY);
+}
+
+document.querySelectorAll('.tooltip-btn').forEach(btn => {
+  btn.addEventListener('mouseenter', () => {
+    clearTimeout(closeTimer);
+    openTimer = setTimeout(() => openTooltip(btn), OPEN_DELAY);
+  });
+  btn.addEventListener('mouseleave', () => { clearTimeout(openTimer); scheduleClose(); });
+});
+
+/* курсор доехал до окна — держим открытым */
+popup.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+popup.addEventListener('mouseleave', scheduleClose);
+
+window.addEventListener('scroll', () => { if (activeTipBtn) placeTip(activeTipBtn); }, true);
+window.addEventListener('resize', () => { if (activeTipBtn) placeTip(activeTipBtn); });
+
+/* ── Копирование для Jira ── */
 document.getElementById('copyBtn').addEventListener('click', function() {
   const checked = document.querySelectorAll('#matrixBody input[type="radio"]:checked');
   if (checked.length < ROWS) return;
 
-  const score = +document.getElementById('totalScore').textContent;
-  const tier  = TIERS.find(t => score <= t.max);
+  let score = 0; const rowScores = {};
+  checked.forEach(rb => {
+    const ri = +rb.closest('.td-score').dataset.row;
+    score += +rb.value; rowScores[ri] = +rb.value;
+  });
+  const { tier, hardTrigger } = resolveTier(score, rowScores);
 
   let txt = 'CX-СКОРИНГ | ' + tier.slug + ' | ' + score + '/' + MAX + '\n\n';
   txt += 'h2. Результат CX-скоринга продуктового запуска\n\n';
@@ -809,12 +812,12 @@ document.getElementById('copyBtn').addEventListener('click', function() {
     const rb    = row.querySelector('input:checked');
     const state = rb ? rb.closest('.td-score').querySelector('.opt-title').textContent.trim() : '—';
     const val   = rb ? rb.value : '—';
-    const comm  = (row.querySelector('textarea')?.value || '').replace(/\n/g,' ') || ' ';
+    const comm  = (row.querySelector('textarea') ? row.querySelector('textarea').value : '').replace(/\n/g,' ') || ' ';
     let extra   = '';
     if (i === 6 && rb) {
       const ctId = +rb.value === 1 ? 'commTypes1' : +rb.value === 2 ? 'commTypes2' : null;
       if (ctId) {
-        const sel = [...document.querySelectorAll('#' + ctId + ' input:checked')]
+        const sel = [].slice.call(document.querySelectorAll('#' + ctId + ' input:checked'))
           .map(cb => cb.closest('.comm-type-item').querySelector('.comm-type-label').textContent.trim());
         if (sel.length) extra = ' [' + sel.join(', ') + ']';
       }
@@ -822,44 +825,47 @@ document.getElementById('copyBtn').addEventListener('click', function() {
     txt += '| ' + CRIT_NAMES[i] + ' | ' + state + extra + ' | ' + val + ' | ' + comm + ' |\n';
   });
 
-  txt += '\n* *Итого:* ' + score + ' баллов из ' + MAX + '\n';
-  txt += '* *Формат:* ' + tier.label + '\n';
-  txt += '* *Нагрузка на команду Клиентского опыта:* ' + tier.tag + '\n\n';
-  txt += 'h3. Решение по Клиентскому опыту\n';
+  txt += '\n* *Итого:* ' + score + ' ' + ball(score) + ' из ' + MAX + '\n';
+  txt += '* *Уровень:* ' + tier.full + '\n';
+  if (hardTrigger) {
+    txt += '* *Токсичность:* выявлена — запуск требует внимания Клиентского опыта\n';
+  }
+  if (score >= TIER_S_HINT) {
+    txt += '* *Комментарий:* запуск выглядит масштабным и может претендовать на Tier S. Tier S не присваивается по скорингу — согласуется с CMO в рамках квартального планирования\n';
+  }
+  txt += '\nh3. Решение по Клиентскому опыту\n';
 
   const a = ART[tier.art];
   txt += a.cls + '\n' + a.verdict + '\n\n';
   a.rows.forEach(function(r) { txt += '* *' + r[1] + ':* ' + r[2] + '\n'; });
 
-  txt += '\n{panel:bgColor=#EAFBF1}*Не забудьте поставить на задачу метку:* {{' + tier.slug + '}}\n';
-  txt += 'По ней команда Клиентского опыта видит результат скоринга.{panel}\n';
-
-  navigator.clipboard.writeText(txt).catch(() => {
+  const btn = this;
+  const done = () => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано';
+    setTimeout(() => btn.innerHTML = orig, 2500);
+  };
+  navigator.clipboard.writeText(txt).then(done).catch(() => {
     const el = document.createElement('textarea');
     el.value = txt; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    done();
   });
-
-  const orig = this.innerHTML;
-  this.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Скопировано — не забудьте метку ' + tier.slug;
-  setTimeout(() => this.innerHTML = orig, 4000);
 });
 
-// ── Reset ────────────────────────────────────────────────────────────────────
+/* ── Сброс ── */
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.querySelectorAll('#matrixBody input[type="radio"], #matrixBody input[type="checkbox"]').forEach(i => i.checked = false);
   document.querySelectorAll('#matrixBody .td-score').forEach(c => c.classList.remove('is-selected'));
   document.querySelectorAll('.comment-area').forEach(t => t.value = '');
   document.querySelectorAll('.comm-types').forEach(ct => ct.classList.remove('open'));
   document.getElementById('toxNudge').classList.remove('show');
-  document.getElementById('totalScore').textContent = '0';
-  document.getElementById('progressCount').textContent = '0';
-  for (let i = 0; i < ROWS; i++) document.getElementById('dot-'+i).classList.remove('filled');
-  document.getElementById('hintBar').classList.remove('hidden');
-  document.getElementById('resultLayout').classList.remove('show');
-  document.getElementById('tier2Warn').classList.remove('show');
-  document.getElementById('scorePill').className = 'score-pill';
+  document.getElementById('calloutTrigger').classList.remove('show');
+  document.getElementById('calloutTierS').classList.remove('show');
   closeTooltip();
+  update();
 });
+
+update();
 </script>
 </body>
 </html>
